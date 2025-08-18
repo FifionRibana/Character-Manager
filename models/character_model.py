@@ -4,11 +4,11 @@ Exposes character data to QML views using Qt's property system.
 Enhanced with full character data support.
 """
 
-from PyQt6.QtCore import QObject, pyqtSignal, pyqtProperty, QUrl
+from PyQt6.QtCore import QObject, pyqtSignal, pyqtProperty, QUrl, pyqtSlot
 from PyQt6.QtGui import QPixmap
 from typing import Optional, List
-from data.character import Character
-from data.enums import StatType, EnneagramType
+from models.character import Character
+from models.enums import StatType, EnneagramType
 
 
 class CharacterModel(QObject):
