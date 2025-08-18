@@ -1,0 +1,5 @@
+module components
+Sidebar 1.0 Sidebar.qml
+CharacterHeader 1.0 CharacterHeader.qml
+CharacterListItem 1.0 CharacterListItem.qml
+EnneagramWheel 1.0 EnneagramWheel.qml
