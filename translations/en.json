@@ -1,0 +1,134 @@
+{
+            
+    "app_title": "Medieval Character Manager",
+    "file": "File",
+    "edit": "Edit",
+    "view": "View",
+    "help": "Help",
+    
+    
+    "new_character": "New Character",
+    "save": "Save",
+    "save_as": "Save As",
+    "load": "Load",
+    "export_pdf": "Export PDF",
+    "export_html": "Export HTML",
+    "delete": "Delete",
+    "quit": "Quit",
+    
+    
+    "characters": "Characters",
+    "new": "New",
+    "delete_btn": "Delete",
+    
+    
+    "name": "Name",
+    "level": "Level",
+    "drop_image": "Drop image here\nor click to browse",
+    
+    
+    "tab_character": "Character",
+    "tab_enneagram": "Enneagram",
+    "tab_stats": "Stats",
+    "tab_biography": "Biography",
+    "tab_relationships": "Relationships",
+    "tab_narrative": "Narrative",
+    
+    
+    "main_type": "Main Type",
+    "wing": "Wing",
+    "no_wing": "No Wing",
+    "development_level": "Development Level",
+    "instinctual_stack": "Instinctual Stack (Primary to Tertiary)",
+    "integration": "Integration",
+    "disintegration": "Disintegration",
+    "type_description": "Type Description",
+    "tritype": "Tritype",
+    
+    
+    "type_1_name": "The Reformer",
+    "type_2_name": "The Helper",
+    "type_3_name": "The Achiever",
+    "type_4_name": "The Individualist",
+    "type_5_name": "The Investigator",
+    "type_6_name": "The Loyalist",
+    "type_7_name": "The Enthusiast",
+    "type_8_name": "The Challenger",
+    "type_9_name": "The Peacemaker",
+    
+    "type_1_desc": "Principled, purposeful, self-controlled, and perfectionistic.",
+    "type_2_desc": "Generous, demonstrative, people-pleasing, and possessive.",
+    "type_3_desc": "Adaptable, excelling, driven, and image-conscious.",
+    "type_4_desc": "Expressive, dramatic, self-absorbed, and temperamental.",
+    "type_5_desc": "Perceptive, innovative, secretive, and isolated.",
+    "type_6_desc": "Engaging, responsible, anxious, and suspicious.",
+    "type_7_desc": "Spontaneous, versatile, acquisitive, and scattered.",
+    "type_8_desc": "Self-confident, decisive, willful, and confrontational.",
+    "type_9_desc": "Receptive, reassuring, complacent, and resigned.",
+    
+    
+    "ability_scores": "Ability Scores",
+    "strength": "Strength",
+    "agility": "Agility",
+    "constitution": "Constitution",
+    "intelligence": "Intelligence",
+    "wisdom": "Wisdom",
+    "charisma": "Charisma",
+    
+    
+    "biography_placeholder": "Enter character background, history, traumatic events, etc...",
+    "affiliations": "Affiliations",
+    "add_affiliation": "Add Affiliation",
+    "remove": "Remove",
+    "affiliation_name": "Affiliation name:",
+    
+    
+    "character": "Character",
+    "type": "Type",
+    "description": "Description",
+    "add_relationship": "Add Relationship",
+    "relationship_type": "Relationship Type",
+    
+    
+    "rel_family": "Family",
+    "rel_friend": "Friend",
+    "rel_rival": "Rival",
+    "rel_mentor": "Mentor",
+    "rel_student": "Student",
+    "rel_ally": "Ally",
+    "rel_enemy": "Enemy",
+    "rel_romantic": "Romantic",
+    "rel_neutral": "Neutral",
+    
+    
+    "add_event": "Add Event",
+    "event_title": "Title",
+    "chapter": "Chapter",
+    "event_description": "Description",
+    "timeline": "Timeline",
+    
+    
+    "ready": "Ready",
+    "saved": "Saved",
+    "loaded": "Loaded",
+    "character_created": "New character created",
+    "character_deleted": "Character deleted",
+    "delete_confirm": "Delete {name}?",
+    "save_error": "Failed to save character",
+    "load_error": "Failed to load character",
+    "autosaving": "Autosaving...",
+    
+    
+    "select_image": "Select Character Image",
+    "images_filter": "Images (*.png *.jpg *.jpeg *.bmp *.gif)",
+    "json_filter": "JSON Files (*.json)",
+    "load_character": "Load Character",
+    "export_location": "Export Location",
+    
+    
+    "language": "Language",
+    "theme": "Theme",
+    "light_theme": "Light",
+    "dark_theme": "Dark",
+    "auto_theme": "Auto (System)"
+}
