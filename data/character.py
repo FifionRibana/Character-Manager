@@ -12,7 +12,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Any, ClassVar
 from pathlib import Path
 
-from data.enums import (
+from .enums import (
     StorageKeys, StatType, RelationType, EnneagramType, 
     InstinctualVariant, DevelopmentLevel, ValidationLimits,
     DEFAULT_STAT_VALUE, DEFAULT_DEVELOPMENT_LEVEL, 
@@ -154,7 +154,7 @@ class Relationship:
         """Check if this is generally a positive relationship."""
         positive_types = {
             RelationType.FAMILY, RelationType.FRIEND, RelationType.MENTOR,
-            RelationType.STUDENT, RelationType.ALLY, RelationType.ROMANTIC
+            RelationType.APPRENTICE, RelationType.ALLY, RelationType.LOVER
         }
         return self.relationship_type in positive_types
     
@@ -280,18 +280,25 @@ class Character:
     
     def _validate_core_data(self) -> None:
         """Validate core character data."""
-        # Validate name length and content
-        if not self.name or not self.name.strip():
-            raise ValueError(f"Character name cannot be empty")
+        # Validate name
+        if not isinstance(self.name, str):
+            raise ValueError("Character name must be a string")
         
-        if len(self.name) > ValidationLimits.MAX_CHARACTER_NAME_LENGTH:
+        name_length = len(self.name.strip())
+        if not ValidationLimits.MIN_CHARACTER_NAME_LENGTH <= name_length <= ValidationLimits.MAX_CHARACTER_NAME_LENGTH:
             raise ValueError(f"Character name must be {ValidationLimits.MIN_CHARACTER_NAME_LENGTH}-{ValidationLimits.MAX_CHARACTER_NAME_LENGTH} characters")
+        
+        # Validate level - CORRECTION DU PROBLÈME PRINCIPAL
+        if not isinstance(self.level, int):
+            raise ValueError("Character level must be an integer")
         
         if not ValidationLimits.MIN_CHARACTER_LEVEL <= self.level <= ValidationLimits.MAX_CHARACTER_LEVEL:
             raise ValueError(f"Character level must be {ValidationLimits.MIN_CHARACTER_LEVEL}-{ValidationLimits.MAX_CHARACTER_LEVEL}")
         
-        if len(self.biography) > ValidationLimits.MAX_BIOGRAPHY_LENGTH:
-            raise ValueError(f"Biography too long (max {ValidationLimits.MAX_BIOGRAPHY_LENGTH} characters)")
+        # Validate biography length
+        if isinstance(self.biography, str) and len(self.biography) > ValidationLimits.MAX_BIOGRAPHY_LENGTH:
+            raise ValueError(f"Biography must be less than {ValidationLimits.MAX_BIOGRAPHY_LENGTH} characters")
+
     
     def touch(self) -> None:
         """Update the last modified timestamp."""
@@ -571,4 +578,4 @@ class Character:
         character_dict[StorageKeys.CREATED_AT.value] = now.isoformat()
         character_dict[StorageKeys.UPDATED_AT.value] = now.isoformat()
         
-        return self.from_dict(character_dict)
+        return cls.from_dict(character_dict)

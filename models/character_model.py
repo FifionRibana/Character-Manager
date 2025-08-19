@@ -1,332 +1,461 @@
 """
-Character model for QML interface.
-Exposes character data to QML views using Qt's property system.
-Enhanced with full character data support.
+Extended Character model for PyQt6/QML integration.
+Provides reactive properties for all character data including Enneagram.
 """
 
-from PyQt6.QtCore import QObject, pyqtSignal, pyqtProperty, QUrl, pyqtSlot
-from PyQt6.QtGui import QPixmap
-from typing import Optional, List
-from models.character import Character
-from models.enums import StatType, EnneagramType
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Optional, Any, Dict, List
+from datetime import datetime
+
+from PyQt6.QtCore import QObject, pyqtSignal, pyqtProperty
+from PyQt6.QtQml import QQmlEngine, qmlRegisterType
+
+from data.character import Character
+from data.enneagram import EnneagramProfile
+from data.enums import EnneagramType, StatType, DEFAULT_CHARACTER_LEVEL
 
 
 class CharacterModel(QObject):
     """
-    Enhanced character model that exposes character data to QML.
-    Handles property binding and change notifications for all character aspects.
+    Extended PyQt model for Character data with comprehensive QML property bindings.
+    
+    Provides reactive properties for:
+    - Core character info (name, level, image)
+    - Complete Enneagram profile
+    - All character stats
+    - Biographical information
+    - Timestamps and metadata
     """
     
-    # Signals for property changes
+    # Core property change signals
     nameChanged = pyqtSignal()
     levelChanged = pyqtSignal()
-    imageChanged = pyqtSignal()
-    statsChanged = pyqtSignal()
-    enneagramChanged = pyqtSignal()
+    imageDataChanged = pyqtSignal()
+    
+    # Enneagram property signals
+    enneagramTypeChanged = pyqtSignal()
+    enneagramWingChanged = pyqtSignal()
+    instinctualVariantChanged = pyqtSignal()
+    developmentLevelChanged = pyqtSignal()
+    enneagramNotationChanged = pyqtSignal()
+    
+    # Stats property signals
+    strengthChanged = pyqtSignal()
+    agilityChanged = pyqtSignal()
+    constitutionChanged = pyqtSignal()
+    intelligenceChanged = pyqtSignal()
+    wisdomChanged = pyqtSignal()
+    charismaChanged = pyqtSignal()
+    totalStatsChanged = pyqtSignal()
+    
+    # Biographical signals
     biographyChanged = pyqtSignal()
     affiliationsChanged = pyqtSignal()
-    relationshipsChanged = pyqtSignal()
-    narrativeChanged = pyqtSignal()
     
-    def __init__(self, parent=None):
+    # Metadata signals
+    createdAtChanged = pyqtSignal()
+    updatedAtChanged = pyqtSignal()
+    
+    def __init__(self, parent: Optional[QObject] = None):
         super().__init__(parent)
         self._character: Optional[Character] = None
-    
-    def load_character(self, character: Character):
-        """Load a character and emit change signals."""
+        
+    def set_character(self, character: Optional[Character]) -> None:
+        """
+        Set the character and emit all necessary change signals.
+        
+        Args:
+            character: Character instance or None
+        """
         if self._character == character:
             return
             
         self._character = character
         
-        # Emit all change signals
+        # Emit all change signals to update QML bindings
         self.nameChanged.emit()
         self.levelChanged.emit()
-        self.imageChanged.emit()
-        self.statsChanged.emit()
-        self.enneagramChanged.emit()
-        self.biographyChanged.emit()
-        self.affiliationsChanged.emit()
-        self.relationshipsChanged.emit()
-        self.narrativeChanged.emit()
-    
-    def clear(self):
-        """Clear the current character."""
-        if self._character is None:
-            return
-            
-        self._character = None
+        self.imageDataChanged.emit()
         
-        # Emit all change signals
-        self.nameChanged.emit()
-        self.levelChanged.emit()
-        self.imageChanged.emit()
-        self.statsChanged.emit()
-        self.enneagramChanged.emit()
+        # Enneagram signals
+        self.enneagramTypeChanged.emit()
+        self.enneagramWingChanged.emit()
+        self.instinctualVariantChanged.emit()
+        self.developmentLevelChanged.emit()
+        self.enneagramNotationChanged.emit()
+        
+        # Stats signals
+        self.strengthChanged.emit()
+        self.agilityChanged.emit()
+        self.constitutionChanged.emit()
+        self.intelligenceChanged.emit()
+        self.wisdomChanged.emit()
+        self.charismaChanged.emit()
+        self.totalStatsChanged.emit()
+        
+        # Biography signals
         self.biographyChanged.emit()
         self.affiliationsChanged.emit()
-        self.relationshipsChanged.emit()
-        self.narrativeChanged.emit()
+        
+        # Metadata signals
+        self.createdAtChanged.emit()
+        self.updatedAtChanged.emit()
     
-    # Basic Character Properties
+    def get_character(self) -> Optional[Character]:
+        """
+        Get the current character.
+        
+        Returns:
+            Current Character instance or None
+        """
+        return self._character
+    
+    # Core character properties
     @pyqtProperty(str, notify=nameChanged)
     def name(self) -> str:
+        """Character name."""
         return self._character.name if self._character else ""
     
     @name.setter
-    def name(self, value: str):
+    def name(self, value: str) -> None:
+        """Set character name."""
         if self._character and self._character.name != value:
             self._character.name = value
+            self._character.touch()
             self.nameChanged.emit()
+            self.updatedAtChanged.emit()
     
     @pyqtProperty(int, notify=levelChanged)
     def level(self) -> int:
-        return self._character.level if self._character else 1
+        """Character level."""
+        return self._character.level if self._character else DEFAULT_CHARACTER_LEVEL
     
     @level.setter
-    def level(self, value: int):
+    def level(self, value: int) -> None:
+        """Set character level."""
         if self._character and self._character.level != value:
             self._character.level = value
+            self._character.touch()
             self.levelChanged.emit()
+            self.updatedAtChanged.emit()
     
-    # Image property
-    @pyqtProperty(QUrl, notify=imageChanged)
-    def imageUrl(self) -> QUrl:
-        if not self._character or not self._character.image_data:
-            return QUrl()
-        
-        # Convert base64 to data URL for QML
-        return QUrl(f"data:image/png;base64,{self._character.image_data}")
+    @pyqtProperty(str, notify=imageDataChanged)
+    def imageData(self) -> str:
+        """Character image data (base64)."""
+        return self._character.image_data if self._character else ""
     
-    # Stats properties
-    @pyqtProperty(int, notify=statsChanged)
-    def strength(self) -> int:
-        return self._character.stats.strength if self._character else 10
-    
-    @strength.setter
-    def strength(self, value: int):
-        if self._character and self._character.stats.strength != value:
-            self._character.stats.strength = value
-            self.statsChanged.emit()
-    
-    @pyqtProperty(int, notify=statsChanged)
-    def agility(self) -> int:
-        return self._character.stats.agility if self._character else 10
-    
-    @agility.setter
-    def agility(self, value: int):
-        if self._character and self._character.stats.agility != value:
-            self._character.stats.agility = value
-            self.statsChanged.emit()
-    
-    @pyqtProperty(int, notify=statsChanged)
-    def constitution(self) -> int:
-        return self._character.stats.constitution if self._character else 10
-    
-    @constitution.setter
-    def constitution(self, value: int):
-        if self._character and self._character.stats.constitution != value:
-            self._character.stats.constitution = value
-            self.statsChanged.emit()
-    
-    @pyqtProperty(int, notify=statsChanged)
-    def intelligence(self) -> int:
-        return self._character.stats.intelligence if self._character else 10
-    
-    @intelligence.setter
-    def intelligence(self, value: int):
-        if self._character and self._character.stats.intelligence != value:
-            self._character.stats.intelligence = value
-            self.statsChanged.emit()
-    
-    @pyqtProperty(int, notify=statsChanged)
-    def wisdom(self) -> int:
-        return self._character.stats.wisdom if self._character else 10
-    
-    @wisdom.setter
-    def wisdom(self, value: int):
-        if self._character and self._character.stats.wisdom != value:
-            self._character.stats.wisdom = value
-            self.statsChanged.emit()
-    
-    @pyqtProperty(int, notify=statsChanged)
-    def charisma(self) -> int:
-        return self._character.stats.charisma if self._character else 10
-    
-    @charisma.setter
-    def charisma(self, value: int):
-        if self._character and self._character.stats.charisma != value:
-            self._character.stats.charisma = value
-            self.statsChanged.emit()
+    @imageData.setter
+    def imageData(self, value: str) -> None:
+        """Set character image data."""
+        if self._character and self._character.image_data != value:
+            self._character.image_data = value
+            self._character.touch()
+            self.imageDataChanged.emit()
+            self.updatedAtChanged.emit()
     
     # Enneagram properties
-    @pyqtProperty(int, notify=enneagramChanged)
+    @pyqtProperty(int, notify=enneagramTypeChanged)
     def enneagramType(self) -> int:
-        return self._character.enneagram.main_type.value if self._character else 9
+        """Main Enneagram type (1-9)."""
+        return int(self._character.enneagram.main_type.value) if self._character else 9
     
     @enneagramType.setter
-    def enneagramType(self, value: int):
-        if self._character and self._character.enneagram.main_type.value != value:
-            self._character.enneagram.main_type = EnneagramType(value)
-            self.enneagramChanged.emit()
+    def enneagramType(self, value: int) -> None:
+        """Set main Enneagram type."""
+        if self._character and 1 <= value <= 9:
+            new_type = EnneagramType(value)
+            if self._character.enneagram.main_type != new_type:
+                self._character.enneagram.main_type = new_type
+                # Auto-update integration/disintegration points
+                self._character.enneagram.integration_point = new_type.integration_point
+                self._character.enneagram.disintegration_point = new_type.disintegration_point
+                self._character.touch()
+                
+                self.enneagramTypeChanged.emit()
+                self.enneagramNotationChanged.emit()
+                self.updatedAtChanged.emit()
     
-    @pyqtProperty(str, notify=enneagramChanged)
-    def enneagramWing(self) -> str:
-        if not self._character:
-            return ""
-        return self._character.enneagram.get_wing_notation()
+    @pyqtProperty(int, notify=enneagramWingChanged)
+    def enneagramWing(self) -> int:
+        """Enneagram wing (0 for no wing, 1-9 for wing type)."""
+        return int(self._character.enneagram.wing.value) if self._character and self._character.enneagram.wing else 0
     
-    @pyqtProperty(int, notify=enneagramChanged)
+    @enneagramWing.setter
+    def enneagramWing(self, value: int) -> None:
+        """Set Enneagram wing."""
+        if self._character:
+            new_wing = EnneagramType(value) if value > 0 else None
+            if self._character.enneagram.wing != new_wing:
+                self._character.enneagram.wing = new_wing
+                self._character.touch()
+                
+                self.enneagramWingChanged.emit()
+                self.enneagramNotationChanged.emit()
+                self.updatedAtChanged.emit()
+    
+    @pyqtProperty(str, notify=instinctualVariantChanged)
+    def instinctualVariant(self) -> str:
+        """Primary instinctual variant (sp, so, sx)."""
+        if self._character and self._character.enneagram.instinctual_stack:
+            return self._character.enneagram.instinctual_stack[0].value
+        return "sp"
+    
+    @instinctualVariant.setter
+    def instinctualVariant(self, value: str) -> None:
+        """Set primary instinctual variant."""
+        if self._character:
+            try:
+                from data.enums import InstinctualVariant
+                new_variant = InstinctualVariant(value)
+                current_stack = self._character.enneagram.instinctual_stack
+                
+                if not current_stack or current_stack[0] != new_variant:
+                    # Reorder stack to put new variant first
+                    new_stack = [new_variant]
+                    for variant in current_stack:
+                        if variant != new_variant:
+                            new_stack.append(variant)
+                    
+                    # Ensure we have all three variants
+                    for variant in InstinctualVariant:
+                        if variant not in new_stack:
+                            new_stack.append(variant)
+                    
+                    self._character.enneagram.instinctual_stack = new_stack[:3]
+                    self._character.touch()
+                    
+                    self.instinctualVariantChanged.emit()
+                    self.updatedAtChanged.emit()
+            except ValueError:
+                pass  # Invalid variant
+    
+    @pyqtProperty(int, notify=developmentLevelChanged)
     def developmentLevel(self) -> int:
+        """Enneagram development level (1-9)."""
         return self._character.enneagram.development_level if self._character else 5
     
     @developmentLevel.setter
-    def developmentLevel(self, value: int):
-        if self._character and self._character.enneagram.development_level != value:
-            self._character.enneagram.development_level = value
-            self.enneagramChanged.emit()
+    def developmentLevel(self, value: int) -> None:
+        """Set development level."""
+        if self._character and 1 <= value <= 9:
+            if self._character.enneagram.development_level != value:
+                self._character.enneagram.development_level = value
+                self._character.touch()
+                
+                self.developmentLevelChanged.emit()
+                self.updatedAtChanged.emit()
     
-    # Biography property
+    @pyqtProperty(str, notify=enneagramNotationChanged)
+    def enneagramNotation(self) -> str:
+        """Full Enneagram notation (e.g., '9w8')."""
+        return self._character.enneagram.get_wing_notation() if self._character else "9"
+    
+    # Character stats properties
+    @pyqtProperty(int, notify=strengthChanged)
+    def strength(self) -> int:
+        """Strength stat."""
+        return self._character.stats.strength if self._character else 10
+    
+    @strength.setter
+    def strength(self, value: int) -> None:
+        """Set strength stat."""
+        if self._character and self._character.stats.strength != value:
+            self._character.stats.strength = value
+            self._character.touch()
+            self.strengthChanged.emit()
+            self.totalStatsChanged.emit()
+            self.updatedAtChanged.emit()
+    
+    @pyqtProperty(int, notify=agilityChanged)
+    def agility(self) -> int:
+        """Agility stat."""
+        return self._character.stats.agility if self._character else 10
+    
+    @agility.setter
+    def agility(self, value: int) -> None:
+        """Set agility stat."""
+        if self._character and self._character.stats.agility != value:
+            self._character.stats.agility = value
+            self._character.touch()
+            self.agilityChanged.emit()
+            self.totalStatsChanged.emit()
+            self.updatedAtChanged.emit()
+    
+    @pyqtProperty(int, notify=constitutionChanged)
+    def constitution(self) -> int:
+        """Constitution stat."""
+        return self._character.stats.constitution if self._character else 10
+    
+    @constitution.setter
+    def constitution(self, value: int) -> None:
+        """Set constitution stat."""
+        if self._character and self._character.stats.constitution != value:
+            self._character.stats.constitution = value
+            self._character.touch()
+            self.constitutionChanged.emit()
+            self.totalStatsChanged.emit()
+            self.updatedAtChanged.emit()
+    
+    @pyqtProperty(int, notify=intelligenceChanged)
+    def intelligence(self) -> int:
+        """Intelligence stat."""
+        return self._character.stats.intelligence if self._character else 10
+    
+    @intelligence.setter
+    def intelligence(self, value: int) -> None:
+        """Set intelligence stat."""
+        if self._character and self._character.stats.intelligence != value:
+            self._character.stats.intelligence = value
+            self._character.touch()
+            self.intelligenceChanged.emit()
+            self.totalStatsChanged.emit()
+            self.updatedAtChanged.emit()
+    
+    @pyqtProperty(int, notify=wisdomChanged)
+    def wisdom(self) -> int:
+        """Wisdom stat."""
+        return self._character.stats.wisdom if self._character else 10
+    
+    @wisdom.setter
+    def wisdom(self, value: int) -> None:
+        """Set wisdom stat."""
+        if self._character and self._character.stats.wisdom != value:
+            self._character.stats.wisdom = value
+            self._character.touch()
+            self.wisdomChanged.emit()
+            self.totalStatsChanged.emit()
+            self.updatedAtChanged.emit()
+    
+    @pyqtProperty(int, notify=charismaChanged)
+    def charisma(self) -> int:
+        """Charisma stat."""
+        return self._character.stats.charisma if self._character else 10
+    
+    @charisma.setter
+    def charisma(self, value: int) -> None:
+        """Set charisma stat."""
+        if self._character and self._character.stats.charisma != value:
+            self._character.stats.charisma = value
+            self._character.touch()
+            self.charismaChanged.emit()
+            self.totalStatsChanged.emit()
+            self.updatedAtChanged.emit()
+    
+    @pyqtProperty(int, notify=totalStatsChanged)
+    def totalStats(self) -> int:
+        """Total of all stat points."""
+        return self._character.stats.total_points if self._character else 60
+    
+    # Biographical properties
     @pyqtProperty(str, notify=biographyChanged)
     def biography(self) -> str:
+        """Character biography."""
         return self._character.biography if self._character else ""
     
     @biography.setter
-    def biography(self, value: str):
+    def biography(self, value: str) -> None:
+        """Set character biography."""
         if self._character and self._character.biography != value:
             self._character.biography = value
+            self._character.touch()
             self.biographyChanged.emit()
+            self.updatedAtChanged.emit()
     
-    # Affiliations (as string list for QML)
-    @pyqtProperty('QStringList', notify=affiliationsChanged)
+    @pyqtProperty(list, notify=affiliationsChanged)
     def affiliations(self) -> List[str]:
+        """Character affiliations."""
         return self._character.affiliations if self._character else []
     
-    # Relationships count
-    @pyqtProperty(int, notify=relationshipsChanged)
-    def relationshipsCount(self) -> int:
-        return len(self._character.relationships) if self._character else 0
+    @affiliations.setter
+    def affiliations(self, value: List[str]) -> None:
+        """Set character affiliations."""
+        if self._character and self._character.affiliations != value:
+            self._character.affiliations = value.copy()
+            self._character.touch()
+            self.affiliationsChanged.emit()
+            self.updatedAtChanged.emit()
     
-    # Narrative events count
-    @pyqtProperty(int, notify=narrativeChanged)
-    def narrativeEventsCount(self) -> int:
-        return len(self._character.narrative_events) if self._character else 0
+    # Metadata properties
+    @pyqtProperty(str, notify=createdAtChanged)
+    def createdAt(self) -> str:
+        """Creation timestamp as ISO string."""
+        return self._character.created_at.isoformat() if self._character else ""
     
-    # Helper methods for QML
-    @pyqtProperty(bool, notify=nameChanged)
+    @pyqtProperty(str, notify=updatedAtChanged)
+    def updatedAt(self) -> str:
+        """Last update timestamp as ISO string."""
+        return self._character.updated_at.isoformat() if self._character else ""
+    
+    # Computed properties for QML
+    @pyqtProperty(bool, constant=True)
     def hasCharacter(self) -> bool:
-        """Check if a character is loaded."""
+        """Check if a character is currently loaded."""
         return self._character is not None
     
-    @pyqtProperty(str, notify=nameChanged)
-    def characterId(self) -> str:
-        """Get character ID."""
-        return self._character.id if self._character else ""
+    @pyqtProperty(bool, notify=imageDataChanged)
+    def hasImage(self) -> bool:
+        """Check if character has an image."""
+        return bool(self._character and self._character.image_data)
     
-    # Character creation/modification dates
-    @pyqtProperty(str, notify=nameChanged)
-    def createdAt(self) -> str:
-        """Get creation date as string."""
-        if not self._character:
-            return ""
-        return self._character.created_at.strftime("%Y-%m-%d %H:%M")
+    @pyqtProperty(int, notify=totalStatsChanged)
+    def averageStat(self) -> int:
+        """Average stat value (rounded)."""
+        if self._character:
+            return round(self._character.stats.average_stat)
+        return 10
     
-    @pyqtProperty(str, notify=nameChanged)
-    def updatedAt(self) -> str:
-        """Get last update date as string."""
-        if not self._character:
-            return ""
-        return self._character.updated_at.strftime("%Y-%m-%d %H:%M")
+    @pyqtProperty(str, notify=enneagramTypeChanged)
+    def enneagramTitle(self) -> str:
+        """Get the title for the current Enneagram type."""
+        if self._character:
+            return self._character.enneagram.main_type.title
+        return "The Peacemaker"
     
-    @pyqtProperty(int, notify=nameChanged)
-    def version(self) -> int:
-        """Get character version."""
-        return self._character.version if self._character else 1
+    @pyqtProperty(str, notify=developmentLevelChanged)
+    def healthCategory(self) -> str:
+        """Get health category (Healthy/Average/Unhealthy)."""
+        if self._character:
+            return self._character.enneagram.health_category
+        return "Average"
     
-    # Stats helper methods
-    def getStatModifier(self, stat_value: int) -> int:
-        """Calculate D&D style modifier for a stat."""
-        return (stat_value - 10) // 2
+    # Utility methods for QML
+    @pyqtProperty(int)
+    def getStatModifier(self) -> int:
+        """Get D&D 5e modifier for a stat."""
+        # This would need to be called with a specific stat in QML
+        # For now, returning strength modifier as example
+        if self._character:
+            return self._character.stats.get_modifier(StatType.STRENGTH)
+        return 0
     
-    @pyqtProperty(int, notify=statsChanged)
-    def totalStatPoints(self) -> int:
-        """Get total stat points."""
-        if not self._character:
-            return 60
+    def to_dict(self) -> Dict[str, Any]:
+        """
+        Serialize character to dictionary.
         
-        return (self._character.stats.strength + self._character.stats.agility + 
-                self._character.stats.constitution + self._character.stats.intelligence + 
-                self._character.stats.wisdom + self._character.stats.charisma)
+        Returns:
+            Dictionary representation or empty dict if no character
+        """
+        return self._character.to_dict() if self._character else {}
     
-    # Enneagram helper methods
-    @pyqtProperty(str, notify=enneagramChanged)
-    def enneagramTypeName(self) -> str:
-        """Get the name of the current Enneagram type."""
-        if not self._character:
-            return "The Peacemaker"
+    def from_dict(self, data: Dict[str, Any]) -> None:
+        """
+        Load character from dictionary.
         
-        type_names = {
-            1: "The Reformer", 2: "The Helper", 3: "The Achiever",
-            4: "The Individualist", 5: "The Investigator", 6: "The Loyalist",
-            7: "The Enthusiast", 8: "The Challenger", 9: "The Peacemaker"
-        }
-        return type_names.get(self._character.enneagram.main_type.value, "Unknown")
-    
-    @pyqtProperty(str, notify=enneagramChanged)
-    def enneagramTypeDescription(self) -> str:
-        """Get the description of the current Enneagram type."""
-        if not self._character:
-            return "Receptive, reassuring, complacent, and resigned."
-        
-        type_descriptions = {
-            1: "Principled, purposeful, self-controlled, and perfectionistic.",
-            2: "Generous, demonstrative, people-pleasing, and possessive.",
-            3: "Adaptable, excelling, driven, and image-conscious.",
-            4: "Expressive, dramatic, self-absorbed, and temperamental.",
-            5: "Perceptive, innovative, secretive, and isolated.",
-            6: "Engaging, responsible, anxious, and suspicious.",
-            7: "Spontaneous, versatile, acquisitive, and scattered.",
-            8: "Self-confident, decisive, willful, and confrontational.",
-            9: "Receptive, reassuring, complacent, and resigned."
-        }
-        return type_descriptions.get(self._character.enneagram.main_type.value, "Unknown type.")
-    
-    # Methods callable from QML
-    @pyqtSlot(str)
-    def addAffiliation(self, name: str):
-        """Add an affiliation to the character."""
-        if self._character and name.strip():
-            self._character.affiliations.append(name.strip())
-            self.affiliationsChanged.emit()
-    
-    @pyqtSlot(int)
-    def removeAffiliation(self, index: int):
-        """Remove an affiliation by index."""
-        if self._character and 0 <= index < len(self._character.affiliations):
-            del self._character.affiliations[index]
-            self.affiliationsChanged.emit()
-    
-    @pyqtSlot(str, result=str)
-    def setImageFromPath(self, path: str) -> str:
-        """Set character image from file path."""
-        if not self._character:
-            return "No character loaded"
-        
-        try:
-            # Remove file:// prefix if present
-            if path.startswith("file://"):
-                path = path[7:]
-            
-            from pathlib import Path
-            file_path = Path(path)
-            
-            if file_path.exists():
-                import base64
-                with open(file_path, 'rb') as f:
-                    self._character.image_data = base64.b64encode(f.read()).decode('utf-8')
-                self.imageChanged.emit()
-                return "Image loaded successfully"
-            else:
-                return "File not found"
-        except Exception as e:
-            return f"Error loading image: {str(e)}"
+        Args:
+            data: Dictionary with character data
+        """
+        character = Character.from_dict(data)
+        self.set_character(character)
+
+
+def register_character_model() -> None:
+    """Register CharacterModel for QML usage."""
+    qmlRegisterType(CharacterModel, 'CharacterModels', 1, 0, 'CharacterModel')
+
+
+# Module-level function for easy registration
+def register_types() -> None:
+    """Register all character-related types."""
+    register_character_model()

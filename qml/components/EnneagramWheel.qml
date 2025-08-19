@@ -1,36 +1,51 @@
+/**
+ * EnneagramWheel.qml
+ * Interactive Enneagram wheel component with Canvas rendering
+ * Complete implementation with visual feedback and animations
+ */
 import QtQuick
 import QtQuick.Controls
+import "../styles"
 
 Item {
     id: enneagramWheel
     
+    // Public properties
     property int selectedType: 9
     property real animationDuration: 200
-    property real wheelSize: Math.min(width, height) - 40
-    property real centerX: width / 2
-    property real centerY: height / 2
-    property real outerRadius: wheelSize / 2
-    property real innerRadius: outerRadius * 0.6
-    property real nodeRadius: 25
+    property bool showConnections: true
+    property bool interactiveMode: true
     
+    // Computed properties
+    readonly property real wheelSize: Math.min(width, height) - 60
+    readonly property real centerX: width / 2
+    readonly property real centerY: height / 2
+    readonly property real outerRadius: wheelSize / 2
+    readonly property real innerRadius: outerRadius * 0.6
+    readonly property real nodeRadius: 22
+    
+    // Signals
     signal typeSelected(int enneagramType)
+    signal typeHovered(int enneagramType)
     
-    // Colors for each type
-    property var typeColors: [
-        "#E3F2FD", // Type 1 - Light Blue
-        "#F3E5F5", // Type 2 - Light Purple
-        "#E8F5E8", // Type 3 - Light Green
-        "#FFF3E0", // Type 4 - Light Orange
-        "#E0F2F1", // Type 5 - Light Teal
-        "#FCE4EC", // Type 6 - Light Pink
-        "#FFFDE7", // Type 7 - Light Yellow
-        "#FFEBEE", // Type 8 - Light Red
-        "#F1F8E9"  // Type 9 - Light Light Green
+    // Colors for each type (following Enneagram tradition)
+    readonly property var typeColors: [
+        "",           // Index 0 (unused)
+        "#e74c3c",    // Type 1 - Red (Reformer)
+        "#3498db",    // Type 2 - Blue (Helper)  
+        "#f39c12",    // Type 3 - Orange (Achiever)
+        "#9b59b6",    // Type 4 - Purple (Individualist)
+        "#2ecc71",    // Type 5 - Green (Investigator)
+        "#e67e22",    // Type 6 - Dark Orange (Loyalist)
+        "#f1c40f",    // Type 7 - Yellow (Enthusiast)
+        "#34495e",    // Type 8 - Dark Blue (Challenger)
+        "#95a5a6"     // Type 9 - Gray (Peacemaker)
     ]
     
-    // Type positions (Type 9 at top, clockwise)
-    property var typePositions: calculateTypePositions()
+    // Type positions calculated dynamically
+    property var typePositions: ({})
     
+    // Background wheel
     Canvas {
         id: wheelCanvas
         anchors.fill: parent
@@ -39,327 +54,316 @@ Item {
             drawWheel()
         }
         
-        MouseArea {
-            anchors.fill: parent
-            onClicked: function(mouse) {
-                let clickedType = getTypeAtPosition(mouse.x, mouse.y)
-                if (clickedType > 0) {
-                    selectType(clickedType)
-                }
-            }
+        function drawWheel() {
+            var ctx = getContext("2d")
+            if (!ctx) return
+            
+            ctx.clearRect(0, 0, width, height)
+            
+            // Anti-aliasing
+            ctx.imageSmoothingEnabled = true
+            
+            // Draw outer circle
+            ctx.strokeStyle = AppTheme.borderColor
+            ctx.lineWidth = 2
+            ctx.beginPath()
+            ctx.arc(centerX, centerY, outerRadius, 0, 2 * Math.PI)
+            ctx.stroke()
+            
+            // Draw inner triangle and hexagon (traditional Enneagram symbol)
+            drawEnneagramSymbol(ctx)
         }
-    }
-    
-    // Type labels
-    Repeater {
-        model: 9
         
-        delegate: Item {
-            id: typeLabel
-            property int typeNumber: index + 1
-            property real angle: -90 + (index * 40) // 360/9 = 40 degrees apart
-            property real radian: angle * Math.PI / 180
-            property real labelX: centerX + (outerRadius + 35) * Math.cos(radian)
-            property real labelY: centerY + (outerRadius + 35) * Math.sin(radian)
+        function drawEnneagramSymbol(ctx) {
+            // Draw the inner triangle (3-6-9)
+            ctx.strokeStyle = AppTheme.borderColor
+            ctx.lineWidth = 1.5
+            ctx.setLineDash([5, 3])
             
-            x: labelX - 15
-            y: labelY - 15
-            width: 30
-            height: 30
-            
-            Rectangle {
-                anchors.fill: parent
-                radius: 15
-                color: selectedType === typeNumber ? "#4CAF50" : "transparent"
-                border.color: selectedType === typeNumber ? "#4CAF50" : "#757575"
-                border.width: 2
+            var trianglePoints = [3, 6, 9]
+            ctx.beginPath()
+            for (var i = 0; i < trianglePoints.length; i++) {
+                var currentType = trianglePoints[i]
+                var nextType = trianglePoints[(i + 1) % trianglePoints.length]
                 
-                Behavior on color {
-                    ColorAnimation { duration: animationDuration }
-                }
+                var pos1 = getTypePosition(currentType)
+                var pos2 = getTypePosition(nextType)
                 
-                Text {
-                    anchors.centerIn: parent
-                    text: typeNumber.toString()
-                    font.pixelSize: 14
-                    font.bold: true
-                    color: selectedType === typeNumber ? "#ffffff" : "#212121"
-                    
-                    Behavior on color {
-                        ColorAnimation { duration: animationDuration }
-                    }
+                if (i === 0) {
+                    ctx.moveTo(pos1.x, pos1.y)
                 }
-                
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: selectType(typeNumber)
-                    cursorShape: Qt.PointingHandCursor
-                }
+                ctx.lineTo(pos2.x, pos2.y)
             }
+            ctx.closePath()
+            ctx.stroke()
+            
+            // Draw the hexagon (1-4-2-8-5-7)
+            ctx.strokeStyle = AppTheme.borderColorLight
+            ctx.lineWidth = 1
+            ctx.setLineDash([3, 2])
+            
+            var hexagonSequence = [1, 4, 2, 8, 5, 7]
+            ctx.beginPath()
+            for (var j = 0; j < hexagonSequence.length; j++) {
+                var currentHexType = hexagonSequence[j]
+                var nextHexType = hexagonSequence[(j + 1) % hexagonSequence.length]
+                
+                var hexPos1 = getTypePosition(currentHexType)
+                var hexPos2 = getTypePosition(nextHexType)
+                
+                if (j === 0) {
+                    ctx.moveTo(hexPos1.x, hexPos1.y)
+                }
+                ctx.lineTo(hexPos2.x, hexPos2.y)
+            }
+            ctx.closePath()
+            ctx.stroke()
+            
+            // Reset line dash
+            ctx.setLineDash([])
         }
     }
     
-    // Center indicator
-    Rectangle {
-        x: centerX - 6
-        y: centerY - 6
-        width: 12
-        height: 12
-        radius: 6
-        color: "#4CAF50"
-        border.color: "#ffffff"
-        border.width: 2
-    }
-    
-    // Integration/Disintegration lines (shown when type is selected)
+    // Connection lines (integration/disintegration)
     Canvas {
         id: connectionsCanvas
         anchors.fill: parent
-        visible: selectedType > 0
+        visible: showConnections && selectedType > 0
         
         onPaint: {
             if (selectedType > 0) {
                 drawConnections()
             }
         }
-    }
-    
-    // Functions
-    function calculateTypePositions() {
-        let positions = []
         
-        // Type order clockwise from top (Type 9 at 12 o'clock)
-        let typeOrder = [9, 1, 2, 3, 4, 5, 6, 7, 8]
-        
-        for (let i = 0; i < typeOrder.length; i++) {
-            let angle = -90 + (i * 40) // Start at top, 40 degrees apart
-            let radian = angle * Math.PI / 180
-            let x = centerX + outerRadius * Math.cos(radian)
-            let y = centerY + outerRadius * Math.sin(radian)
+        function drawConnections() {
+            var ctx = getContext("2d")
+            if (!ctx) return
             
-            positions[typeOrder[i]] = {x: x, y: y, angle: angle}
-        }
-        
-        return positions
-    }
-    
-    function drawWheel() {
-        let ctx = wheelCanvas.getContext("2d")
-        if (!ctx) return
-        
-        ctx.clearRect(0, 0, width, height)
-        
-        // Draw outer circle
-        ctx.strokeStyle = "#e0e0e0"
-        ctx.lineWidth = 2
-        ctx.beginPath()
-        ctx.arc(centerX, centerY, outerRadius, 0, 2 * Math.PI)
-        ctx.stroke()
-        
-        // Draw inner enneagram figure
-        drawEnneagramFigure(ctx)
-        
-        // Draw type nodes
-        drawTypeNodes(ctx)
-    }
-    
-    function drawEnneagramFigure(ctx) {
-        ctx.strokeStyle = "#e0e0e0"
-        ctx.lineWidth = 1
-        
-        // Inner triangle (9-3-6-9)
-        let triangleConnections = [
-            [9, 3], [3, 6], [6, 9]
-        ]
-        
-        // Hexad (1-4-2-8-5-7-1)
-        let hexadConnections = [
-            [1, 4], [4, 2], [2, 8], [8, 5], [5, 7], [7, 1]
-        ]
-        
-        let allConnections = triangleConnections.concat(hexadConnections)
-        
-        for (let connection of allConnections) {
-            let pos1 = typePositions[connection[0]]
-            let pos2 = typePositions[connection[1]]
+            ctx.clearRect(0, 0, width, height)
             
-            if (pos1 && pos2) {
-                ctx.beginPath()
-                ctx.moveTo(pos1.x, pos1.y)
-                ctx.lineTo(pos2.x, pos2.y)
-                ctx.stroke()
+            // Draw integration line (growth direction)
+            var integrationPoint = getIntegrationPoint(selectedType)
+            if (integrationPoint > 0) {
+                drawConnectionLine(ctx, selectedType, integrationPoint, "#2ecc71", 3)
+            }
+            
+            // Draw disintegration line (stress direction)
+            var disintegrationPoint = getDisintegrationPoint(selectedType)
+            if (disintegrationPoint > 0) {
+                drawConnectionLine(ctx, selectedType, disintegrationPoint, "#e74c3c", 3)
             }
         }
-    }
-    
-    function drawTypeNodes(ctx) {
-        for (let type = 1; type <= 9; type++) {
-            let pos = typePositions[type]
-            if (!pos) continue
+        
+        function drawConnectionLine(ctx, fromType, toType, color, lineWidth) {
+            var fromPos = getTypePosition(fromType)
+            var toPos = getTypePosition(toType)
             
-            let isSelected = (type === selectedType)
-            
-            // Node circle
-            ctx.fillStyle = isSelected ? "#4CAF50" : typeColors[type - 1]
-            ctx.strokeStyle = isSelected ? "#388E3C" : "#bdbdbd"
-            ctx.lineWidth = isSelected ? 3 : 1
+            ctx.strokeStyle = color
+            ctx.lineWidth = lineWidth
+            ctx.setLineDash([8, 4])
             
             ctx.beginPath()
-            ctx.arc(pos.x, pos.y, nodeRadius, 0, 2 * Math.PI)
-            ctx.fill()
+            ctx.moveTo(fromPos.x, fromPos.y)
+            ctx.lineTo(toPos.x, toPos.y)
             ctx.stroke()
             
-            // Type number
-            ctx.fillStyle = isSelected ? "#ffffff" : "#212121"
-            ctx.font = "bold 16px Arial"
-            ctx.textAlign = "center"
-            ctx.textBaseline = "middle"
-            ctx.fillText(type.toString(), pos.x, pos.y)
-        }
-    }
-    
-    function drawConnections() {
-        let ctx = connectionsCanvas.getContext("2d")
-        if (!ctx) return
-        
-        ctx.clearRect(0, 0, width, height)
-        
-        if (selectedType === 0) return
-        
-        // Integration and disintegration points
-        let integrationMap = {
-            1: 7, 2: 4, 3: 6, 4: 1, 5: 8,
-            6: 9, 7: 5, 8: 2, 9: 3
-        }
-        
-        let disintegrationMap = {
-            1: 4, 2: 8, 3: 9, 4: 2, 5: 7,
-            6: 3, 7: 1, 8: 5, 9: 6
-        }
-        
-        let selectedPos = typePositions[selectedType]
-        if (!selectedPos) return
-        
-        // Draw integration line (green)
-        let integrationPoint = integrationMap[selectedType]
-        if (integrationPoint) {
-            let integrationPos = typePositions[integrationPoint]
-            if (integrationPos) {
-                drawArrow(ctx, selectedPos, integrationPos, "#4CAF50", "Integration")
-            }
-        }
-        
-        // Draw disintegration line (red)
-        let disintegrationPoint = disintegrationMap[selectedType]
-        if (disintegrationPoint) {
-            let disintegrationPos = typePositions[disintegrationPoint]
-            if (disintegrationPos) {
-                drawArrow(ctx, selectedPos, disintegrationPos, "#F44336", "Stress")
-            }
-        }
-    }
-    
-    function drawArrow(ctx, from, to, color, label) {
-        ctx.strokeStyle = color
-        ctx.fillStyle = color
-        ctx.lineWidth = 3
-        ctx.setLineDash([5, 5])
-        
-        // Draw line
-        ctx.beginPath()
-        ctx.moveTo(from.x, from.y)
-        ctx.lineTo(to.x, to.y)
-        ctx.stroke()
-        
-        // Draw arrowhead
-        let angle = Math.atan2(to.y - from.y, to.x - from.x)
-        let arrowLength = 15
-        let arrowAngle = Math.PI / 6
-        
-        ctx.setLineDash([])
-        ctx.beginPath()
-        ctx.moveTo(to.x, to.y)
-        ctx.lineTo(
-            to.x - arrowLength * Math.cos(angle - arrowAngle),
-            to.y - arrowLength * Math.sin(angle - arrowAngle)
-        )
-        ctx.lineTo(
-            to.x - arrowLength * Math.cos(angle + arrowAngle),
-            to.y - arrowLength * Math.sin(angle + arrowAngle)
-        )
-        ctx.closePath()
-        ctx.fill()
-        
-        // Draw label
-        let midX = (from.x + to.x) / 2
-        let midY = (from.y + to.y) / 2
-        
-        ctx.fillStyle = "#ffffff"
-        ctx.strokeStyle = color
-        ctx.lineWidth = 1
-        ctx.font = "bold 10px Arial"
-        ctx.textAlign = "center"
-        ctx.textBaseline = "middle"
-        
-        // Background for label
-        let textWidth = ctx.measureText(label).width
-        ctx.fillRect(midX - textWidth/2 - 4, midY - 8, textWidth + 8, 16)
-        ctx.strokeRect(midX - textWidth/2 - 4, midY - 8, textWidth + 8, 16)
-        
-        ctx.fillStyle = color
-        ctx.fillText(label, midX, midY)
-    }
-    
-    function getTypeAtPosition(x, y) {
-        for (let type = 1; type <= 9; type++) {
-            let pos = typePositions[type]
-            if (!pos) continue
+            // Draw arrow head
+            var angle = Math.atan2(toPos.y - fromPos.y, toPos.x - fromPos.x)
+            var arrowLength = 12
+            var arrowAngle = Math.PI / 6
             
-            let distance = Math.sqrt(Math.pow(x - pos.x, 2) + Math.pow(y - pos.y, 2))
-            if (distance <= nodeRadius) {
-                return type
+            ctx.setLineDash([])
+            ctx.fillStyle = color
+            ctx.beginPath()
+            ctx.moveTo(toPos.x, toPos.y)
+            ctx.lineTo(
+                toPos.x - arrowLength * Math.cos(angle - arrowAngle),
+                toPos.y - arrowLength * Math.sin(angle - arrowAngle)
+            )
+            ctx.lineTo(
+                toPos.x - arrowLength * Math.cos(angle + arrowAngle),
+                toPos.y - arrowLength * Math.sin(angle + arrowAngle)
+            )
+            ctx.closePath()
+            ctx.fill()
+        }
+    }
+    
+    // Type nodes
+    Repeater {
+        model: 9
+        
+        delegate: Item {
+            id: typeNode
+            property int typeNumber: index + 1
+            property var position: getTypePosition(typeNumber)
+            property bool isSelected: selectedType === typeNumber
+            property bool isHovered: false
+            
+            x: position.x - nodeRadius
+            y: position.y - nodeRadius
+            width: nodeRadius * 2
+            height: nodeRadius * 2
+            
+            Rectangle {
+                id: nodeBackground
+                anchors.fill: parent
+                radius: nodeRadius
+                color: isSelected ? typeColors[typeNumber] : 
+                       isHovered ? Qt.lighter(typeColors[typeNumber], 1.3) : 
+                       Qt.lighter(typeColors[typeNumber], 1.6)
+                border.color: isSelected ? Qt.darker(typeColors[typeNumber], 1.2) : typeColors[typeNumber]
+                border.width: isSelected ? 3 : 2
+                
+                Behavior on color {
+                    ColorAnimation { duration: animationDuration }
+                }
+                
+                Behavior on border.width {
+                    NumberAnimation { duration: animationDuration }
+                }
+                
+                // Subtle shadow effect
+                Rectangle {
+                    anchors.fill: parent
+                    anchors.margins: 2
+                    radius: parent.radius - 2
+                    color: "transparent"
+                    border.color: "white"
+                    border.width: isSelected ? 2 : 1
+                    opacity: isSelected ? 0.7 : 0.3
+                    
+                    Behavior on opacity {
+                        NumberAnimation { duration: animationDuration }
+                    }
+                }
+            }
+            
+            Text {
+                id: nodeText
+                anchors.centerIn: parent
+                text: typeNumber.toString()
+                font.family: AppTheme.fontFamily
+                font.pixelSize: isSelected ? 16 : 14
+                font.bold: true
+                color: isSelected ? "white" : AppTheme.textColor
+                
+                Behavior on font.pixelSize {
+                    NumberAnimation { duration: animationDuration }
+                }
+                
+                Behavior on color {
+                    ColorAnimation { duration: animationDuration }
+                }
+            }
+            
+            MouseArea {
+                anchors.fill: parent
+                enabled: interactiveMode
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                
+                onClicked: {
+                    selectType(typeNumber)
+                }
+                
+                onEntered: {
+                    parent.isHovered = true
+                    typeHovered(typeNumber)
+                }
+                
+                onExited: {
+                    parent.isHovered = false
+                    typeHovered(0)
+                }
+            }
+            
+            // Scale animation for selection
+            scale: isSelected ? 1.1 : (isHovered ? 1.05 : 1.0)
+            
+            Behavior on scale {
+                NumberAnimation {
+                    duration: animationDuration
+                    easing.type: Easing.OutCubic
+                }
             }
         }
-        return 0
+    }
+    
+    // Center dot
+    Rectangle {
+        x: centerX - 4
+        y: centerY - 4
+        width: 8
+        height: 8
+        radius: 4
+        color: AppTheme.accentColor
+        border.color: "white"
+        border.width: 1
+    }
+    
+    // Public functions
+    function getTypePosition(type) {
+        if (typePositions[type]) {
+            return typePositions[type]
+        }
+        
+        // Calculate position for type (Type 9 at top, clockwise)
+        var typeOrder = [9, 1, 2, 3, 4, 5, 6, 7, 8]
+        var index = typeOrder.indexOf(type)
+        if (index === -1) return {x: centerX, y: centerY}
+        
+        var angle = -90 + (index * 40) // 360/9 = 40 degrees
+        var radian = angle * Math.PI / 180
+        var x = centerX + outerRadius * Math.cos(radian)
+        var y = centerY + outerRadius * Math.sin(radian)
+        
+        return {x: x, y: y}
     }
     
     function selectType(type) {
-        if (type !== selectedType) {
+        if (type !== selectedType && type >= 1 && type <= 9) {
             selectedType = type
-            
-            // Redraw canvases
             wheelCanvas.requestPaint()
             connectionsCanvas.requestPaint()
-            
-            // Emit signal
             typeSelected(type)
         }
     }
     
-    // Public methods
-    function setSelectedType(type) {
-        selectType(type)
+    function getIntegrationPoint(type) {
+        var integrations = {
+            1: 7, 2: 4, 3: 6, 4: 1, 5: 8,
+            6: 9, 7: 5, 8: 2, 9: 3
+        }
+        return integrations[type] || 0
     }
     
-    function getSelectedType() {
-        return selectedType
+    function getDisintegrationPoint(type) {
+        var disintegrations = {
+            1: 4, 2: 8, 3: 9, 4: 2, 5: 7,
+            6: 3, 7: 1, 8: 5, 9: 6
+        }
+        return disintegrations[type] || 0
     }
     
     // Component initialization
     Component.onCompleted: {
-        typePositions = calculateTypePositions()
+        // Pre-calculate all positions
+        for (var i = 1; i <= 9; i++) {
+            typePositions[i] = getTypePosition(i)
+        }
         wheelCanvas.requestPaint()
     }
     
-    // Handle size changes
-    onWidthChanged: {
-        typePositions = calculateTypePositions()
-        wheelCanvas.requestPaint()
-        connectionsCanvas.requestPaint()
-    }
+    // Handle resize
+    onWidthChanged: Qt.callLater(recalculatePositions)
+    onHeightChanged: Qt.callLater(recalculatePositions)
     
-    onHeightChanged: {
-        typePositions = calculateTypePositions()
+    function recalculatePositions() {
+        for (var i = 1; i <= 9; i++) {
+            typePositions[i] = getTypePosition(i)
+        }
         wheelCanvas.requestPaint()
         connectionsCanvas.requestPaint()
     }

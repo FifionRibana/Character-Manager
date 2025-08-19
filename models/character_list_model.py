@@ -6,7 +6,7 @@ Provides character list for sidebar navigation.
 from PyQt6.QtCore import QAbstractListModel, Qt, pyqtSignal, QModelIndex, pyqtSlot
 from PyQt6.QtQml import qmlRegisterType
 from typing import List, Optional, Any
-from .character import Character
+from data.character import Character
 
 
 class CharacterListModel(QAbstractListModel):

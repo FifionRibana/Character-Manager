@@ -1,5 +1,20 @@
-module components
+# QML Component Module Definition
+# Medieval Character Manager Components
+module Components
+
+# Phase 1 components
 Sidebar 1.0 Sidebar.qml
+
+# Phase 2 components  
 CharacterHeader 1.0 CharacterHeader.qml
-CharacterListItem 1.0 CharacterListItem.qml
 EnneagramWheel 1.0 EnneagramWheel.qml
+
+# Phase 3 components
+AffinityRadar 1.0 AffinityRadar.qml
+StatWidget 1.0 StatWidget.qml
+ImageDropArea 1.0 ImageDropArea.qml
+
+# Future components (Phase 4+)
+# RelationshipWidget 1.0 RelationshipWidget.qml
+# TimelineEvent 1.0 TimelineEvent.qml
+# NarrativeEditor 1.0 NarrativeEditor.qml
