@@ -28,7 +28,7 @@ Rectangle {
     signal valueIncreased()
     signal valueDecreased()
     
-    // Computed properties
+    // Computed properties - with null safety
     readonly property int modifier: Math.floor((statValue - 10) / 2)
     readonly property string modifierText: modifier >= 0 ? "+" + modifier : modifier.toString()
     readonly property color statColor: getStatColor(statValue)
@@ -37,8 +37,8 @@ Rectangle {
     // Widget styling
     color: AppTheme.card.background
     border.color: AppTheme.card.border
-    border.width: AppTheme.borderWidth
-    radius: AppTheme.card.radius
+    border.width: AppTheme.borderWidth || 1
+    radius: AppTheme.card.radius || 8
     
     implicitWidth: 220
     implicitHeight: 160
@@ -46,7 +46,7 @@ Rectangle {
     // Hover effect
     Rectangle {
         anchors.fill: parent
-        color: AppTheme.accentColor
+        color: AppTheme.accentColor || "#FF5722"
         opacity: parent.hovered ? 0.05 : 0
         radius: parent.radius
         
@@ -65,8 +65,8 @@ Rectangle {
     
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: AppTheme.spacingMedium
-        spacing: AppTheme.spacingSmall
+        anchors.margins: AppTheme.spacingMedium || 16
+        spacing: AppTheme.spacingSmall || 8
         
         // Header section
         RowLayout {
@@ -79,19 +79,19 @@ Rectangle {
                 
                 Text {
                     text: statName
-                    font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSizeHeading
+                    font.family: AppTheme.fontFamily || "Inter"
+                    font.pixelSize: AppTheme.fontSizeHeading || 20
                     font.bold: true
-                    color: AppTheme.textColor
+                    color: AppTheme.textColor || "#212121"
                     elide: Text.ElideRight
                     Layout.fillWidth: true
                 }
                 
                 Text {
                     text: statAbbreviation
-                    font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSizeCaption
-                    color: AppTheme.textColorSecondary
+                    font.family: AppTheme.fontFamily || "Inter"
+                    font.pixelSize: AppTheme.fontSizeCaption || 12
+                    color: AppTheme.textColorSecondary || "#757575"
                     font.bold: true
                 }
             }
@@ -107,7 +107,7 @@ Rectangle {
                     color: parent.enabled ? 
                            (parent.pressed ? Qt.darker("#e74c3c", 1.2) : 
                             parent.hovered ? Qt.lighter("#e74c3c", 1.1) : "#e74c3c") :
-                           AppTheme.borderColor
+                           (AppTheme.borderColor || "#E0E0E0")
                     
                     Behavior on color {
                         ColorAnimation { duration: animationDuration }
@@ -116,10 +116,10 @@ Rectangle {
                 
                 contentItem: Text {
                     text: "−"
-                    font.family: AppTheme.fontFamily
+                    font.family: AppTheme.fontFamily || "Inter"
                     font.pixelSize: 18
                     font.bold: true
-                    color: parent.enabled ? "white" : AppTheme.textColorSecondary
+                    color: parent.enabled ? "white" : (AppTheme.textColorSecondary || "#757575")
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -167,7 +167,7 @@ Rectangle {
                 // Main stat value
                 Text {
                     text: statValue.toString()
-                    font.family: AppTheme.fontFamily
+                    font.family: AppTheme.fontFamily || "Inter"
                     font.pixelSize: 28
                     font.bold: true
                     color: "white"
@@ -188,8 +188,8 @@ Rectangle {
                     
                     Text {
                         text: qsTr("MOD")
-                        font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeCaption
+                        font.family: AppTheme.fontFamily || "Inter"
+                        font.pixelSize: AppTheme.fontSizeCaption || 12
                         color: "white"
                         opacity: 0.8
                         Layout.alignment: Qt.AlignHCenter
@@ -197,8 +197,8 @@ Rectangle {
                     
                     Text {
                         text: modifierText
-                        font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeHeading
+                        font.family: AppTheme.fontFamily || "Inter"
+                        font.pixelSize: AppTheme.fontSizeHeading || 20
                         font.bold: true
                         color: "white"
                         Layout.alignment: Qt.AlignHCenter
@@ -216,14 +216,14 @@ Rectangle {
                 visible: false
                 
                 background: Rectangle {
-                    color: AppTheme.inputBackground
-                    border.color: AppTheme.accentColor
+                    color: AppTheme.input.background || "#FFFFFF"
+                    border.color: AppTheme.accentColor || "#FF5722"
                     border.width: 2
                     radius: 8
                 }
                 
                 onValueChanged: {
-                    if (value !== statWidget.statValue) {
+                    if (value !== statWidget.statValue && value !== undefined) {
                         statWidget.valueChanged(value)
                     }
                 }
@@ -269,7 +269,7 @@ Rectangle {
                     color: parent.enabled ? 
                            (parent.pressed ? Qt.darker("#2ecc71", 1.2) : 
                             parent.hovered ? Qt.lighter("#2ecc71", 1.1) : "#2ecc71") :
-                           AppTheme.borderColor
+                           (AppTheme.borderColor || "#E0E0E0")
                     
                     Behavior on color {
                         ColorAnimation { duration: animationDuration }
@@ -278,10 +278,10 @@ Rectangle {
                 
                 contentItem: Text {
                     text: "+"
-                    font.family: AppTheme.fontFamily
+                    font.family: AppTheme.fontFamily || "Inter"
                     font.pixelSize: 18
                     font.bold: true
-                    color: parent.enabled ? "white" : AppTheme.textColorSecondary
+                    color: parent.enabled ? "white" : (AppTheme.textColorSecondary || "#757575")
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -305,9 +305,9 @@ Rectangle {
             // Range indicator
             Text {
                 text: minValue + "–" + maxValue
-                font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSizeCaption
-                color: AppTheme.textColorSecondary
+                font.family: AppTheme.fontFamily || "Inter"
+                font.pixelSize: AppTheme.fontSizeCaption || 12
+                color: AppTheme.textColorSecondary || "#757575"
                 font.italic: true
             }
         }

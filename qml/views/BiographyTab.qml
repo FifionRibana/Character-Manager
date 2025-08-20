@@ -20,32 +20,32 @@ ScrollView {
     
     ColumnLayout {
         width: biographyTab.availableWidth
-        spacing: AppTheme.spacingLarge
+        spacing: AppTheme.spacingLarge || 24
         
         // Title section
         Text {
             text: qsTr("Biography & Affiliations")
-            font.family: AppTheme.fontFamily
-            font.pixelSize: AppTheme.fontSizeDisplay
+            font.family: AppTheme.fontFamily || "Inter"
+            font.pixelSize: AppTheme.fontSizeDisplay || 32
             font.bold: true
-            color: AppTheme.textColor
+            color: AppTheme.textColor || "#212121"
         }
         
         // Biography section
         Rectangle {
             Layout.fillWidth: true
-            color: AppTheme.card.background
-            border.color: AppTheme.card.border
-            border.width: AppTheme.borderWidth
-            radius: AppTheme.card.radius
+            color: AppTheme.card.background || "#FFFFFF"
+            border.color: AppTheme.card.border || "#E0E0E0"
+            border.width: AppTheme.borderWidth || 1
+            radius: AppTheme.card.radius || 8
             
-            implicitHeight: biographyContent.implicitHeight + 2 * AppTheme.spacingLarge
+            implicitHeight: biographyContent.implicitHeight + 2 * (AppTheme.spacingLarge || 24)
             
             ColumnLayout {
                 id: biographyContent
                 anchors.fill: parent
-                anchors.margins: AppTheme.spacingLarge
-                spacing: AppTheme.spacingMedium
+                anchors.margins: AppTheme.spacingLarge || 24
+                spacing: AppTheme.spacingMedium || 16
                 
                 // Biography header
                 RowLayout {
@@ -53,19 +53,19 @@ ScrollView {
                     
                     Text {
                         text: qsTr("Character Biography")
-                        font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeHeading
+                        font.family: AppTheme.fontFamily || "Inter"
+                        font.pixelSize: AppTheme.fontSizeHeading || 20
                         font.bold: true
-                        color: AppTheme.textColor
+                        color: AppTheme.textColor || "#212121"
                     }
                     
                     Item { Layout.fillWidth: true }
                     
                     Text {
                         id: characterCount
-                        text: (characterModel ? characterModel.biography.length : 0) + "/10000"
-                        font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeCaption
+                        text: (characterModel && characterModel.biography ? characterModel.biography.length : 0) + "/10000"
+                        font.family: AppTheme.fontFamily || "Inter"
+                        font.pixelSize: AppTheme.fontSizeCaption || 12
                         color: getCharacterCountColor()
                     }
                 }
@@ -73,7 +73,7 @@ ScrollView {
                 Rectangle {
                     Layout.fillWidth: true
                     height: 1
-                    color: AppTheme.borderColor
+                    color: AppTheme.borderColor || "#E0E0E0"
                 }
                 
                 // Biography text editor
@@ -85,7 +85,7 @@ ScrollView {
                     TextArea {
                         id: biographyTextArea
                         
-                        text: characterModel ? characterModel.biography : ""
+                        text: characterModel && characterModel.biography ? characterModel.biography : ""
                         placeholderText: qsTr("Write your character's background story, personality, goals, and history here.\n\n" +
                                             "Consider including:\n" +
                                             "• Childhood and upbringing\n" +
@@ -96,15 +96,15 @@ ScrollView {
                                             "• Relationships with family and friends\n" +
                                             "• Professional background or training")
                         
-                        font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeBody
-                        color: AppTheme.textColor
+                        font.family: AppTheme.fontFamily || "Inter"
+                        font.pixelSize: AppTheme.fontSizeBody || 14
+                        color: AppTheme.textColor || "#212121"
                         wrapMode: TextArea.Wrap
                         selectByMouse: true
                         
                         background: Rectangle {
-                            color: AppTheme.inputBackground
-                            border.color: parent.activeFocus ? AppTheme.accentColor : AppTheme.borderColor
+                            color: AppTheme.input.background || "#FFFFFF"
+                            border.color: parent.activeFocus ? (AppTheme.accentColor || "#FF5722") : (AppTheme.borderColor || "#E0E0E0")
                             border.width: parent.activeFocus ? 2 : 1
                             radius: 6
                             
@@ -118,7 +118,7 @@ ScrollView {
                         }
                         
                         onTextChanged: {
-                            if (characterModel && text !== characterModel.biography) {
+                            if (characterModel && text !== (characterModel.biography || "")) {
                                 // Throttle updates to avoid excessive property changes
                                 saveTimer.restart()
                             }
@@ -140,29 +140,29 @@ ScrollView {
                 // Writing tips
                 Rectangle {
                     Layout.fillWidth: true
-                    color: AppTheme.backgroundColorSecondary
-                    border.color: AppTheme.borderColorLight
+                    color: AppTheme.backgroundColorSecondary || "#F8F9FA"
+                    border.color: AppTheme.borderColorLight || "#DEE2E6"
                     border.width: 1
                     radius: 6
                     
-                    implicitHeight: tipsContent.implicitHeight + 2 * AppTheme.spacingSmall
+                    implicitHeight: tipsContent.implicitHeight + 2 * (AppTheme.spacingSmall || 8)
                     
                     RowLayout {
                         id: tipsContent
                         anchors.fill: parent
-                        anchors.margins: AppTheme.spacingSmall
-                        spacing: AppTheme.spacingSmall
+                        anchors.margins: AppTheme.spacingSmall || 8
+                        spacing: AppTheme.spacingSmall || 8
                         
                         Text {
                             text: "💡"
-                            font.pixelSize: AppTheme.fontSizeBody
+                            font.pixelSize: AppTheme.fontSizeBody || 14
                         }
                         
                         Text {
                             text: qsTr("Tip: A good biography helps bring your character to life. Focus on their personality, motivations, and what makes them unique.")
-                            font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeCaption
-                            color: AppTheme.textColorSecondary
+                            font.family: AppTheme.fontFamily || "Inter"
+                            font.pixelSize: AppTheme.fontSizeCaption || 12
+                            color: AppTheme.textColorSecondary || "#757575"
                             wrapMode: Text.WordWrap
                             Layout.fillWidth: true
                         }
@@ -174,18 +174,18 @@ ScrollView {
         // Affiliations section
         Rectangle {
             Layout.fillWidth: true
-            color: AppTheme.card.background
-            border.color: AppTheme.card.border
-            border.width: AppTheme.borderWidth
-            radius: AppTheme.card.radius
+            color: AppTheme.card.background || "#FFFFFF"
+            border.color: AppTheme.card.border || "#E0E0E0"
+            border.width: AppTheme.borderWidth || 1
+            radius: AppTheme.card.radius || 8
             
-            implicitHeight: affiliationsContent.implicitHeight + 2 * AppTheme.spacingLarge
+            implicitHeight: affiliationsContent.implicitHeight + 2 * (AppTheme.spacingLarge || 24)
             
             ColumnLayout {
                 id: affiliationsContent
                 anchors.fill: parent
-                anchors.margins: AppTheme.spacingLarge
-                spacing: AppTheme.spacingMedium
+                anchors.margins: AppTheme.spacingLarge || 24
+                spacing: AppTheme.spacingMedium || 16
                 
                 // Affiliations header
                 RowLayout {
@@ -193,21 +193,21 @@ ScrollView {
                     
                     Text {
                         text: qsTr("Affiliations & Organizations")
-                        font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeHeading
+                        font.family: AppTheme.fontFamily || "Inter"
+                        font.pixelSize: AppTheme.fontSizeHeading || 20
                         font.bold: true
-                        color: AppTheme.textColor
+                        color: AppTheme.textColor || "#212121"
                     }
                     
                     Item { Layout.fillWidth: true }
                     
                     Button {
                         text: qsTr("Add Affiliation")
-                        font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeBody
+                        font.family: AppTheme.fontFamily || "Inter"
+                        font.pixelSize: AppTheme.fontSizeBody || 14
                         
                         background: Rectangle {
-                            color: parent.hovered ? Qt.lighter(AppTheme.accentColor, 1.1) : AppTheme.accentColor
+                            color: parent.hovered ? Qt.lighter(AppTheme.accentColor || "#FF5722", 1.1) : (AppTheme.accentColor || "#FF5722")
                             radius: 6
                             
                             Behavior on color {
@@ -230,42 +230,42 @@ ScrollView {
                 Rectangle {
                     Layout.fillWidth: true
                     height: 1
-                    color: AppTheme.borderColor
+                    color: AppTheme.borderColor || "#E0E0E0"
                 }
                 
                 // Affiliations list
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: AppTheme.spacingSmall
+                    spacing: AppTheme.spacingSmall || 8
                     
                     Repeater {
-                        model: characterModel ? characterModel.affiliations : []
+                        model: characterModel && characterModel.affiliations ? characterModel.affiliations : []
                         
                         delegate: Rectangle {
                             Layout.fillWidth: true
-                            implicitHeight: affiliationRow.implicitHeight + 2 * AppTheme.spacingSmall
-                            color: AppTheme.backgroundColorSecondary
-                            border.color: AppTheme.borderColorLight
+                            implicitHeight: affiliationRow.implicitHeight + 2 * (AppTheme.spacingSmall || 8)
+                            color: AppTheme.backgroundColorSecondary || "#F8F9FA"
+                            border.color: AppTheme.borderColorLight || "#DEE2E6"
                             border.width: 1
                             radius: 6
                             
                             RowLayout {
                                 id: affiliationRow
                                 anchors.fill: parent
-                                anchors.margins: AppTheme.spacingSmall
-                                spacing: AppTheme.spacingMedium
+                                anchors.margins: AppTheme.spacingSmall || 8
+                                spacing: AppTheme.spacingMedium || 16
                                 
                                 // Organization icon
                                 Rectangle {
                                     width: 40
                                     height: 40
                                     radius: 20
-                                    color: AppTheme.accentColor
+                                    color: AppTheme.accentColor || "#FF5722"
                                     
                                     Text {
                                         anchors.centerIn: parent
-                                        text: getAffiliationIcon(modelData)
-                                        font.family: AppTheme.fontFamily
+                                        text: getAffiliationIcon(modelData || "")
+                                        font.family: AppTheme.fontFamily || "Inter"
                                         font.pixelSize: 20
                                         color: "white"
                                     }
@@ -273,10 +273,10 @@ ScrollView {
                                 
                                 // Affiliation name
                                 Text {
-                                    text: modelData
-                                    font.family: AppTheme.fontFamily
-                                    font.pixelSize: AppTheme.fontSizeBody
-                                    color: AppTheme.textColor
+                                    text: modelData || ""
+                                    font.family: AppTheme.fontFamily || "Inter"
+                                    font.pixelSize: AppTheme.fontSizeBody || 14
+                                    color: AppTheme.textColor || "#212121"
                                     Layout.fillWidth: true
                                     elide: Text.ElideRight
                                 }
@@ -300,7 +300,7 @@ ScrollView {
                                     
                                     contentItem: Text {
                                         text: parent.text
-                                        font.family: AppTheme.fontFamily
+                                        font.family: AppTheme.fontFamily || "Inter"
                                         font.pixelSize: 16
                                         font.bold: true
                                         color: parent.hovered ? "white" : "#e74c3c"
@@ -311,7 +311,7 @@ ScrollView {
                                     onClicked: removeAffiliation(index)
                                     
                                     ToolTip {
-                                        text: qsTr("Remove ") + modelData
+                                        text: qsTr("Remove ") + (modelData || "")
                                         visible: parent.hovered
                                         delay: 500
                                     }
@@ -324,15 +324,15 @@ ScrollView {
                     Rectangle {
                         Layout.fillWidth: true
                         implicitHeight: 100
-                        visible: !characterModel || characterModel.affiliations.length === 0
+                        visible: !characterModel || !characterModel.affiliations || characterModel.affiliations.length === 0
                         color: "transparent"
-                        border.color: AppTheme.borderColorLight
+                        border.color: AppTheme.borderColorLight || "#DEE2E6"
                         border.width: 2
                         radius: 8
                         
                         ColumnLayout {
                             anchors.centerIn: parent
-                            spacing: AppTheme.spacingSmall
+                            spacing: AppTheme.spacingSmall || 8
                             
                             Text {
                                 text: "🏛️"
@@ -342,17 +342,17 @@ ScrollView {
                             
                             Text {
                                 text: qsTr("No affiliations yet")
-                                font.family: AppTheme.fontFamily
-                                font.pixelSize: AppTheme.fontSizeBody
-                                color: AppTheme.textColorSecondary
+                                font.family: AppTheme.fontFamily || "Inter"
+                                font.pixelSize: AppTheme.fontSizeBody || 14
+                                color: AppTheme.textColorSecondary || "#757575"
                                 Layout.alignment: Qt.AlignHCenter
                             }
                             
                             Text {
                                 text: qsTr("Add organizations, guilds, or groups your character belongs to")
-                                font.family: AppTheme.fontFamily
-                                font.pixelSize: AppTheme.fontSizeCaption
-                                color: AppTheme.textColorSecondary
+                                font.family: AppTheme.fontFamily || "Inter"
+                                font.pixelSize: AppTheme.fontSizeCaption || 12
+                                color: AppTheme.textColorSecondary || "#757575"
                                 Layout.alignment: Qt.AlignHCenter
                             }
                         }
@@ -362,29 +362,29 @@ ScrollView {
                 // Affiliation examples
                 Rectangle {
                     Layout.fillWidth: true
-                    color: AppTheme.backgroundColorSecondary
-                    border.color: AppTheme.borderColorLight
+                    color: AppTheme.backgroundColorSecondary || "#F8F9FA"
+                    border.color: AppTheme.borderColorLight || "#DEE2E6"
                     border.width: 1
                     radius: 6
                     
-                    implicitHeight: examplesContent.implicitHeight + 2 * AppTheme.spacingSmall
+                    implicitHeight: examplesContent.implicitHeight + 2 * (AppTheme.spacingSmall || 8)
                     
                     RowLayout {
                         id: examplesContent
                         anchors.fill: parent
-                        anchors.margins: AppTheme.spacingSmall
-                        spacing: AppTheme.spacingSmall
+                        anchors.margins: AppTheme.spacingSmall || 8
+                        spacing: AppTheme.spacingSmall || 8
                         
                         Text {
                             text: "💡"
-                            font.pixelSize: AppTheme.fontSizeBody
+                            font.pixelSize: AppTheme.fontSizeBody || 14
                         }
                         
                         Text {
                             text: qsTr("Examples: Royal Guard, Thieves' Guild, Mages' College, Noble House Stark, Rangers of the North, Church of Light")
-                            font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeCaption
-                            color: AppTheme.textColorSecondary
+                            font.family: AppTheme.fontFamily || "Inter"
+                            font.pixelSize: AppTheme.fontSizeCaption || 12
+                            color: AppTheme.textColorSecondary || "#757575"
                             wrapMode: Text.WordWrap
                             Layout.fillWidth: true
                         }
@@ -404,8 +404,8 @@ ScrollView {
         modal: true
         
         background: Rectangle {
-            color: AppTheme.card.background
-            border.color: AppTheme.card.border
+            color: AppTheme.card.background || "#FFFFFF"
+            border.color: AppTheme.card.border || "#E0E0E0"
             border.width: 2
             radius: 8
         }
@@ -413,25 +413,25 @@ ScrollView {
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: 20
-            spacing: AppTheme.spacingMedium
+            spacing: AppTheme.spacingMedium || 16
             
             Text {
                 text: qsTr("Enter the name of the organization or group:")
-                font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSizeBody
-                color: AppTheme.textColor
+                font.family: AppTheme.fontFamily || "Inter"
+                font.pixelSize: AppTheme.fontSizeBody || 14
+                color: AppTheme.textColor || "#212121"
             }
             
             TextField {
                 id: affiliationNameField
                 Layout.fillWidth: true
                 placeholderText: qsTr("e.g., Royal Guard, Thieves' Guild, etc.")
-                font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSizeBody
+                font.family: AppTheme.fontFamily || "Inter"
+                font.pixelSize: AppTheme.fontSizeBody || 14
                 
                 background: Rectangle {
-                    color: AppTheme.inputBackground
-                    border.color: parent.activeFocus ? AppTheme.accentColor : AppTheme.borderColor
+                    color: AppTheme.input.background || "#FFFFFF"
+                    border.color: parent.activeFocus ? (AppTheme.accentColor || "#FF5722") : (AppTheme.borderColor || "#E0E0E0")
                     border.width: parent.activeFocus ? 2 : 1
                     radius: 4
                 }
@@ -456,15 +456,15 @@ ScrollView {
                     
                     background: Rectangle {
                         color: parent.enabled ? 
-                               (parent.hovered ? Qt.lighter(AppTheme.accentColor, 1.1) : AppTheme.accentColor) :
-                               AppTheme.borderColor
+                               (parent.hovered ? Qt.lighter(AppTheme.accentColor || "#FF5722", 1.1) : (AppTheme.accentColor || "#FF5722")) :
+                               (AppTheme.borderColor || "#E0E0E0")
                         radius: 6
                     }
                     
                     contentItem: Text {
                         text: parent.text
                         font: parent.font
-                        color: parent.enabled ? "white" : AppTheme.textColorSecondary
+                        color: parent.enabled ? "white" : (AppTheme.textColorSecondary || "#757575")
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
@@ -489,12 +489,12 @@ ScrollView {
     
     // Helper functions
     function getCharacterCountColor() {
-        if (!characterModel) return AppTheme.textColorSecondary
+        if (!characterModel || !characterModel.biography) return AppTheme.textColorSecondary || "#757575"
         
         var count = characterModel.biography.length
         if (count > 8000) return "#e74c3c"      // Red - approaching limit
         if (count > 5000) return "#f39c12"      // Orange - getting long
-        return AppTheme.textColorSecondary      // Normal
+        return AppTheme.textColorSecondary || "#757575"      // Normal
     }
     
     function getAffiliationIcon(affiliation) {

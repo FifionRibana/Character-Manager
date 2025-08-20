@@ -104,7 +104,7 @@ ScrollView {
                         Layout.minimumWidth: 400
                         Layout.minimumHeight: 400
                         
-                        selectedType: characterModel && characterModel.enneagramType ? 
+                        selectedType: characterModel && characterModel.enneagramType !== undefined ? 
                                     characterModel.enneagramType : 9
                         
                         onTypeSelected: function(type) {
@@ -127,8 +127,8 @@ ScrollView {
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 60
-                        color: AppTheme.backgroundColorSecondary
-                        border.color: AppTheme.borderColorLight
+                        color: AppTheme.backgroundColorSecondary || "#F8F9FA"
+                        border.color: AppTheme.borderColorLight || "#DEE2E6"
                         border.width: 1
                         radius: 6
                         
@@ -235,14 +235,14 @@ ScrollView {
                             valueRole: "value"
                             
                             background: Rectangle {
-                                color: AppTheme.inputBackground
+                                color: AppTheme.input.background
                                 border.color: AppTheme.borderColor
                                 border.width: 1
                                 radius: 4
                             }
                             
                             onCurrentValueChanged: {
-                                if (characterModel) {
+                                if (characterModel && currentValue !== undefined) {
                                     characterModel.enneagramWing = currentValue
                                 }
                             }
@@ -286,8 +286,8 @@ ScrollView {
                         
                         Text {
                             text: qsTr("Primary instinct (most developed)")
-                            font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeCaption
+                            font.family: AppTheme.fontFamily || "Inter"
+                            font.pixelSize: AppTheme.fontSizeCaption || 12
                             color: AppTheme.textColorSecondary
                         }
                         
@@ -305,14 +305,14 @@ ScrollView {
                             valueRole: "value"
                             
                             background: Rectangle {
-                                color: AppTheme.inputBackground
+                                color: AppTheme.input.background
                                 border.color: AppTheme.borderColor
                                 border.width: 1
                                 radius: 4
                             }
                             
                             onCurrentValueChanged: {
-                                if (characterModel) {
+                                if (characterModel && currentValue !== undefined) {
                                     characterModel.instinctualVariant = currentValue
                                 }
                             }
@@ -349,8 +349,8 @@ ScrollView {
                             
                             Text {
                                 text: qsTr("Healthy")
-                                font.family: AppTheme.fontFamily
-                                font.pixelSize: AppTheme.fontSizeCaption
+                                font.family: AppTheme.fontFamily || "Inter"
+                                font.pixelSize: AppTheme.fontSizeCaption || 12
                                 color: "#2ecc71"
                             }
                             
@@ -359,12 +359,13 @@ ScrollView {
                                 Layout.fillWidth: true
                                 from: 1
                                 to: 9
-                                value: 5
+                                value: characterModel && characterModel.developmentLevel !== undefined ? 
+                                      characterModel.developmentLevel : 5
                                 stepSize: 1
                                 snapMode: Slider.SnapAlways
                                 
                                 onValueChanged: {
-                                    if (characterModel) {
+                                    if (characterModel && value !== undefined) {
                                         characterModel.developmentLevel = value
                                     }
                                 }
@@ -401,8 +402,8 @@ ScrollView {
                             
                             Text {
                                 text: qsTr("Unhealthy")
-                                font.family: AppTheme.fontFamily
-                                font.pixelSize: AppTheme.fontSizeCaption
+                                font.family: AppTheme.fontFamily || "Inter"
+                                font.pixelSize: AppTheme.fontSizeCaption || 12
                                 color: "#e74c3c"
                             }
                         }
@@ -482,7 +483,7 @@ ScrollView {
                         Text {
                             text: qsTr("Green arrows show growth direction, red arrows show stress direction")
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeCaption
+                            font.pixelSize: AppTheme.fontSizeCaption || 12
                             color: AppTheme.textColorSecondary
                             font.italic: true
                             wrapMode: Text.WordWrap

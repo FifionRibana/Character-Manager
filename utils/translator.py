@@ -1,13 +1,17 @@
+#!/usr/bin/env python3
 """
 Translation management system for dynamic language switching.
 Allows changing language without restarting the application.
+Fixed version with corrected imports.
 """
 
 import json
 from pathlib import Path
 from typing import Dict, Optional
 from PyQt6.QtCore import QObject, pyqtSignal
-from models.enums import Language
+
+# CORRECTED IMPORT: data.enums instead of models.enums
+from data.enums import Language
 
 
 class TranslationManager(QObject):
@@ -29,8 +33,12 @@ class TranslationManager(QObject):
         for lang in Language:
             file_path = translations_dir / f"{lang.value}.json"
             if file_path.exists():
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    self.translations[lang.value] = json.load(f)
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        self.translations[lang.value] = json.load(f)
+                except (json.JSONDecodeError, OSError) as e:
+                    print(f"Warning: Failed to load translation {file_path}: {e}")
+                    self.translations[lang.value] = {}
             else:
                 # Create default English translations if file doesn't exist
                 if lang == Language.ENGLISH:

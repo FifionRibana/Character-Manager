@@ -10,7 +10,26 @@ from typing import Final
 
 from PyQt6.QtCore import pyqtEnum, QObject
 
-@pyqtEnum
+
+class Language(StrEnum):
+    """Supported application languages."""
+    ENGLISH = "en"
+    FRENCH = "fr"
+    SPANISH = "es"
+    GERMAN = "de"
+    
+    @property
+    def display_name(self) -> str:
+        """Get the display name for this language."""
+        names = {
+            self.ENGLISH: "English",
+            self.FRENCH: "Français",
+            self.SPANISH: "Español",
+            self.GERMAN: "Deutsch"
+        }
+        return names[self]
+
+
 class EnneagramType(IntEnum):
     """Enneagram personality types (1-9)."""
     TYPE_1 = 1  # The Perfectionist
@@ -183,7 +202,7 @@ class DevelopmentLevel(IntEnum):
 class StatType(StrEnum):
     """D&D-style character statistics."""
     STRENGTH = "strength"
-    AGILITY = "agility"      # ✅ Correction
+    AGILITY = "agility"
     CONSTITUTION = "constitution"
     INTELLIGENCE = "intelligence"
     WISDOM = "wisdom"
@@ -293,9 +312,6 @@ class ValidationLimits(IntEnum):
     MAX_DEVELOPMENT_LEVEL = 9
     MAX_BIOGRAPHY_LENGTH = 10000
     MAX_RELATIONSHIP_DESCRIPTION_LENGTH = 500
-    
-    # ✅ Ajout de la constante manquante
-    DEFAULT_CHARACTER_LEVEL = 1
 
 
 class FileConstants:

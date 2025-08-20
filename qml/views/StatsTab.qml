@@ -19,7 +19,7 @@ ScrollView {
     
     ColumnLayout {
         width: statsTab.availableWidth
-        spacing: AppTheme.spacingLarge
+        spacing: AppTheme.spacingLarge || 24
         
         // Title and quick actions
         RowLayout {
@@ -27,25 +27,25 @@ ScrollView {
             
             Text {
                 text: qsTr("Ability Scores")
-                font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSizeDisplay
+                font.family: AppTheme.fontFamily || "Inter"
+                font.pixelSize: AppTheme.fontSizeDisplay || 32
                 font.bold: true
-                color: AppTheme.textColor
+                color: AppTheme.textColor || "#212121"
             }
             
             Item { Layout.fillWidth: true }
             
             // Quick action buttons
             RowLayout {
-                spacing: AppTheme.spacingMedium
+                spacing: AppTheme.spacingMedium || 16
                 
                 Button {
                     text: qsTr("Standard Array")
-                    font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSizeBody
+                    font.family: AppTheme.fontFamily || "Inter"
+                    font.pixelSize: AppTheme.fontSizeBody || 14
                     
                     background: Rectangle {
-                        color: parent.hovered ? Qt.lighter(AppTheme.accentColor, 1.1) : AppTheme.accentColor
+                        color: parent.hovered ? Qt.lighter(AppTheme.accentColor || "#FF5722", 1.1) : (AppTheme.accentColor || "#FF5722")
                         radius: 6
                         
                         Behavior on color {
@@ -72,8 +72,8 @@ ScrollView {
                 
                 Button {
                     text: qsTr("4d6 Roll")
-                    font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSizeBody
+                    font.family: AppTheme.fontFamily || "Inter"
+                    font.pixelSize: AppTheme.fontSizeBody || 14
                     
                     background: Rectangle {
                         color: parent.hovered ? Qt.lighter("#2ecc71", 1.1) : "#2ecc71"
@@ -103,8 +103,8 @@ ScrollView {
                 
                 Button {
                     text: qsTr("Reset to 10")
-                    font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSizeBody
+                    font.family: AppTheme.fontFamily || "Inter"
+                    font.pixelSize: AppTheme.fontSizeBody || 14
                     
                     background: Rectangle {
                         color: parent.hovered ? Qt.lighter("#95a5a6", 1.1) : "#95a5a6"
@@ -137,34 +137,34 @@ ScrollView {
         // Stats summary card
         Rectangle {
             Layout.fillWidth: true
-            color: AppTheme.card.background
-            border.color: AppTheme.card.border
-            border.width: AppTheme.borderWidth
-            radius: AppTheme.card.radius
+            color: AppTheme.card.background || "#FFFFFF"
+            border.color: AppTheme.card.border || "#E0E0E0"
+            border.width: AppTheme.borderWidth || 1
+            radius: AppTheme.card.radius || 8
             
-            implicitHeight: summaryContent.implicitHeight + 2 * AppTheme.spacingMedium
+            implicitHeight: summaryContent.implicitHeight + 2 * (AppTheme.spacingMedium || 16)
             
             RowLayout {
                 id: summaryContent
                 anchors.fill: parent
-                anchors.margins: AppTheme.spacingMedium
-                spacing: AppTheme.spacingLarge
+                anchors.margins: AppTheme.spacingMedium || 16
+                spacing: AppTheme.spacingLarge || 24
                 
                 // Total points
                 ColumnLayout {
-                    spacing: AppTheme.spacingSmall
+                    spacing: AppTheme.spacingSmall || 8
                     
                     Text {
                         text: qsTr("Total Points")
-                        font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeCaption
-                        color: AppTheme.textColorSecondary
+                        font.family: AppTheme.fontFamily || "Inter"
+                        font.pixelSize: AppTheme.fontSizeCaption || 12
+                        color: AppTheme.textColorSecondary || "#757575"
                     }
                     
                     Text {
                         text: getTotalPoints().toString()
-                        font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeHeading
+                        font.family: AppTheme.fontFamily || "Inter"
+                        font.pixelSize: AppTheme.fontSizeHeading || 20
                         font.bold: true
                         color: getTotalPointsColor()
                     }
@@ -173,50 +173,50 @@ ScrollView {
                 Rectangle {
                     width: 1
                     Layout.fillHeight: true
-                    color: AppTheme.borderColor
+                    color: AppTheme.borderColor || "#E0E0E0"
                 }
                 
                 // Average stat
                 ColumnLayout {
-                    spacing: AppTheme.spacingSmall
+                    spacing: AppTheme.spacingSmall || 8
                     
                     Text {
                         text: qsTr("Average")
-                        font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeCaption
-                        color: AppTheme.textColorSecondary
+                        font.family: AppTheme.fontFamily || "Inter"
+                        font.pixelSize: AppTheme.fontSizeCaption || 12
+                        color: AppTheme.textColorSecondary || "#757575"
                     }
                     
                     Text {
                         text: getAverageScore().toFixed(1)
-                        font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeHeading
+                        font.family: AppTheme.fontFamily || "Inter"
+                        font.pixelSize: AppTheme.fontSizeHeading || 20
                         font.bold: true
-                        color: AppTheme.textColor
+                        color: AppTheme.textColor || "#212121"
                     }
                 }
                 
                 Rectangle {
                     width: 1
                     Layout.fillHeight: true
-                    color: AppTheme.borderColor
+                    color: AppTheme.borderColor || "#E0E0E0"
                 }
                 
                 // Point buy cost (if applicable)
                 ColumnLayout {
-                    spacing: AppTheme.spacingSmall
+                    spacing: AppTheme.spacingSmall || 8
                     
                     Text {
                         text: qsTr("Point Buy Cost")
-                        font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeCaption
-                        color: AppTheme.textColorSecondary
+                        font.family: AppTheme.fontFamily || "Inter"
+                        font.pixelSize: AppTheme.fontSizeCaption || 12
+                        color: AppTheme.textColorSecondary || "#757575"
                     }
                     
                     Text {
                         text: getPointBuyCost().toString() + "/27"
-                        font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeHeading
+                        font.family: AppTheme.fontFamily || "Inter"
+                        font.pixelSize: AppTheme.fontSizeHeading || 20
                         font.bold: true
                         color: getPointBuyCost() <= 27 ? "#2ecc71" : "#e74c3c"
                     }
@@ -226,19 +226,19 @@ ScrollView {
                 
                 // Modifier bonus indicator
                 ColumnLayout {
-                    spacing: AppTheme.spacingSmall
+                    spacing: AppTheme.spacingSmall || 8
                     
                     Text {
                         text: qsTr("Modifier Bonus")
-                        font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeCaption
-                        color: AppTheme.textColorSecondary
+                        font.family: AppTheme.fontFamily || "Inter"
+                        font.pixelSize: AppTheme.fontSizeCaption || 12
+                        color: AppTheme.textColorSecondary || "#757575"
                     }
                     
                     Text {
                         text: getTotalModifiers() >= 0 ? "+" + getTotalModifiers() : getTotalModifiers().toString()
-                        font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeHeading
+                        font.family: AppTheme.fontFamily || "Inter"
+                        font.pixelSize: AppTheme.fontSizeHeading || 20
                         font.bold: true
                         color: getTotalModifiers() >= 0 ? "#2ecc71" : "#e74c3c"
                     }
@@ -250,8 +250,8 @@ ScrollView {
         GridLayout {
             Layout.fillWidth: true
             columns: 3
-            columnSpacing: AppTheme.spacingLarge
-            rowSpacing: AppTheme.spacingLarge
+            columnSpacing: AppTheme.spacingLarge || 24
+            rowSpacing: AppTheme.spacingLarge || 24
             
             // Strength
             StatWidget {
@@ -259,9 +259,9 @@ ScrollView {
                 statName: qsTr("Strength")
                 statAbbreviation: "STR"
                 statDescription: qsTr("Physical power and muscle")
-                statValue: characterModel ? characterModel.strength : 10
+                statValue: characterModel && characterModel.strength !== undefined ? characterModel.strength : 10
                 onValueChanged: function(newValue) {
-                    if (characterModel) {
+                    if (characterModel && newValue !== undefined) {
                         characterModel.strength = newValue
                     }
                 }
@@ -273,9 +273,9 @@ ScrollView {
                 statName: qsTr("Agility")
                 statAbbreviation: "AGI"
                 statDescription: qsTr("Speed, reflexes, and dexterity")
-                statValue: characterModel ? characterModel.agility : 10
+                statValue: characterModel && characterModel.agility !== undefined ? characterModel.agility : 10
                 onValueChanged: function(newValue) {
-                    if (characterModel) {
+                    if (characterModel && newValue !== undefined) {
                         characterModel.agility = newValue
                     }
                 }
@@ -287,9 +287,9 @@ ScrollView {
                 statName: qsTr("Constitution")
                 statAbbreviation: "CON"
                 statDescription: qsTr("Health, stamina, and vitality")
-                statValue: characterModel ? characterModel.constitution : 10
+                statValue: characterModel && characterModel.constitution !== undefined ? characterModel.constitution : 10
                 onValueChanged: function(newValue) {
-                    if (characterModel) {
+                    if (characterModel && newValue !== undefined) {
                         characterModel.constitution = newValue
                     }
                 }
@@ -301,9 +301,9 @@ ScrollView {
                 statName: qsTr("Intelligence")
                 statAbbreviation: "INT"
                 statDescription: qsTr("Reasoning ability and memory")
-                statValue: characterModel ? characterModel.intelligence : 10
+                statValue: characterModel && characterModel.intelligence !== undefined ? characterModel.intelligence : 10
                 onValueChanged: function(newValue) {
-                    if (characterModel) {
+                    if (characterModel && newValue !== undefined) {
                         characterModel.intelligence = newValue
                     }
                 }
@@ -315,9 +315,9 @@ ScrollView {
                 statName: qsTr("Wisdom")
                 statAbbreviation: "WIS"
                 statDescription: qsTr("Perception and insight")
-                statValue: characterModel ? characterModel.wisdom : 10
+                statValue: characterModel && characterModel.wisdom !== undefined ? characterModel.wisdom : 10
                 onValueChanged: function(newValue) {
-                    if (characterModel) {
+                    if (characterModel && newValue !== undefined) {
                         characterModel.wisdom = newValue
                     }
                 }
@@ -329,9 +329,9 @@ ScrollView {
                 statName: qsTr("Charisma")
                 statAbbreviation: "CHA"
                 statDescription: qsTr("Force of personality and leadership")
-                statValue: characterModel ? characterModel.charisma : 10
+                statValue: characterModel && characterModel.charisma !== undefined ? characterModel.charisma : 10
                 onValueChanged: function(newValue) {
-                    if (characterModel) {
+                    if (characterModel && newValue !== undefined) {
                         characterModel.charisma = newValue
                     }
                 }
@@ -341,25 +341,25 @@ ScrollView {
         // Point buy explanation
         Rectangle {
             Layout.fillWidth: true
-            color: AppTheme.backgroundColorSecondary
-            border.color: AppTheme.borderColorLight
+            color: AppTheme.backgroundColorSecondary || "#F8F9FA"
+            border.color: AppTheme.borderColorLight || "#DEE2E6"
             border.width: 1
             radius: 6
             
-            implicitHeight: explanationContent.implicitHeight + 2 * AppTheme.spacingMedium
+            implicitHeight: explanationContent.implicitHeight + 2 * (AppTheme.spacingMedium || 16)
             
             ColumnLayout {
                 id: explanationContent
                 anchors.fill: parent
-                anchors.margins: AppTheme.spacingMedium
-                spacing: AppTheme.spacingSmall
+                anchors.margins: AppTheme.spacingMedium || 16
+                spacing: AppTheme.spacingSmall || 8
                 
                 Text {
                     text: qsTr("Stat Generation Methods")
-                    font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSizeHeading
+                    font.family: AppTheme.fontFamily || "Inter"
+                    font.pixelSize: AppTheme.fontSizeHeading || 20
                     font.bold: true
-                    color: AppTheme.textColor
+                    color: AppTheme.textColor || "#212121"
                 }
                 
                 Text {
@@ -367,9 +367,9 @@ ScrollView {
                               "• 4d6 Roll: Rolls four 6-sided dice and drops the lowest for each stat\n" +
                               "• Point Buy: Start with 8 in each stat, spend 27 points to increase (costs vary)\n" +
                               "• Manual: Click +/- buttons or use spinboxes to set exact values")
-                    font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSizeBody
-                    color: AppTheme.textColorSecondary
+                    font.family: AppTheme.fontFamily || "Inter"
+                    font.pixelSize: AppTheme.fontSizeBody || 14
+                    color: AppTheme.textColorSecondary || "#757575"
                     wrapMode: Text.WordWrap
                     Layout.fillWidth: true
                 }
@@ -381,8 +381,8 @@ ScrollView {
     function getTotalPoints() {
         if (!characterModel) return 60
         
-        return characterModel.strength + characterModel.agility + characterModel.constitution +
-               characterModel.intelligence + characterModel.wisdom + characterModel.charisma
+        return (characterModel.strength || 10) + (characterModel.agility || 10) + (characterModel.constitution || 10) +
+               (characterModel.intelligence || 10) + (characterModel.wisdom || 10) + (characterModel.charisma || 10)
     }
     
     function getTotalPointsColor() {
@@ -392,7 +392,7 @@ ScrollView {
         if (total > baseline + 6) return "#3498db"  // Blue for high
         if (total > baseline) return "#2ecc71"      // Green for above average
         if (total < baseline - 6) return "#e74c3c" // Red for low
-        return AppTheme.textColor                   // Normal for average
+        return AppTheme.textColor || "#212121"      // Normal for average
     }
     
     function getAverageScore() {
@@ -406,9 +406,9 @@ ScrollView {
             return Math.floor((stat - 10) / 2)
         }
         
-        return getModifier(characterModel.strength) + getModifier(characterModel.agility) +
-               getModifier(characterModel.constitution) + getModifier(characterModel.intelligence) +
-               getModifier(characterModel.wisdom) + getModifier(characterModel.charisma)
+        return getModifier(characterModel.strength || 10) + getModifier(characterModel.agility || 10) +
+               getModifier(characterModel.constitution || 10) + getModifier(characterModel.intelligence || 10) +
+               getModifier(characterModel.wisdom || 10) + getModifier(characterModel.charisma || 10)
     }
     
     function getPointBuyCost() {
@@ -421,9 +421,9 @@ ScrollView {
             return (stat - 8) + 2 + ((stat - 15) * 2)
         }
         
-        return calculateCost(characterModel.strength) + calculateCost(characterModel.agility) +
-               calculateCost(characterModel.constitution) + calculateCost(characterModel.intelligence) +
-               calculateCost(characterModel.wisdom) + calculateCost(characterModel.charisma)
+        return calculateCost(characterModel.strength || 10) + calculateCost(characterModel.agility || 10) +
+               calculateCost(characterModel.constitution || 10) + calculateCost(characterModel.intelligence || 10) +
+               calculateCost(characterModel.wisdom || 10) + calculateCost(characterModel.charisma || 10)
     }
     
     function applyStandardArray() {

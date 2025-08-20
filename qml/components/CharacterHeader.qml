@@ -209,7 +209,7 @@ Rectangle {
                         visible: editMode
                         
                         background: Rectangle {
-                            color: AppTheme.inputBackground
+                            color: AppTheme.input.background
                             border.color: AppTheme.borderColor
                             border.width: 1
                             radius: 4
@@ -302,7 +302,7 @@ Rectangle {
                         visible: editMode
                         
                         background: Rectangle {
-                            color: AppTheme.inputBackground
+                            color: AppTheme.input.background
                             border.color: AppTheme.borderColor
                             border.width: 1
                             radius: 4
