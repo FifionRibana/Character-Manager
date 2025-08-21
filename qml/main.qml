@@ -32,14 +32,14 @@ ApplicationWindow {
     MainController {
         id: controller
         
-        onCharacterChanged: {
+        onCharacterLoaded: {
             if (currentCharacter) {
                 console.log("Character loaded:", currentCharacter.name)
                 tabView.currentIndex = 0
             }
         }
         
-        onError: function(message) {
+        onErrorOccurred: function(message) {
             errorDialog.show("Error", message)
         }
     }
@@ -336,18 +336,18 @@ ApplicationWindow {
                 controller.selectCharacter(characterId)
             }
             
-            onCreateNewCharacter: {
+            onNewCharacterRequested: {
                 controller.createNewCharacter()
             }
             
-            onDeleteCharacter: function(characterId) {
+            onDeleteCharacterRequested: function(characterId) {
                 confirmDeleteDialog.characterToDelete = characterId
                 confirmDeleteDialog.open()
             }
             
-            onSearchTextChanged: function(text) {
-                controller.filterCharacters(text)
-            }
+            // onSearchTextChanged: function(text) {
+            //     controller.filterCharacters(text)
+            // }
         }
         
         // Divider

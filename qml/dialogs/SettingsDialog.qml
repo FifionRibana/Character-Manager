@@ -298,7 +298,12 @@ Dialog {
                                     from: 10
                                     to: 20
                                     value: 14
-                                    suffix: " pt"
+                                    textFromValue: function(value) {
+                                        return value + " pt"
+                                    }
+                                    valueFromText: function(text) {
+                                        return parseInt(text)
+                                    }
                                 }
                                 
                                 Button {
@@ -410,7 +415,12 @@ Dialog {
                                     from: 1
                                     to: 60
                                     value: 5
-                                    suffix: " min"
+                                    textFromValue: function(value) {
+                                        return value + " min"
+                                    }
+                                    valueFromText: function(text) {
+                                        return parseInt(text)
+                                    }
                                 }
                             }
                             

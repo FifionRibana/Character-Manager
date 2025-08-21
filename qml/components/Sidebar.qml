@@ -13,6 +13,8 @@ Rectangle {
     property alias characterListModel: characterList.model
     
     // Signals
+    signal characterSelected()
+    signal newCharacterRequested()
     signal deleteCharacterRequested(string characterId)
 
     ColumnLayout {
