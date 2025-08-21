@@ -5,7 +5,6 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import MedievalModels 1.0
 import MedievalControllers 1.0
-import MedievalEnums 1.0
 import "components"
 import "views"
 import "dialogs"

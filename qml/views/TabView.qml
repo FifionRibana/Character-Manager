@@ -6,7 +6,7 @@ TabBar {
     id: tabBar
     
     property var characterModel
-    property alias currentIndex: tabBar.currentIndex
+    currentIndex: tabBar.currentIndex
     
     // Tab selection change signal
     signal tabChanged(int index)
