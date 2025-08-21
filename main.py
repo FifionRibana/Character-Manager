@@ -51,19 +51,19 @@ def register_qml_types() -> None:
     qmlRegisterType(ExportController, "MedievalControllers", 1, 0, "ExportController")
     
     # Register enums - make them available to QML
-    # qmlRegisterType(Archetype, "MedievalEnums", 1, 0, "Archetype")
-    # qmlRegisterType(Affinity, "MedievalEnums", 1, 0, "Affinity")
-    # qmlRegisterType(Gender, "MedievalEnums", 1, 0, "Gender")
-    # qmlRegisterType(CharacterStatus, "MedievalEnums", 1, 0, "CharacterStatus")
-    # qmlRegisterType(EnneagramType, "MedievalEnums", 1, 0, "EnneagramType")
-    # qmlRegisterType(Wing, "MedievalEnums", 1, 0, "Wing")
-    # qmlRegisterType(Instinct, "MedievalEnums", 1, 0, "Instinct")
-    # qmlRegisterType(TriadCenter, "MedievalEnums", 1, 0, "TriadCenter")
-    # qmlRegisterType(StatCategory, "MedievalEnums", 1, 0, "StatCategory")
-    # qmlRegisterType(RelationType, "MedievalEnums", 1, 0, "RelationType")
-    # qmlRegisterType(EventType, "MedievalEnums", 1, 0, "EventType")
-    # qmlRegisterType(ThemeMode, "MedievalEnums", 1, 0, "ThemeMode")
-    # qmlRegisterType(ExportFormat, "MedievalEnums", 1, 0, "ExportFormat")
+    qmlRegisterType(Archetype, "MedievalEnums", 1, 0, "Archetype")
+    qmlRegisterType(Affinity, "MedievalEnums", 1, 0, "Affinity")
+    qmlRegisterType(Gender, "MedievalEnums", 1, 0, "Gender")
+    qmlRegisterType(CharacterStatus, "MedievalEnums", 1, 0, "CharacterStatus")
+    qmlRegisterType(EnneagramType, "MedievalEnums", 1, 0, "EnneagramType")
+    qmlRegisterType(Wing, "MedievalEnums", 1, 0, "Wing")
+    qmlRegisterType(Instinct, "MedievalEnums", 1, 0, "Instinct")
+    qmlRegisterType(TriadCenter, "MedievalEnums", 1, 0, "TriadCenter")
+    qmlRegisterType(StatCategory, "MedievalEnums", 1, 0, "StatCategory")
+    qmlRegisterType(RelationType, "MedievalEnums", 1, 0, "RelationType")
+    qmlRegisterType(EventType, "MedievalEnums", 1, 0, "EventType")
+    qmlRegisterType(ThemeMode, "MedievalEnums", 1, 0, "ThemeMode")
+    qmlRegisterType(ExportFormat, "MedievalEnums", 1, 0, "ExportFormat")
 
 
 def create_app_theme_singleton(engine: QQmlApplicationEngine) -> QObject:
@@ -222,12 +222,12 @@ def setup_engine_context(engine: QQmlApplicationEngine, args: argparse.Namespace
     context.setContextProperty("compactMode", args.compact)
     
     # Provide enum values for QML
-    # context.setContextProperty("Archetype", {
-    #     name: value.value for name, value in Archetype.__members__.items()
-    # })
-    # context.setContextProperty("Affinity", {
-    #     name: value.value for name, value in Affinity.__members__.items()
-    # })
+    context.setContextProperty("Archetype", {
+        name: value.value for name, value in Archetype.__members__.items()
+    })
+    context.setContextProperty("Affinity", {
+        name: value.value for name, value in Affinity.__members__.items()
+    })
     
     context.setContextProperty("RelationType", {
         name: value.value for name, value in RelationType.__members__.items()
@@ -264,7 +264,7 @@ def main() -> int:
     app = setup_application()
     
     # Register QML types
-    # register_qml_types()
+    register_qml_types()
     
     # Create QML engine
     engine = QQmlApplicationEngine()
