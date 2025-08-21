@@ -2,11 +2,13 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
+import "../components"
 
 ScrollView {
     id: narrativeTab
     
     property var characterModel
+    property var narrativeModel: characterModel ? characterModel.narrativeModel : null
     
     contentWidth: availableWidth
     
@@ -14,7 +16,7 @@ ScrollView {
         width: narrativeTab.availableWidth
         spacing: 24
         
-        // Timeline section
+        // Header section
         Rectangle {
             Layout.fillWidth: true
             color: "#ffffff"
@@ -22,10 +24,10 @@ ScrollView {
             border.width: 1
             radius: 8
             
-            implicitHeight: timelineContent.implicitHeight + 32
+            implicitHeight: headerContent.implicitHeight + 32
             
             ColumnLayout {
-                id: timelineContent
+                id: headerContent
                 anchors.fill: parent
                 anchors.margins: 16
                 spacing: 16
@@ -68,250 +70,405 @@ ScrollView {
                 }
                 
                 Text {
-                    text: "Important events, milestones, and story moments in the character's life."
+                    text: "Chronicle important events, milestones, and story moments in your character's life."
                     font.pixelSize: 12
                     color: "#757575"
                     wrapMode: Text.WordWrap
                     Layout.fillWidth: true
                 }
                 
-                // Timeline list
-                ListView {
-                    id: timelineList
+                // Statistics row
+                RowLayout {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: Math.min(contentHeight, 400)
-                    Layout.minimumHeight: 200
+                    spacing: 24
                     
-                    clip: true
-                    spacing: 16
-                    
-                    model: ListModel {
-                        id: eventsModel
+                    ColumnLayout {
+                        spacing: 4
                         
-                        // Example data
-                        ListElement {
-                            title: "Character Birth"
-                            date: "1995-03-15"
-                            chapter: "Origins"
-                            description: "Born in a small village to humble farmers."
-                            eventType: "birth"
+                        Text {
+                            text: narrativeModel ? narrativeModel.count : 0
+                            font.pixelSize: 24
+                            font.bold: true
+                            color: "#FF9800"
+                            Layout.alignment: Qt.AlignHCenter
                         }
-                        ListElement {
-                            title: "Tragedy Strikes"
-                            date: "2010-07-22"
-                            chapter: "The Dark Years"
-                            description: "Family home destroyed in a mysterious fire. Parents missing, presumed dead."
-                            eventType: "tragedy"
-                        }
-                        ListElement {
-                            title: "Mentor Found"
-                            date: "2012-09-03"
-                            chapter: "Training"
-                            description: "Discovered by Master Chen, begins training in the ancient arts."
-                            eventType: "meeting"
-                        }
-                        ListElement {
-                            title: "First Adventure"
-                            date: "2018-04-10"
-                            chapter: "Current Campaign"
-                            description: "Joined a group of adventurers to explore the Whispering Caves."
-                            eventType: "adventure"
+                        
+                        Text {
+                            text: "Total Events"
+                            font.pixelSize: 10
+                            color: "#757575"
+                            Layout.alignment: Qt.AlignHCenter
                         }
                     }
                     
-                    delegate: Rectangle {
-                        width: timelineList.width
-                        height: eventContent.implicitHeight + 24
-                        color: "transparent"
+                    Rectangle {
+                        width: 1
+                        height: 40
+                        color: "#e0e0e0"
+                    }
+                    
+                    ColumnLayout {
+                        spacing: 4
                         
-                        // Timeline line
-                        Rectangle {
-                            id: timelineLine
-                            x: 30
-                            y: 0
-                            width: 3
-                            height: parent.height
-                            color: "#e0e0e0"
-                            visible: index < timelineList.count - 1
+                        Text {
+                            text: getMajorEventCount()
+                            font.pixelSize: 24
+                            font.bold: true
+                            color: "#3F51B5"
+                            Layout.alignment: Qt.AlignHCenter
                         }
                         
-                        // Event dot
-                        Rectangle {
-                            id: eventDot
-                            x: 22
-                            y: 20
-                            width: 18
-                            height: 18
-                            radius: 9
-                            color: getEventColor(model.eventType)
-                            border.color: "#ffffff"
-                            border.width: 2
-                            
-                            Text {
-                                anchors.centerIn: parent
-                                text: getEventIcon(model.eventType)
-                                font.pixelSize: 8
-                                color: "#ffffff"
-                            }
+                        Text {
+                            text: "Major Events"
+                            font.pixelSize: 10
+                            color: "#757575"
+                            Layout.alignment: Qt.AlignHCenter
+                        }
+                    }
+                    
+                    Rectangle {
+                        width: 1
+                        height: 40
+                        color: "#e0e0e0"
+                    }
+                    
+                    ColumnLayout {
+                        spacing: 4
+                        
+                        Text {
+                            text: getUniqueTagCount()
+                            font.pixelSize: 24
+                            font.bold: true
+                            color: "#9C27B0"
+                            Layout.alignment: Qt.AlignHCenter
                         }
                         
-                        // Event content
-                        Rectangle {
-                            id: eventContent
-                            anchors.left: eventDot.right
-                            anchors.leftMargin: 16
-                            anchors.right: parent.right
-                            anchors.rightMargin: 8
-                            anchors.top: parent.top
-                            anchors.topMargin: 8
-                            
-                            height: eventLayout.implicitHeight + 16
-                            color: "#f9f9f9"
-                            border.color: "#e0e0e0"
-                            border.width: 1
-                            radius: 6
-                            
-                            ColumnLayout {
-                                id: eventLayout
-                                anchors.fill: parent
-                                anchors.margins: 12
-                                spacing: 6
-                                
-                                // Event header
-                                RowLayout {
-                                    Layout.fillWidth: true
-                                    
-                                    ColumnLayout {
-                                        Layout.fillWidth: true
-                                        spacing: 2
-                                        
-                                        Text {
-                                            text: model.title
-                                            font.pixelSize: 14
-                                            font.bold: true
-                                            color: "#212121"
-                                        }
-                                        
-                                        RowLayout {
-                                            Text {
-                                                text: formatDate(model.date)
-                                                font.pixelSize: 10
-                                                color: "#757575"
-                                            }
-                                            
-                                            Rectangle {
-                                                height: 16
-                                                width: chapterText.implicitWidth + 12
-                                                radius: 8
-                                                color: "#2196F3"
-                                                visible: model.chapter !== ""
-                                                
-                                                Text {
-                                                    id: chapterText
-                                                    anchors.centerIn: parent
-                                                    text: model.chapter
-                                                    font.pixelSize: 9
-                                                    font.bold: true
-                                                    color: "#ffffff"
-                                                }
-                                            }
-                                        }
-                                    }
-                                    
-                                    // Actions
-                                    RowLayout {
-                                        spacing: 4
-                                        
-                                        Button {
-                                            text: "✏️"
-                                            width: 24
-                                            height: 24
-                                            
-                                            background: Rectangle {
-                                                color: parent.pressed ? "#2196F3" : 
-                                                       parent.hovered ? "#42A5F5" : "transparent"
-                                                radius: 12
-                                            }
-                                            
-                                            onClicked: {
-                                                // TODO: Open edit dialog
-                                                console.log("Edit event:", model.title)
-                                            }
-                                        }
-                                        
-                                        Button {
-                                            text: "🗑️"
-                                            width: 24
-                                            height: 24
-                                            
-                                            background: Rectangle {
-                                                color: parent.pressed ? "#F44336" : 
-                                                       parent.hovered ? "#EF5350" : "transparent"
-                                                radius: 12
-                                            }
-                                            
-                                            onClicked: {
-                                                eventsModel.remove(index)
-                                            }
-                                        }
-                                    }
-                                }
-                                
-                                // Event description
-                                Text {
-                                    text: model.description
-                                    font.pixelSize: 12
-                                    color: "#212121"
-                                    wrapMode: Text.WordWrap
-                                    Layout.fillWidth: true
+                        Text {
+                            text: "Tags Used"
+                            font.pixelSize: 10
+                            color: "#757575"
+                            Layout.alignment: Qt.AlignHCenter
+                        }
+                    }
+                    
+                    Item { Layout.fillWidth: true }
+                }
+            }
+        }
+        
+        // View controls section
+        Rectangle {
+            Layout.fillWidth: true
+            color: "#f8f9fa"
+            border.color: "#dee2e6"
+            border.width: 1
+            radius: 6
+            
+            implicitHeight: controlsContent.implicitHeight + 16
+            
+            RowLayout {
+                id: controlsContent
+                anchors.fill: parent
+                anchors.margins: 8
+                spacing: 12
+                
+                Text {
+                    text: "View:"
+                    font.pixelSize: 11
+                    color: "#495057"
+                }
+                
+                ButtonGroup {
+                    id: viewModeGroup
+                    buttons: [timelineViewBtn, importanceViewBtn, chapterViewBtn]
+                }
+                
+                Button {
+                    id: timelineViewBtn
+                    text: "Timeline"
+                    checkable: true
+                    checked: true
+                    
+                    ButtonGroup.group: viewModeGroup
+                    
+                    background: Rectangle {
+                        color: parent.checked ? "#007bff" : 
+                               (parent.pressed ? "#e9ecef" : 
+                                parent.hovered ? "#f8f9fa" : "transparent")
+                        border.color: "#007bff"
+                        border.width: 1
+                        radius: 4
+                    }
+                    
+                    contentItem: Text {
+                        text: parent.text
+                        font.pixelSize: 10
+                        color: parent.checked ? "#ffffff" : "#007bff"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    
+                    onClicked: {
+                        setSortMode("timeline")
+                    }
+                }
+                
+                Button {
+                    id: importanceViewBtn
+                    text: "Importance"
+                    checkable: true
+                    
+                    ButtonGroup.group: viewModeGroup
+                    
+                    background: Rectangle {
+                        color: parent.checked ? "#007bff" : 
+                               (parent.pressed ? "#e9ecef" : 
+                                parent.hovered ? "#f8f9fa" : "transparent")
+                        border.color: "#007bff"
+                        border.width: 1
+                        radius: 4
+                    }
+                    
+                    contentItem: Text {
+                        text: parent.text
+                        font.pixelSize: 10
+                        color: parent.checked ? "#ffffff" : "#007bff"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    
+                    onClicked: {
+                        setSortMode("importance")
+                    }
+                }
+                
+                Button {
+                    id: chapterViewBtn
+                    text: "Chapter"
+                    checkable: true
+                    
+                    ButtonGroup.group: viewModeGroup
+                    
+                    background: Rectangle {
+                        color: parent.checked ? "#007bff" : 
+                               (parent.pressed ? "#e9ecef" : 
+                                parent.hovered ? "#f8f9fa" : "transparent")
+                        border.color: "#007bff"
+                        border.width: 1
+                        radius: 4
+                    }
+                    
+                    contentItem: Text {
+                        text: parent.text
+                        font.pixelSize: 10
+                        color: parent.checked ? "#ffffff" : "#007bff"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    
+                    onClicked: {
+                        setSortMode("chapter")
+                    }
+                }
+                
+                Rectangle {
+                    width: 1
+                    height: 20
+                    color: "#dee2e6"
+                }
+                
+                Text {
+                    text: "Filter:"
+                    font.pixelSize: 11
+                    color: "#495057"
+                }
+                
+                ComboBox {
+                    id: tagFilter
+                    model: getAvailableTags()
+                    currentIndex: 0
+                    
+                    Layout.preferredWidth: 120
+                    
+                    background: Rectangle {
+                        color: "#ffffff"
+                        border.color: "#ced4da"
+                        border.width: 1
+                        radius: 4
+                    }
+                    
+                    contentItem: Text {
+                        text: parent.displayText
+                        font.pixelSize: 11
+                        color: "#212529"
+                        verticalAlignment: Text.AlignVCenter
+                        leftPadding: 8
+                    }
+                    
+                    onCurrentTextChanged: {
+                        filterEventsByTag()
+                    }
+                }
+                
+                Item { Layout.fillWidth: true }
+                
+                Button {
+                    text: "Export Timeline"
+                    implicitHeight: 28
+                    
+                    background: Rectangle {
+                        color: parent.pressed ? "#28a745" : 
+                               parent.hovered ? "#34ce57" : "#28a745"
+                        border.width: 0
+                        radius: 4
+                    }
+                    
+                    contentItem: Text {
+                        text: parent.text
+                        font.pixelSize: 10
+                        color: "#ffffff"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    
+                    onClicked: {
+                        exportTimeline()
+                    }
+                }
+            }
+        }
+        
+        // Timeline section
+        Rectangle {
+            Layout.fillWidth: true
+            Layout.minimumHeight: 400
+            color: "#ffffff"
+            border.color: "#e0e0e0"
+            border.width: 1
+            radius: 8
+            
+            // Timeline background line
+            Rectangle {
+                id: timelineBackgroundLine
+                x: 16
+                y: 20
+                width: 2
+                height: parent.height - 40
+                color: "#e0e0e0"
+                visible: timelineViewBtn.checked
+            }
+            
+            ScrollView {
+                anchors.fill: parent
+                anchors.margins: 16
+                anchors.leftMargin: 48  // Space for timeline line
+                contentWidth: availableWidth
+                
+                ListView {
+                    id: eventsList
+                    width: parent.width
+                    
+                    model: narrativeModel
+                    spacing: 16
+                    clip: true
+                    
+                    delegate: TimelineEvent {
+                        width: eventsList.width
+                        
+                        onEditRequested: function(eventId) {
+                            editEvent(eventId)
+                        }
+                        
+                        onDeleteRequested: function(eventId) {
+                            confirmDeleteEventDialog.eventId = eventId
+                            confirmDeleteEventDialog.eventTitle = model.title
+                            confirmDeleteEventDialog.open()
+                        }
+                        
+                        onImportanceChangeRequested: function(eventId, newImportance) {
+                            if (narrativeModel) {
+                                const event = narrativeModel.getEvent(eventId)
+                                if (event) {
+                                    narrativeModel.updateEvent(
+                                        eventId,
+                                        event.title,
+                                        event.description,
+                                        event.date,
+                                        newImportance,
+                                        event.tags || []
+                                    )
                                 }
                             }
                         }
                     }
                     
                     // Empty state
-                    ColumnLayout {
+                    Rectangle {
                         anchors.centerIn: parent
-                        visible: timelineList.count === 0
-                        spacing: 8
+                        width: 300
+                        height: 150
+                        color: "transparent"
+                        visible: eventsList.count === 0
                         
-                        Text {
-                            text: "📅"
-                            font.pixelSize: 48
-                            color: "#e0e0e0"
-                            Layout.alignment: Qt.AlignHCenter
-                        }
-                        
-                        Text {
-                            text: "No events yet.\nClick 'Add Event' to start building your character's timeline."
-                            font.pixelSize: 12
-                            color: "#757575"
-                            horizontalAlignment: Text.AlignHCenter
-                            Layout.alignment: Qt.AlignHCenter
+                        ColumnLayout {
+                            anchors.centerIn: parent
+                            spacing: 12
+                            
+                            Text {
+                                text: "📅"
+                                font.pixelSize: 48
+                                color: "#e0e0e0"
+                                Layout.alignment: Qt.AlignHCenter
+                            }
+                            
+                            Text {
+                                text: "No events yet."
+                                font.pixelSize: 16
+                                font.bold: true
+                                color: "#bdbdbd"
+                                Layout.alignment: Qt.AlignHCenter
+                            }
+                            
+                            Text {
+                                text: "Click 'Add Event' to start building your character's timeline.\nRecord births, meetings, adventures, tragedies, and victories."
+                                font.pixelSize: 12
+                                color: "#757575"
+                                horizontalAlignment: Text.AlignHCenter
+                                wrapMode: Text.WordWrap
+                                Layout.alignment: Qt.AlignHCenter
+                                Layout.preferredWidth: 250
+                            }
                         }
                     }
                 }
             }
         }
-        
-        Item {
-            Layout.fillHeight: true
-        }
     }
     
-    // Add event dialog
+    // Add/Edit Event Dialog
     Dialog {
         id: addEventDialog
-        title: "Add Timeline Event"
+        title: "Add New Event"
         modal: true
         anchors.centerIn: parent
-        width: 450
-        height: 400
+        
+        width: Math.min(500, parent.width * 0.9)
+        height: Math.min(600, parent.height * 0.9)
+        
+        property bool isEditing: false
+        property string editingEventId: ""
+        
+        background: Rectangle {
+            color: "#ffffff"
+            radius: 8
+            border.color: "#e0e0e0"
+            border.width: 1
+        }
         
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: 16
-            spacing: 12
+            spacing: 16
             
             // Event title
             ColumnLayout {
@@ -319,114 +476,115 @@ ScrollView {
                 spacing: 4
                 
                 Text {
-                    text: "Event Title:"
-                    font.pixelSize: 14
+                    text: "Event Title *"
+                    font.pixelSize: 12
+                    font.bold: true
                     color: "#212121"
                 }
                 
                 TextField {
                     id: eventTitleField
                     Layout.fillWidth: true
-                    placeholderText: "e.g., First Adventure, Meeting the Mentor, The Great Battle..."
+                    placeholderText: "Enter event title..."
                     
                     background: Rectangle {
                         color: "#ffffff"
-                        border.color: parent.activeFocus ? "#4CAF50" : "#e0e0e0"
-                        border.width: 1
+                        border.color: parent.activeFocus ? "#FF9800" : "#e0e0e0"
+                        border.width: 2
                         radius: 4
                     }
                 }
             }
             
-            // Date and Chapter
+            // Date and importance row
             RowLayout {
                 Layout.fillWidth: true
-                spacing: 12
+                spacing: 16
                 
+                // Date
                 ColumnLayout {
                     Layout.fillWidth: true
                     spacing: 4
                     
                     Text {
-                        text: "Date:"
-                        font.pixelSize: 14
+                        text: "Date"
+                        font.pixelSize: 12
+                        font.bold: true
                         color: "#212121"
                     }
                     
                     TextField {
                         id: eventDateField
                         Layout.fillWidth: true
-                        placeholderText: "YYYY-MM-DD"
-                        text: getCurrentDate()
+                        placeholderText: "YYYY-MM-DD or Age 25..."
                         
                         background: Rectangle {
                             color: "#ffffff"
-                            border.color: parent.activeFocus ? "#4CAF50" : "#e0e0e0"
-                            border.width: 1
+                            border.color: parent.activeFocus ? "#FF9800" : "#e0e0e0"
+                            border.width: 2
                             radius: 4
                         }
                     }
                 }
                 
+                // Importance
                 ColumnLayout {
-                    Layout.fillWidth: true
+                    Layout.preferredWidth: 100
                     spacing: 4
                     
                     Text {
-                        text: "Chapter (Optional):"
-                        font.pixelSize: 14
+                        text: "Importance"
+                        font.pixelSize: 12
+                        font.bold: true
                         color: "#212121"
                     }
                     
-                    TextField {
-                        id: eventChapterField
-                        Layout.fillWidth: true
-                        placeholderText: "e.g., Origins, Training, Current Campaign..."
+                    RowLayout {
+                        SpinBox {
+                            id: importanceSpinBox
+                            from: 1
+                            to: 10
+                            value: 5
+                            
+                            background: Rectangle {
+                                color: "#ffffff"
+                                border.color: "#e0e0e0"
+                                border.width: 2
+                                radius: 4
+                            }
+                        }
                         
-                        background: Rectangle {
-                            color: "#ffffff"
-                            border.color: parent.activeFocus ? "#4CAF50" : "#e0e0e0"
-                            border.width: 1
-                            radius: 4
+                        Text {
+                            text: getImportanceLabel(importanceSpinBox.value)
+                            font.pixelSize: 10
+                            color: "#757575"
+                            Layout.preferredWidth: 60
                         }
                     }
                 }
             }
             
-            // Event type
+            // Tags
             ColumnLayout {
                 Layout.fillWidth: true
                 spacing: 4
                 
                 Text {
-                    text: "Event Type:"
-                    font.pixelSize: 14
+                    text: "Tags (comma-separated)"
+                    font.pixelSize: 12
+                    font.bold: true
                     color: "#212121"
                 }
                 
-                ComboBox {
-                    id: eventTypeCombo
+                TextField {
+                    id: eventTagsField
                     Layout.fillWidth: true
-                    
-                    model: [
-                        {text: "Birth/Origin", value: "birth"},
-                        {text: "Meeting/Encounter", value: "meeting"},
-                        {text: "Achievement/Success", value: "achievement"},
-                        {text: "Tragedy/Loss", value: "tragedy"},
-                        {text: "Adventure/Quest", value: "adventure"},
-                        {text: "Training/Learning", value: "training"},
-                        {text: "Battle/Conflict", value: "battle"},
-                        {text: "Discovery", value: "discovery"},
-                        {text: "Other", value: "other"}
-                    ]
-                    
-                    textRole: "text"
-                    valueRole: "value"
+                    placeholderText: "adventure, combat, meeting, tragedy..."
                     
                     background: Rectangle {
                         color: "#ffffff"
-                        border.color: "#e0e0e0"
-                        border.width: 1
+                        border.color: parent.activeFocus ? "#FF9800" : "#e0e0e0"
+                        border.width: 2
                         radius: 4
                     }
                 }
@@ -435,28 +593,31 @@ ScrollView {
             // Description
             ColumnLayout {
                 Layout.fillWidth: true
+                Layout.fillHeight: true
                 spacing: 4
                 
                 Text {
-                    text: "Description:"
-                    font.pixelSize: 14
+                    text: "Description"
+                    font.pixelSize: 12
+                    font.bold: true
                     color: "#212121"
                 }
                 
                 ScrollView {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 100
+                    Layout.fillHeight: true
+                    Layout.minimumHeight: 120
                     
                     TextArea {
-                        id: eventDescField
-                        placeholderText: "Describe what happened, who was involved, and how it affected the character..."
-                        wrapMode: TextArea.WordWrap
+                        id: eventDescriptionField
+                        placeholderText: "Describe what happened, who was involved, and why it was significant..."
+                        wrapMode: TextArea.Wrap
                         selectByMouse: true
                         
                         background: Rectangle {
                             color: "#ffffff"
-                            border.color: parent.activeFocus ? "#4CAF50" : "#e0e0e0"
-                            border.width: 1
+                            border.color: parent.activeFocus ? "#FF9800" : "#e0e0e0"
+                            border.width: 2
                             radius: 4
                         }
                     }
@@ -472,16 +633,32 @@ ScrollView {
                 Button {
                     text: "Cancel"
                     onClicked: addEventDialog.close()
+                    
+                    background: Rectangle {
+                        color: parent.pressed ? "#f5f5f5" : 
+                               parent.hovered ? "#eeeeee" : "transparent"
+                        border.color: "#bdbdbd"
+                        border.width: 1
+                        radius: 4
+                    }
+                    
+                    contentItem: Text {
+                        text: parent.text
+                        color: "#757575"
+                        font.pixelSize: 12
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
                 }
                 
                 Button {
-                    text: "Add Event"
-                    enabled: eventTitleField.text.trim() !== "" && eventDescField.text.trim() !== ""
+                    text: addEventDialog.isEditing ? "Update Event" : "Add Event"
+                    enabled: eventTitleField.text.trim() !== ""
                     
                     background: Rectangle {
                         color: parent.enabled ? 
-                               (parent.pressed ? "#388E3C" : 
-                                parent.hovered ? "#45A049" : "#4CAF50") :
+                               (parent.pressed ? "#F57C00" : 
+                                parent.hovered ? "#FFB74D" : "#FF9800") :
                                "#e0e0e0"
                         radius: 4
                     }
@@ -495,14 +672,12 @@ ScrollView {
                     }
                     
                     onClicked: {
-                        if (eventTitleField.text.trim() !== "" && eventDescField.text.trim() !== "") {
-                            addEvent(
-                                eventTitleField.text.trim(),
-                                eventDateField.text.trim(),
-                                eventChapterField.text.trim(),
-                                eventDescField.text.trim(),
-                                eventTypeCombo.currentValue
-                            )
+                        if (eventTitleField.text.trim() !== "") {
+                            if (addEventDialog.isEditing) {
+                                updateEvent()
+                            } else {
+                                addNewEvent()
+                            }
                             addEventDialog.close()
                         }
                     }
@@ -511,79 +686,169 @@ ScrollView {
         }
         
         onOpened: {
-            eventTitleField.text = ""
-            eventDateField.text = getCurrentDate()
-            eventChapterField.text = ""
-            eventDescField.text = ""
-            eventTypeCombo.currentIndex = 0
+            if (!isEditing) {
+                eventTitleField.text = ""
+                eventDateField.text = ""
+                eventDescriptionField.text = ""
+                eventTagsField.text = ""
+                importanceSpinBox.value = 5
+            }
             eventTitleField.forceActiveFocus()
         }
     }
     
+    // Confirm delete dialog
+    Dialog {
+        id: confirmDeleteEventDialog
+        title: "Confirm Deletion"
+        modal: true
+        anchors.centerIn: parent
+        
+        property string eventId: ""
+        property string eventTitle: ""
+        
+        ColumnLayout {
+            spacing: 16
+            
+            Text {
+                text: `Are you sure you want to delete the event "${confirmDeleteEventDialog.eventTitle}"?`
+                wrapMode: Text.WordWrap
+                Layout.preferredWidth: 300
+            }
+            
+            RowLayout {
+                Layout.fillWidth: true
+                
+                Item { Layout.fillWidth: true }
+                
+                Button {
+                    text: "Cancel"
+                    onClicked: confirmDeleteEventDialog.close()
+                }
+                
+                Button {
+                    text: "Delete"
+                    
+                    background: Rectangle {
+                        color: parent.pressed ? "#C62828" : 
+                               parent.hovered ? "#EF5350" : "#F44336"
+                        radius: 4
+                    }
+                    
+                    contentItem: Text {
+                        text: parent.text
+                        color: "#ffffff"
+                        font.pixelSize: 12
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    
+                    onClicked: {
+                        if (narrativeModel) {
+                            narrativeModel.removeEvent(confirmDeleteEventDialog.eventId)
+                        }
+                        confirmDeleteEventDialog.close()
+                    }
+                }
+            }
+        }
+    }
+    
     // Helper functions
-    function addEvent(title, date, chapter, description, eventType) {
-        eventsModel.append({
-            "title": title,
-            "date": date,
-            "chapter": chapter,
-            "description": description,
-            "eventType": eventType
-        })
-        
-        // Sort events by date (most recent first)
-        // Note: This is a simplified sort - in a real app you'd want proper date sorting
-        
-        // TODO: Update character model
-        console.log("Added event:", title, date, eventType)
-    }
-    
-    function getCurrentDate() {
-        let now = new Date()
-        return now.getFullYear() + "-" + 
-               String(now.getMonth() + 1).padStart(2, '0') + "-" + 
-               String(now.getDate()).padStart(2, '0')
-    }
-    
-    function formatDate(dateStr) {
-        if (!dateStr) return ""
-        
-        let date = new Date(dateStr)
-        if (isNaN(date.getTime())) return dateStr
-        
-        return date.toLocaleDateString("en-US", {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        })
-    }
-    
-    function getEventColor(eventType) {
-        const colors = {
-            "birth": "#4CAF50",        // Green
-            "meeting": "#2196F3",      // Blue
-            "achievement": "#FF9800",  // Orange
-            "tragedy": "#F44336",      // Red
-            "adventure": "#9C27B0",    // Purple
-            "training": "#00BCD4",     // Cyan
-            "battle": "#795548",       // Brown
-            "discovery": "#FFEB3B",    // Yellow
-            "other": "#9E9E9E"         // Grey
+    function addNewEvent() {
+        if (narrativeModel) {
+            const tags = eventTagsField.text
+                .split(',')
+                .map(tag => tag.trim())
+                .filter(tag => tag.length > 0)
+            
+            narrativeModel.addEvent(
+                eventTitleField.text.trim(),
+                eventDescriptionField.text.trim(),
+                eventDateField.text.trim(),
+                importanceSpinBox.value,
+                tags
+            )
         }
-        return colors[eventType] || "#9E9E9E"
     }
     
-    function getEventIcon(eventType) {
-        const icons = {
-            "birth": "🌟",
-            "meeting": "👤",
-            "achievement": "🏆",
-            "tragedy": "💔",
-            "adventure": "⚔️",
-            "training": "📚",
-            "battle": "⚔️",
-            "discovery": "🔍",
-            "other": "📝"
+    function updateEvent() {
+        if (narrativeModel && addEventDialog.editingEventId) {
+            const tags = eventTagsField.text
+                .split(',')
+                .map(tag => tag.trim())
+                .filter(tag => tag.length > 0)
+            
+            narrativeModel.updateEvent(
+                addEventDialog.editingEventId,
+                eventTitleField.text.trim(),
+                eventDescriptionField.text.trim(),
+                eventDateField.text.trim(),
+                importanceSpinBox.value,
+                tags
+            )
         }
-        return icons[eventType] || "📝"
+    }
+    
+    function editEvent(eventId) {
+        if (narrativeModel) {
+            const event = narrativeModel.getEvent(eventId)
+            if (event) {
+                addEventDialog.isEditing = true
+                addEventDialog.editingEventId = eventId
+                addEventDialog.title = "Edit Event"
+                
+                eventTitleField.text = event.title
+                eventDateField.text = event.date
+                eventDescriptionField.text = event.description
+                importanceSpinBox.value = event.importance
+                eventTagsField.text = (event.tags || []).join(', ')
+                
+                addEventDialog.open()
+            }
+        }
+    }
+    
+    function setSortMode(mode) {
+        console.log("Setting sort mode:", mode)
+        // TODO: Implement different sorting modes
+    }
+    
+    function filterEventsByTag() {
+        console.log("Filtering by tag:", tagFilter.currentText)
+        // TODO: Implement tag filtering
+    }
+    
+    function exportTimeline() {
+        console.log("Exporting timeline...")
+        // TODO: Implement timeline export
+    }
+    
+    function getAvailableTags() {
+        if (narrativeModel) {
+            const tags = narrativeModel.getAllTags()
+            return ["All Tags"].concat(tags)
+        }
+        return ["All Tags"]
+    }
+    
+    function getMajorEventCount() {
+        // TODO: Count events with importance >= 7
+        return 0
+    }
+    
+    function getUniqueTagCount() {
+        if (narrativeModel) {
+            return narrativeModel.getAllTags().length
+        }
+        return 0
+    }
+    
+    function getImportanceLabel(value) {
+        const labels = {
+            1: "Trivial", 2: "Minor", 3: "Small", 4: "Moderate", 5: "Average",
+            6: "Notable", 7: "Important", 8: "Major", 9: "Critical", 10: "Epic"
+        }
+        return labels[value] || "Unknown"
     }
 }

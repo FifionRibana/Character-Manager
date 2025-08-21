@@ -1,20 +1,27 @@
-# QML Component Module Definition
-# Medieval Character Manager Components
+# QML Module Definition for Medieval Character Manager
+# This file defines all QML components available for import
+
 module Components
 
-# Phase 1 components
+# Phase 1 Components - Foundation
 Sidebar 1.0 Sidebar.qml
 
-# Phase 2 components  
+# Phase 2 Components - Core Editing
 CharacterHeader 1.0 CharacterHeader.qml
 EnneagramWheel 1.0 EnneagramWheel.qml
 
-# Phase 3 components
+# Phase 3 Components - Advanced Features
 AffinityRadar 1.0 AffinityRadar.qml
 StatWidget 1.0 StatWidget.qml
 ImageDropArea 1.0 ImageDropArea.qml
+ErrorDialog 1.0 ErrorDialog.qml
 
-# Future components (Phase 4+)
-# RelationshipWidget 1.0 RelationshipWidget.qml
-# TimelineEvent 1.0 TimelineEvent.qml
-# NarrativeEditor 1.0 NarrativeEditor.qml
+# Phase 4 Components - Relationships & Narrative
+RelationshipWidget 1.0 RelationshipWidget.qml
+TimelineEvent 1.0 TimelineEvent.qml
+
+# Component Singletons
+singleton AppTheme 1.0 ../styles/AppTheme.qml
+
+# Type Information
+typeinfo plugins.qmltypes

@@ -1,583 +1,800 @@
 import QtQuick
+import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
+import MedievalModels 1.0
+import MedievalControllers 1.0
+import MedievalEnums 1.0
 import "components"
 import "views"
+import "dialogs"
+import "styles"
 
 ApplicationWindow {
     id: mainWindow
-    width: 1200
-    height: 800
-    minimumWidth: 1000
-    minimumHeight: 700
     visible: true
-    title: controller.hasCharacter ? 
-           "Medieval Character Manager - " + controller.getCurrentCharacterName() :
-           "Medieval Character Manager"
-
-    // Error dialog
-    MessageDialog {
-        id: errorDialog
-        buttons: MessageDialog.Ok
-    }
-
-    // File dialogs
-    FileDialog {
-        id: loadDialog
-        title: "Load Character"
-        nameFilters: ["JSON files (*.json)"]
-        onAccepted: {
-            let path = selectedFile.toString()
-            if (path.startsWith("file://")) {
-                path = path.substring(7) // Remove file:// prefix
+    width: compactMode ? 1024 : 1280
+    height: compactMode ? 600 : 800
+    minimumWidth: 800
+    minimumHeight: 600
+    title: qsTr("Medieval Character Manager") + (controller.currentCharacter ? " - " + controller.currentCharacter.name : "")
+    
+    // Theme support
+    color: AppTheme.colors.background
+    
+    // Properties
+    property bool unsavedChanges: false
+    property string currentFile: ""
+    property bool isLoading: false
+    property int autoSaveCounter: 0
+    
+    // Controllers
+    MainController {
+        id: controller
+        
+        onCharacterChanged: {
+            if (currentCharacter) {
+                console.log("Character loaded:", currentCharacter.name)
+                tabView.currentIndex = 0
             }
-            controller.loadCharacterFile(path)
+        }
+        
+        onError: function(message) {
+            errorDialog.show("Error", message)
         }
     }
-
-    FileDialog {
-        id: exportDialog
-        title: "Export Character"
-        fileMode: FileDialog.SaveFile
-        nameFilters: ["HTML files (*.html)"]
-        onAccepted: {
-            let path = selectedFile.toString()
-            if (path.startsWith("file://")) {
-                path = path.substring(7) // Remove file:// prefix
+    
+    // Auto-save timer
+    Timer {
+        id: autoSaveTimer
+        interval: AppTheme.autoSaveInterval * 60000 // Convert minutes to milliseconds
+        running: AppTheme.autoSaveEnabled && controller.currentCharacter !== null
+        repeat: true
+        
+        onTriggered: {
+            if (unsavedChanges && controller.currentCharacter) {
+                console.log("Auto-saving character...")
+                storageController.quickSave(controller.currentCharacter)
+                autoSaveCounter++
+                statusBar.showMessage("Auto-saved", 2000)
             }
-            controller.exportCharacter(
-                controller.getCurrentCharacterId(),
-                path
-            )
         }
     }
-
+    
+    // Global shortcuts
+    Shortcut {
+        sequence: "Ctrl+N"
+        onActivated: controller.createNewCharacter()
+    }
+    
+    Shortcut {
+        sequence: "Ctrl+S"
+        onActivated: saveCharacter()
+    }
+    
+    Shortcut {
+        sequence: "Ctrl+Shift+S"
+        onActivated: saveAllCharacters()
+    }
+    
+    Shortcut {
+        sequence: "Ctrl+O"
+        onActivated: openFileDialog.open()
+    }
+    
+    Shortcut {
+        sequence: "Ctrl+,"
+        onActivated: openSettings()
+    }
+    
+    Shortcut {
+        sequence: "Ctrl+Q"
+        onActivated: confirmQuit()
+    }
+    
+    Shortcut {
+        sequence: "Ctrl+F"
+        onActivated: searchDialog.open()
+    }
+    
+    Shortcut {
+        sequence: "Ctrl+E"
+        onActivated: openExportDialog()
+    }
+    
+    Shortcut {
+        sequence: "Ctrl+Shift+T"
+        onActivated: {
+            if (themeController) {
+                themeController.toggleTheme()
+            }
+        }
+    }
+    
+    // Tab navigation shortcuts
+    Shortcut {
+        sequence: "Ctrl+1"
+        onActivated: tabView.currentIndex = 0
+    }
+    
+    Shortcut {
+        sequence: "Ctrl+2"
+        onActivated: tabView.currentIndex = 1
+    }
+    
+    Shortcut {
+        sequence: "Ctrl+3"
+        onActivated: tabView.currentIndex = 2
+    }
+    
+    Shortcut {
+        sequence: "Ctrl+4"
+        onActivated: tabView.currentIndex = 3
+    }
+    
+    Shortcut {
+        sequence: "Ctrl+5"
+        onActivated: tabView.currentIndex = 4
+    }
+    
+    Shortcut {
+        sequence: "Ctrl+6"
+        onActivated: tabView.currentIndex = 5
+    }
+    
     // Menu bar
     menuBar: MenuBar {
         Menu {
-            title: "File"
+            title: qsTr("&File")
             
             Action {
-                text: "New Character"
+                text: qsTr("&New Character")
                 shortcut: "Ctrl+N"
-                onTriggered: controller.newCharacter()
+                onTriggered: controller.createNewCharacter()
             }
             
-            MenuSeparator {}
-            
             Action {
-                text: "Load Character"
+                text: qsTr("&Open...")
                 shortcut: "Ctrl+O"
-                onTriggered: loadDialog.open()
+                onTriggered: openFileDialog.open()
             }
             
+            MenuSeparator {}
+            
             Action {
-                text: "Save Character"
+                text: qsTr("&Save")
                 shortcut: "Ctrl+S"
-                enabled: controller.hasCharacter
-                onTriggered: controller.save_current_character()
+                enabled: controller.currentCharacter !== null
+                onTriggered: saveCharacter()
+            }
+            
+            Action {
+                text: qsTr("Save &As...")
+                shortcut: "Ctrl+Shift+S"
+                enabled: controller.currentCharacter !== null
+                onTriggered: saveAsDialog.open()
+            }
+            
+            Action {
+                text: qsTr("Save A&ll")
+                enabled: controller.characterList.rowCount() > 0
+                onTriggered: saveAllCharacters()
             }
             
             MenuSeparator {}
             
             Action {
-                text: "Export to HTML"
-                enabled: controller.hasCharacter
-                onTriggered: exportDialog.open()
+                text: qsTr("&Export...")
+                shortcut: "Ctrl+E"
+                enabled: controller.currentCharacter !== null
+                onTriggered: openExportDialog()
+            }
+            
+            Action {
+                text: qsTr("Export &Timeline...")
+                enabled: controller.currentCharacter !== null && controller.currentCharacter.narrativeModel.rowCount() > 0
+                onTriggered: exportTimelineDialog.open()
             }
             
             MenuSeparator {}
             
             Action {
-                text: "Quit"
+                text: qsTr("&Settings...")
+                shortcut: "Ctrl+,"
+                onTriggered: openSettings()
+            }
+            
+            MenuSeparator {}
+            
+            Action {
+                text: qsTr("&Quit")
                 shortcut: "Ctrl+Q"
-                onTriggered: Qt.quit()
+                onTriggered: confirmQuit()
             }
         }
         
         Menu {
-            title: "Edit"
+            title: qsTr("&Edit")
             
             Action {
-                text: controller.editMode ? "View Mode" : "Edit Mode"
-                shortcut: "Ctrl+E"
-                onTriggered: controller.toggleEditMode()
+                text: qsTr("&Undo")
+                shortcut: "Ctrl+Z"
+                enabled: false // TODO: Implement undo system
+            }
+            
+            Action {
+                text: qsTr("&Redo")
+                shortcut: "Ctrl+Y"
+                enabled: false // TODO: Implement redo system
+            }
+            
+            MenuSeparator {}
+            
+            Action {
+                text: qsTr("&Search...")
+                shortcut: "Ctrl+F"
+                onTriggered: searchDialog.open()
+            }
+            
+            Action {
+                text: qsTr("&Delete Character")
+                shortcut: "Delete"
+                enabled: controller.currentCharacter !== null
+                onTriggered: confirmDeleteCharacter()
+            }
+        }
+        
+        Menu {
+            title: qsTr("&View")
+            
+            Action {
+                text: qsTr("&Toggle Theme")
+                shortcut: "Ctrl+Shift+T"
+                onTriggered: {
+                    if (themeController) {
+                        themeController.toggleTheme()
+                    }
+                }
+            }
+            
+            MenuSeparator {}
+            
+            Action {
+                text: qsTr("&Compact Mode")
+                checkable: true
+                checked: compactMode
+                onTriggered: toggleCompactMode()
+            }
+            
+            Action {
+                text: qsTr("&Full Screen")
+                shortcut: "F11"
+                checkable: true
+                checked: mainWindow.visibility === Window.FullScreen
+                onTriggered: toggleFullScreen()
+            }
+        }
+        
+        Menu {
+            title: qsTr("&Tools")
+            
+            Action {
+                text: qsTr("Character &Templates...")
+                onTriggered: templateDialog.open()
+            }
+            
+            Action {
+                text: qsTr("&Batch Export...")
+                enabled: controller.characterList.rowCount() > 1
+                onTriggered: batchExportDialog.open()
+            }
+            
+            Action {
+                text: qsTr("&Statistics...")
+                enabled: controller.characterList.rowCount() > 0
+                onTriggered: statisticsDialog.open()
+            }
+        }
+        
+        Menu {
+            title: qsTr("&Help")
+            
+            Action {
+                text: qsTr("&Documentation")
+                shortcut: "F1"
+                onTriggered: Qt.openUrlExternally("https://github.com/medieval-character-manager/docs")
+            }
+            
+            Action {
+                text: qsTr("&Keyboard Shortcuts")
+                onTriggered: shortcutsDialog.open()
+            }
+            
+            MenuSeparator {}
+            
+            Action {
+                text: qsTr("&About...")
+                onTriggered: aboutDialog.open()
             }
         }
     }
-
-    // Tool bar
-    header: ToolBar {
+    
+    // Main content
+    RowLayout {
+        anchors.fill: parent
+        spacing: 0
+        
+        // Sidebar
+        Sidebar {
+            id: sidebar
+            Layout.preferredWidth: compactMode ? 200 : 250
+            Layout.fillHeight: true
+            characterList: controller.characterList
+            currentCharacterId: controller.currentCharacter ? controller.currentCharacter.id : ""
+            
+            onCharacterSelected: function(characterId) {
+                controller.selectCharacter(characterId)
+            }
+            
+            onCreateNewCharacter: {
+                controller.createNewCharacter()
+            }
+            
+            onDeleteCharacter: function(characterId) {
+                confirmDeleteDialog.characterToDelete = characterId
+                confirmDeleteDialog.open()
+            }
+            
+            onSearchTextChanged: function(text) {
+                controller.filterCharacters(text)
+            }
+        }
+        
+        // Divider
+        Rectangle {
+            Layout.preferredWidth: 1
+            Layout.fillHeight: true
+            color: AppTheme.colors.border
+        }
+        
+        // Main content area
+        ColumnLayout {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            spacing: 0
+            
+            // Character header
+            CharacterHeader {
+                id: characterHeader
+                Layout.fillWidth: true
+                Layout.preferredHeight: compactMode ? 100 : 120
+                visible: controller.currentCharacter !== null
+                characterModel: controller.currentCharacter
+                
+                onImageChanged: function(imagePath) {
+                    if (controller.currentCharacter) {
+                        controller.currentCharacter.imagePath = imagePath
+                        unsavedChanges = true
+                    }
+                }
+            }
+            
+            // Tab view
+            TabView {
+                id: tabView
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                visible: controller.currentCharacter !== null
+                characterModel: controller.currentCharacter
+                
+                onDataChanged: {
+                    unsavedChanges = true
+                }
+            }
+            
+            // Empty state
+            Item {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                visible: controller.currentCharacter === null
+                
+                ColumnLayout {
+                    anchors.centerIn: parent
+                    spacing: AppTheme.spacing.large
+                    
+                    Image {
+                        Layout.alignment: Qt.AlignHCenter
+                        source: "qrc:/images/empty-state.svg"
+                        sourceSize.width: 200
+                        sourceSize.height: 200
+                        opacity: 0.3
+                    }
+                    
+                    Label {
+                        Layout.alignment: Qt.AlignHCenter
+                        text: qsTr("No Character Selected")
+                        font.pixelSize: AppTheme.fontSize.huge
+                        color: AppTheme.colors.textSecondary
+                    }
+                    
+                    Label {
+                        Layout.alignment: Qt.AlignHCenter
+                        text: qsTr("Create a new character or select one from the sidebar")
+                        font.pixelSize: AppTheme.fontSize.medium
+                        color: AppTheme.colors.textDisabled
+                    }
+                    
+                    Button {
+                        Layout.alignment: Qt.AlignHCenter
+                        text: qsTr("Create New Character")
+                        highlighted: true
+                        onClicked: controller.createNewCharacter()
+                    }
+                }
+            }
+        }
+    }
+    
+    // Status bar
+    footer: ToolBar {
+        id: statusBar
+        height: 30
+        background: Rectangle {
+            color: AppTheme.colors.surface
+            border.color: AppTheme.colors.border
+            border.width: 1
+        }
+        
+        property string message: ""
+        property Timer messageTimer: Timer {
+            interval: 3000
+            onTriggered: statusBar.message = ""
+        }
+        
+        function showMessage(text, duration) {
+            message = text
+            if (duration > 0) {
+                messageTimer.interval = duration
+                messageTimer.restart()
+            }
+        }
+        
         RowLayout {
             anchors.fill: parent
+            anchors.margins: AppTheme.spacing.small
             
-            ToolButton {
-                text: "New"
-                onClicked: controller.newCharacter()
-            }
-            
-            ToolButton {
-                text: "Save"
-                enabled: controller.hasCharacter
-                onClicked: controller.save_current_character()
-            }
-            
-            ToolButton {
-                text: "Load"
-                onClicked: loadDialog.open()
-            }
-            
-            ToolSeparator {}
-            
-            ToolButton {
-                text: "Export"
-                enabled: controller.hasCharacter
-                onClicked: exportDialog.open()
+            // Status message
+            Label {
+                text: statusBar.message || (unsavedChanges ? "⚠️ Unsaved changes" : "Ready")
+                color: unsavedChanges && !statusBar.message ? AppTheme.colors.warning : AppTheme.colors.text
+                font.pixelSize: AppTheme.fontSize.small
             }
             
             Item { Layout.fillWidth: true }
             
-            // Edit mode toggle
-            Switch {
-                text: "Edit Mode"
-                checked: controller.editMode
-                onToggled: controller.editMode = checked
+            // Character count
+            Label {
+                text: qsTr("Characters: %1").arg(controller.characterList.rowCount())
+                color: AppTheme.colors.textSecondary
+                font.pixelSize: AppTheme.fontSize.small
             }
-        }
-    }
-
-    // Main content
-    SplitView {
-        id: splitView
-        anchors.fill: parent
-        orientation: Qt.Horizontal
-        
-        // Sidebar
-        Rectangle {
-            SplitView.minimumWidth: 250
-            SplitView.preferredWidth: 300
-            SplitView.maximumWidth: 400
             
-            color: "#ffffff"
-            border.color: "#e0e0e0"
-            border.width: 1
+            Rectangle {
+                width: 1
+                height: parent.height - 4
+                color: AppTheme.colors.border
+            }
             
-            ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: 8
-                spacing: 8
-
-                // Title
-                Text {
-                    text: "Characters"
-                    font.pixelSize: 20
-                    font.bold: true
-                    color: "#212121"
-                    Layout.alignment: Qt.AlignHCenter
-                }
-
-                // Separator
-                Rectangle {
-                    Layout.fillWidth: true
-                    height: 1
-                    color: "#e0e0e0"
-                }
-
-                // Character list
-                ListView {
-                    id: characterList
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    
-                    model: controller.characterListModel
-                    clip: true
-                    spacing: 4
-                    
-                    delegate: Rectangle {
-                        width: characterList.width
-                        height: 60
-                        color: mouseArea.containsMouse ? "#f5f5f5" : "transparent"
-                        radius: 4
-                        
-                        MouseArea {
-                            id: mouseArea
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            
-                            onClicked: {
-                                characterList.currentIndex = index
-                                if (controller.characterListModel) {
-                                    controller.characterListModel.selectCharacter(index)
-                                }
-                            }
-                        }
-                        
-                        RowLayout {
-                            anchors.fill: parent
-                            anchors.margins: 8
-                            spacing: 8
-                            
-                            // Avatar
-                            Rectangle {
-                                width: 40
-                                height: 40
-                                radius: 20
-                                color: "#e3f2fd"
-                                border.color: "#e0e0e0"
-                                border.width: 1
-                                
-                                Text {
-                                    anchors.centerIn: parent
-                                    text: model.name ? model.name.charAt(0).toUpperCase() : "?"
-                                    font.pixelSize: 18
-                                    font.bold: true
-                                    color: "#212121"
-                                }
-                            }
-                            
-                            // Info
-                            ColumnLayout {
-                                Layout.fillWidth: true
-                                spacing: 2
-                                
-                                Text {
-                                    text: model.name || "Unnamed Character"
-                                    font.pixelSize: 14
-                                    font.bold: true
-                                    color: "#212121"
-                                    elide: Text.ElideRight
-                                    Layout.fillWidth: true
-                                }
-                                
-                                Text {
-                                    text: "Level " + (model.level || 1)
-                                    font.pixelSize: 12
-                                    color: "#757575"
-                                }
-                            }
-                            
-                            // Level badge
-                            Rectangle {
-                                width: 24
-                                height: 24
-                                radius: 12
-                                color: "#4CAF50"
-                                
-                                Text {
-                                    anchors.centerIn: parent
-                                    text: (model.level || 1).toString()
-                                    font.pixelSize: 12
-                                    font.bold: true
-                                    color: "#ffffff"
-                                }
-                            }
-                        }
-                    }
-                    
-                    // Highlight
-                    highlight: Rectangle {
-                        color: "#4CAF50"
-                        opacity: 0.3
-                        radius: 4
-                    }
-                    
-                    // Empty state
-                    Label {
-                        anchors.centerIn: parent
-                        text: "No characters"
-                        color: "#757575"
-                        visible: characterList.count === 0
-                    }
-                }
-
-                // Buttons
-                RowLayout {
-                    Layout.fillWidth: true
-                    spacing: 4
-
-                    Button {
-                        text: "New"
-                        Layout.fillWidth: true
-                        onClicked: controller.newCharacter()
-                    }
-
-                    Button {
-                        text: "Delete"
-                        enabled: characterList.currentIndex >= 0
-                        Layout.fillWidth: true
-                        onClicked: {
-                            console.log("Delete not implemented yet")
+            // Current theme
+            Label {
+                text: "🎨 " + (themeController ? themeController.currentThemeName : "Default")
+                color: AppTheme.colors.textSecondary
+                font.pixelSize: AppTheme.fontSize.small
+                
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        if (themeController) {
+                            themeController.toggleTheme()
                         }
                     }
                 }
             }
-        }
-        
-        // Main content area
-        Rectangle {
-            id: contentArea
-            SplitView.fillWidth: true
-            color: "#f5f5f5"
             
-            ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: 10
-                spacing: 10
+            Rectangle {
+                width: 1
+                height: parent.height - 4
+                color: AppTheme.colors.border
+            }
+            
+            // Auto-save indicator
+            Label {
+                text: AppTheme.autoSaveEnabled ? "💾 Auto-save ON" : "💾 Auto-save OFF"
+                color: AppTheme.autoSaveEnabled ? AppTheme.colors.success : AppTheme.colors.textDisabled
+                font.pixelSize: AppTheme.fontSize.small
+                visible: controller.currentCharacter !== null
                 
-                // Character header (only in edit mode)
-                Rectangle {
-                    Layout.fillWidth: true
-                    height: 80
-                    visible: controller.editMode
-                    color: "#ffffff"
-                    border.color: "#e0e0e0"
-                    border.width: 1
-                    radius: 4
-                    
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.margins: 12
-                        spacing: 16
-                        
-                        // Image placeholder
-                        Rectangle {
-                            width: 60
-                            height: 60
-                            radius: 8
-                            color: "#f5f5f5"
-                            border.color: "#e0e0e0"
-                            border.width: 1
-                            
-                            Text {
-                                anchors.centerIn: parent
-                                text: "📷"
-                                font.pixelSize: 24
-                            }
-                        }
-                        
-                        // Character info
-                        ColumnLayout {
-                            Layout.fillWidth: true
-                            spacing: 4
-                            
-                            TextField {
-                                text: controller.characterModel ? controller.characterModel.name : ""
-                                font.pixelSize: 18
-                                font.bold: true
-                                placeholderText: "Character Name"
-                                Layout.fillWidth: true
-                                
-                                onTextChanged: {
-                                    if (controller.characterModel && controller.characterModel.name !== text) {
-                                        controller.characterModel.name = text
-                                    }
-                                }
-                            }
-                            
-                            RowLayout {
-                                Text {
-                                    text: "Level:"
-                                    font.pixelSize: 14
-                                    color: "#757575"
-                                }
-                                
-                                SpinBox {
-                                    from: 1
-                                    to: 100
-                                    value: controller.characterModel ? controller.characterModel.level : 1
-                                    
-                                    onValueChanged: {
-                                        if (controller.characterModel && controller.characterModel.level !== value) {
-                                            controller.characterModel.level = value
-                                        }
-                                    }
-                                }
-                                
-                                Item { Layout.fillWidth: true }
-                            }
-                        }
-                    }
-                }
-                
-                // Tab view
-                TabBar {
-                    id: tabBar
-                    Layout.fillWidth: true
-                    
-                    TabButton { text: "Overview" }
-                    TabButton { text: "Character"; enabled: controller.editMode; visible: controller.editMode }
-                    TabButton { text: "Enneagram"; enabled: controller.editMode; visible: controller.editMode }
-                    TabButton { text: "Stats"; enabled: controller.editMode; visible: controller.editMode }
-                    TabButton { text: "Biography"; enabled: controller.editMode; visible: controller.editMode }
-                    TabButton { text: "Relationships"; enabled: controller.editMode; visible: controller.editMode }
-                    TabButton { text: "Narrative"; enabled: controller.editMode; visible: controller.editMode }
-                }
-                
-                StackLayout {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    currentIndex: tabBar.currentIndex
-                    
-                    // Overview tab
-                    Rectangle {
-                        color: "#ffffff"
-                        
-                        ScrollView {
-                            anchors.fill: parent
-                            anchors.margins: 16
-                            
-                            ColumnLayout {
-                                width: parent.width
-                                spacing: 16
-                                
-                                // Edit mode button
-                                Button {
-                                    text: "Enter Edit Mode"
-                                    Layout.alignment: Qt.AlignRight
-                                    visible: !controller.editMode && controller.hasCharacter
-                                    onClicked: controller.editMode = true
-                                }
-                                
-                                // Character info
-                                Text {
-                                    text: "Character: " + (controller.characterModel ? controller.characterModel.name : "No character loaded")
-                                    font.pixelSize: 18
-                                    font.bold: true
-                                }
-                                
-                                Text {
-                                    text: "Level: " + (controller.characterModel ? controller.characterModel.level : "?")
-                                    font.pixelSize: 14
-                                    color: "#757575"
-                                }
-                                
-                                // Basic stats display
-                                Text {
-                                    text: "Stats:"
-                                    font.pixelSize: 16
-                                    font.bold: true
-                                }
-                                
-                                GridLayout {
-                                    columns: 3
-                                    columnSpacing: 16
-                                    rowSpacing: 8
-                                    
-                                    Text { text: "STR: " + (controller.characterModel ? controller.characterModel.strength : 10) }
-                                    Text { text: "AGI: " + (controller.characterModel ? controller.characterModel.agility : 10) }
-                                    Text { text: "CON: " + (controller.characterModel ? controller.characterModel.constitution : 10) }
-                                    Text { text: "INT: " + (controller.characterModel ? controller.characterModel.intelligence : 10) }
-                                    Text { text: "WIS: " + (controller.characterModel ? controller.characterModel.wisdom : 10) }
-                                    Text { text: "CHA: " + (controller.characterModel ? controller.characterModel.charisma : 10) }
-                                }
-                                
-                                Item { Layout.fillHeight: true }
-                            }
-                        }
-                    }
-                    
-                    // Real edit tabs
-                    Loader {
-                        source: "views/CharacterEditTab.qml"
-                        onLoaded: {
-                            if (item) {
-                                item.characterModel = Qt.binding(function() { return controller.characterModel })
-                            }
-                        }
-                    }
-                    
-                    Loader {
-                        source: "views/EnneagramTab.qml"
-                        onLoaded: {
-                            if (item) {
-                                item.characterModel = Qt.binding(function() { return controller.characterModel })
-                            }
-                        }
-                    }
-                    
-                    Loader {
-                        source: "views/StatsTab.qml"
-                        onLoaded: {
-                            if (item) {
-                                item.characterModel = Qt.binding(function() { return controller.characterModel })
-                            }
-                        }
-                    }
-                    
-                    Loader {
-                        source: "views/BiographyTab.qml"
-                        onLoaded: {
-                            if (item) {
-                                item.characterModel = Qt.binding(function() { return controller.characterModel })
-                            }
-                        }
-                    }
-                    
-                    Loader {
-                        source: "views/RelationshipsTab.qml"
-                        onLoaded: {
-                            if (item) {
-                                item.characterModel = Qt.binding(function() { return controller.characterModel })
-                            }
-                        }
-                    }
-                    
-                    Loader {
-                        source: "views/NarrativeTab.qml"
-                        onLoaded: {
-                            if (item) {
-                                item.characterModel = Qt.binding(function() { return controller.characterModel })
-                            }
-                        }
-                    }
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: openSettings()
                 }
             }
         }
     }
-
-    // Status bar
-    footer: Rectangle {
-        id: statusBar
-        height: 30
-        color: "#ffffff"
-        border.color: "#e0e0e0"
-        border.width: 1
+    
+    // Dialogs
+    
+    ErrorDialog {
+        id: errorDialog
+    }
+    
+    FileDialog {
+        id: openFileDialog
+        title: qsTr("Open Character File")
+        nameFilters: ["Character files (*.json *.chr)", "All files (*)"]
+        fileMode: FileDialog.OpenFile
         
-        property string message: "Ready"
-        
-        function showMessage(msg) {
-            message = msg
-            statusTimer.restart()
-        }
-        
-        Text {
-            anchors.left: parent.left
-            anchors.leftMargin: 10
-            anchors.verticalCenter: parent.verticalCenter
-            text: statusBar.message
-            color: "#212121"
-        }
-        
-        Timer {
-            id: statusTimer
-            interval: 3000
-            onTriggered: statusBar.message = "Ready"
+        onAccepted: {
+            controller.loadCharacterFromFile(selectedFile)
         }
     }
-
+    
+    FileDialog {
+        id: saveAsDialog
+        title: qsTr("Save Character As")
+        nameFilters: ["Character files (*.json)", "All files (*)"]
+        fileMode: FileDialog.SaveFile
+        defaultSuffix: "json"
+        
+        onAccepted: {
+            saveCharacterToFile(selectedFile)
+        }
+    }
+    
+    SettingsDialog {
+        id: settingsDialog
+        themeController: themeController
+        
+        onAccepted: {
+            statusBar.showMessage("Settings saved", 2000)
+        }
+    }
+    
+    MessageDialog {
+        id: confirmDeleteDialog
+        property string characterToDelete: ""
+        
+        title: qsTr("Delete Character")
+        text: qsTr("Are you sure you want to delete this character?")
+        informativeText: qsTr("This action cannot be undone.")
+        buttons: MessageDialog.Yes | MessageDialog.No
+        
+        onAccepted: {
+            if (characterToDelete) {
+                controller.deleteCharacter(characterToDelete)
+                characterToDelete = ""
+            }
+        }
+    }
+    
+    MessageDialog {
+        id: confirmQuitDialog
+        title: qsTr("Quit Application")
+        text: unsavedChanges ? qsTr("You have unsaved changes. Do you want to save before quitting?") : qsTr("Are you sure you want to quit?")
+        buttons: unsavedChanges ? (MessageDialog.Save | MessageDialog.Discard | MessageDialog.Cancel) : (MessageDialog.Yes | MessageDialog.No)
+        
+        onAccepted: {
+            if (unsavedChanges) {
+                saveAllCharacters()
+            }
+            Qt.quit()
+        }
+        
+        onDiscarded: {
+            Qt.quit()
+        }
+    }
+    
+    Dialog {
+        id: exportDialog
+        title: qsTr("Export Character")
+        width: 600
+        height: 500
+        modal: true
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        
+        property var exportOptions: ({})
+        
+        ColumnLayout {
+            anchors.fill: parent
+            spacing: AppTheme.spacing.medium
+            
+            Label {
+                text: qsTr("Export Format:")
+                font.bold: true
+            }
+            
+            ComboBox {
+                id: exportFormatCombo
+                Layout.fillWidth: true
+                model: ["PDF", "HTML", "Markdown", "JSON", "Plain Text"]
+            }
+            
+            GroupBox {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                title: qsTr("Export Options")
+                
+                ColumnLayout {
+                    anchors.fill: parent
+                    
+                    CheckBox {
+                        id: includeOverviewCheck
+                        text: qsTr("Include Overview")
+                        checked: true
+                    }
+                    
+                    CheckBox {
+                        id: includeEnneagramCheck
+                        text: qsTr("Include Enneagram")
+                        checked: true
+                    }
+                    
+                    CheckBox {
+                        id: includeStatsCheck
+                        text: qsTr("Include Statistics")
+                        checked: true
+                    }
+                    
+                    CheckBox {
+                        id: includeBiographyCheck
+                        text: qsTr("Include Biography")
+                        checked: true
+                    }
+                    
+                    CheckBox {
+                        id: includeRelationshipsCheck
+                        text: qsTr("Include Relationships")
+                        checked: true
+                    }
+                    
+                    CheckBox {
+                        id: includeTimelineCheck
+                        text: qsTr("Include Timeline")
+                        checked: true
+                    }
+                    
+                    CheckBox {
+                        id: includeImagesCheck
+                        text: qsTr("Include Images")
+                        checked: true
+                    }
+                    
+                    CheckBox {
+                        id: darkThemeCheck
+                        text: qsTr("Use Dark Theme")
+                        checked: AppTheme.isDarkMode
+                        visible: exportFormatCombo.currentText === "HTML"
+                    }
+                }
+            }
+        }
+        
+        onAccepted: {
+            var options = {
+                "include_overview": includeOverviewCheck.checked,
+                "include_enneagram": includeEnneagramCheck.checked,
+                "include_stats": includeStatsCheck.checked,
+                "include_biography": includeBiographyCheck.checked,
+                "include_relationships": includeRelationshipsCheck.checked,
+                "include_timeline": includeTimelineCheck.checked,
+                "include_images": includeImagesCheck.checked,
+                "dark_theme": darkThemeCheck.checked
+            }
+            
+            var format = exportFormatCombo.currentText.toLowerCase()
+            if (format === "plain text") format = "text"
+            
+            var filepath = exportController.exportCharacter(
+                controller.currentCharacter,
+                format,
+                options
+            )
+            
+            if (filepath) {
+                statusBar.showMessage("Exported to: " + filepath, 5000)
+            }
+        }
+    }
+    
+    // Helper functions
+    
+    function saveCharacter() {
+        if (controller.currentCharacter) {
+            if (currentFile) {
+                saveCharacterToFile(currentFile)
+            } else {
+                saveAsDialog.open()
+            }
+        }
+    }
+    
+    function saveCharacterToFile(filepath) {
+        if (controller.currentCharacter && storageController) {
+            var success = storageController.saveCharacter(controller.currentCharacter, filepath)
+            if (success) {
+                currentFile = filepath
+                unsavedChanges = false
+                statusBar.showMessage("Character saved", 2000)
+            } else {
+                errorDialog.show("Save Error", "Failed to save character to file")
+            }
+        }
+    }
+    
+    function saveAllCharacters() {
+        var savedCount = 0
+        for (var i = 0; i < controller.characterList.rowCount(); i++) {
+            var character = controller.characterList.getCharacterAt(i)
+            if (character && storageController.quickSave(character)) {
+                savedCount++
+            }
+        }
+        statusBar.showMessage(qsTr("Saved %1 characters").arg(savedCount), 3000)
+        unsavedChanges = false
+    }
+    
+    function openSettings() {
+        settingsDialog.open()
+    }
+    
+    function openExportDialog() {
+        if (controller.currentCharacter) {
+            exportDialog.open()
+        }
+    }
+    
+    function confirmQuit() {
+        if (unsavedChanges) {
+            confirmQuitDialog.open()
+        } else {
+            Qt.quit()
+        }
+    }
+    
+    function confirmDeleteCharacter() {
+        if (controller.currentCharacter) {
+            confirmDeleteDialog.characterToDelete = controller.currentCharacter.id
+            confirmDeleteDialog.open()
+        }
+    }
+    
+    function toggleCompactMode() {
+        mainWindow.width = compactMode ? 1280 : 1024
+        mainWindow.height = compactMode ? 800 : 600
+    }
+    
+    function toggleFullScreen() {
+        if (mainWindow.visibility === Window.FullScreen) {
+            mainWindow.showNormal()
+        } else {
+            mainWindow.showFullScreen()
+        }
+    }
+    
+    // Initialize theme
     Component.onCompleted: {
-        // Connect controller signals
-        controller.errorOccurred.connect(function(title, message) {
-            errorDialog.title = title
-            errorDialog.text = message
-            errorDialog.open()
-        })
+        // Set theme controller reference in AppTheme
+        if (themeController) {
+            AppTheme.themeController = themeController
+        }
         
-        controller.statusChanged.connect(function(message) {
-            statusBar.showMessage(message)
-        })
-        
-        console.log("Medieval Character Manager started")
+        console.log("Medieval Character Manager - Phase 5 initialized")
+        console.log("Theme:", themeController ? themeController.currentThemeName : "Default")
+        console.log("Debug mode:", debugMode)
+        console.log("Compact mode:", compactMode)
     }
 }

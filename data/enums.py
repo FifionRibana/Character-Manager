@@ -222,6 +222,20 @@ class RelationType(StrEnum):
     LOVER = "lover"
     UNKNOWN = "unknown"
 
+class EventType(StrEnum):
+    BIRTH = 'birth'
+    DEATH = 'death'
+    MEETING = 'meeting'
+    BATTLE = 'battle'
+    TRAGEDY = 'tragedy'
+    ACHIEVEMENT = 'achievement'
+    TRAINING = 'training'
+    ROMANCE = 'romance'
+    ADVENTURE = 'adventure'
+    MAJOR = 'major'
+    MINOR = 'minor'
+    GENERAL = 'general'
+
 
 class StorageKeys(StrEnum):
     """Keys for data serialization and storage."""

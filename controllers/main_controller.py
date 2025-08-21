@@ -51,8 +51,8 @@ class MainController(QObject):
         self.translator = get_translator()
         
         # Create models
-        self.character_model = CharacterModel(self)
-        self.character_list_model = CharacterListModel(self)
+        self.character_model = CharacterModel()
+        self.character_list_model = CharacterListModel()
         
         # Application state
         self._edit_mode: bool = False
