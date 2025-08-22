@@ -43,7 +43,7 @@ ApplicationWindow {
         }
 
         onErrorOccurred: function (message) {
-            errorDialog.show("Error", message);
+            errorDialog.showError("Error", message);
         }
     }
 
@@ -332,8 +332,7 @@ ApplicationWindow {
             id: sidebar
             Layout.preferredWidth: compactMode ? 200 : 250
             Layout.fillHeight: true
-            // characterList: controller.characterList
-            // currentCharacterId: controller.currentCharacter ? controller.currentCharacter.id : ""
+            characterListModel: controller.characterList
 
             onCharacterSelected: function (characterId) {
                 controller.selectCharacter(characterId);
@@ -347,10 +346,6 @@ ApplicationWindow {
                 confirmDeleteDialog.characterToDelete = characterId;
                 confirmDeleteDialog.open();
             }
-
-            // onSearchTextChanged: function(text) {
-            //     controller.filterCharacters(text)
-            // }
         }
 
         // Divider
@@ -735,7 +730,7 @@ ApplicationWindow {
                 unsavedChanges = false;
                 statusBar.showMessage("Character saved", 2000);
             } else {
-                errorDialog.show("Save Error", "Failed to save character to file");
+                errorDialog.showError("Save Error", "Failed to save character to file");
             }
         }
     }

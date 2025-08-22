@@ -29,6 +29,8 @@ class CharacterModel(QObject):
     biographyChanged = pyqtSignal()
     imageDataChanged = pyqtSignal()
     affiliationsChanged = pyqtSignal()
+    levelChanged = pyqtSignal()
+    idChanged = pyqtSignal()
     
     # Stats signals
     statsChanged = pyqtSignal()
@@ -54,6 +56,15 @@ class CharacterModel(QObject):
     def __init__(self, character: Optional[Character] = None, parent: Optional[QObject] = None):
         super().__init__(parent)
         self._character = character or Character()
+        
+        # Ensure the character has an ID
+        if not hasattr(self._character, 'id') or not self._character.id:
+            import uuid
+            self._character.id = str(uuid.uuid4())
+        
+        # Ensure the character has a level
+        if not hasattr(self._character, 'level'):
+            self._character.level = 1
         
         # Initialize sub-models
         self._relationship_model = RelationshipModel(self)
@@ -93,6 +104,35 @@ class CharacterModel(QObject):
     
     # === Basic Character Properties ===
     
+    @pyqtProperty(str, notify=idChanged)
+    def id(self) -> str:
+        """Get character ID."""
+        if self._character:
+            if not hasattr(self._character, 'id') or not self._character.id:
+                import uuid
+                self._character.id = str(uuid.uuid4())
+            return self._character.id
+        return ""
+    
+    @pyqtProperty(int, notify=levelChanged)
+    def level(self) -> int:
+        """Get character level."""
+        if self._character:
+            if not hasattr(self._character, 'level'):
+                self._character.level = 1
+            return self._character.level
+        return 1
+    
+    @level.setter
+    def level(self, value: int) -> None:
+        """Set character level."""
+        if self._character and value != self._character.level:
+            self._character.level = value
+            self._character.touch()
+            self.levelChanged.emit()
+            self.characterChanged.emit()
+            self._schedule_auto_save()
+    
     @pyqtProperty(str, notify=nameChanged)
     def name(self) -> str:
         """Get character name."""
@@ -111,7 +151,11 @@ class CharacterModel(QObject):
     @pyqtProperty(int, notify=ageChanged)
     def age(self) -> int:
         """Get character age."""
-        return self._character.age if self._character else 0
+        if self._character:
+            if not hasattr(self._character, 'age'):
+                self._character.age = 20
+            return self._character.age
+        return 20
     
     @age.setter
     def age(self, value: int) -> None:
@@ -126,7 +170,11 @@ class CharacterModel(QObject):
     @pyqtProperty(str, notify=occupationChanged)
     def occupation(self) -> str:
         """Get character occupation."""
-        return self._character.occupation if self._character else ""
+        if self._character:
+            if not hasattr(self._character, 'occupation'):
+                self._character.occupation = ""
+            return self._character.occupation
+        return ""
     
     @occupation.setter
     def occupation(self, value: str) -> None:
@@ -141,7 +189,11 @@ class CharacterModel(QObject):
     @pyqtProperty(str, notify=locationChanged)
     def location(self) -> str:
         """Get character location."""
-        return self._character.location if self._character else ""
+        if self._character:
+            if not hasattr(self._character, 'location'):
+                self._character.location = ""
+            return self._character.location
+        return ""
     
     @location.setter
     def location(self, value: str) -> None:

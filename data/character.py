@@ -247,6 +247,9 @@ class Character:
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
     name: str = "Unnamed Character"
     level: int = DEFAULT_CHARACTER_LEVEL
+    age: int = 20
+    occupation: str = "Adventurer"
+    location: str = "Kingdom"
     
     # Visual representation
     image_data: str = ""  # Base64 encoded image

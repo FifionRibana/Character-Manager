@@ -15,8 +15,8 @@ Rectangle {
     property alias characterListModel: characterList.model
 
     // Signals
-    signal characterSelected
-    signal newCharacterRequested
+    signal characterSelected(string characterId)
+    signal newCharacterRequested()
     signal deleteCharacterRequested(string characterId)
 
     ColumnLayout {
@@ -60,9 +60,7 @@ Rectangle {
 
                 onClicked: {
                     characterList.currentIndex = index;
-                    if (characterListModel && characterListModel.selectCharacter) {
-                        characterListModel.selectCharacter(index);
-                    }
+                    sidebar.characterSelected(model.characterId || "");
                 }
 
                 onDeleteRequested: function (charId) {
@@ -112,8 +110,7 @@ Rectangle {
                 }
 
                 onClicked: {
-                    // Connect to controller later
-                    console.log("New character clicked");
+                    sidebar.newCharacterRequested();
                 }
             }
 
@@ -138,8 +135,10 @@ Rectangle {
 
                 onClicked: {
                     if (characterList.currentIndex >= 0) {
-                        // Simplified for now - just log
-                        console.log("Delete character clicked");
+                        var character = characterList.model.getCharacterAt(characterList.currentIndex);
+                        if (character) {
+                            sidebar.deleteCharacterRequested(character.id || "");
+                        }
                     }
                 }
             }
