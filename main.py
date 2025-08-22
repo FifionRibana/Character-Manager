@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """
-Medieval Character Manager - Main Application Entry Point
+Medieval Character Manager - Main Application Entry Point (FIXED)
 Phase 5: Polish & Features Update
 """
 
 import sys
+import os
 import argparse
 from pathlib import Path
 from typing import Optional
 
-from PyQt6.QtCore import QObject, QUrl, QCoreApplication
+from PyQt6.QtCore import QObject, QUrl, QCoreApplication, qInstallMessageHandler, QtMsgType
 from PyQt6.QtGui import QGuiApplication, QIcon
 from PyQt6.QtQml import QQmlApplicationEngine, qmlRegisterType, qmlRegisterSingletonType
 
@@ -40,6 +41,22 @@ from data.enums import (
 )
 
 
+def qml_message_handler(msg_type, context, msg):
+    """Custom handler for QML messages to help debug"""
+    type_str = {
+        QtMsgType.QtDebugMsg: "Debug",
+        QtMsgType.QtInfoMsg: "Info",
+        QtMsgType.QtWarningMsg: "Warning",
+        QtMsgType.QtCriticalMsg: "Critical",
+        QtMsgType.QtFatalMsg: "Fatal"
+    }.get(msg_type, "Unknown")
+    
+    if context.file:
+        print(f"QML {type_str}: {msg} [{context.file}:{context.line}]")
+    else:
+        print(f"QML {type_str}: {msg}")
+
+
 def register_qml_types() -> None:
     """Register all Python types for QML access"""
 
@@ -56,31 +73,6 @@ def register_qml_types() -> None:
     qmlRegisterType(ThemeController, "MedievalControllers", 1, 0, "ThemeController")
     qmlRegisterType(ExportController, "MedievalControllers", 1, 0, "ExportController")
 
-    # Register enums - make them available to QML
-    # qmlRegisterType(Archetype, "MedievalEnums", 1, 0, "Archetype")
-    # qmlRegisterType(Affinity, "MedievalEnums", 1, 0, "Affinity")
-    # qmlRegisterType(Gender, "MedievalEnums", 1, 0, "Gender")
-    # qmlRegisterType(CharacterStatus, "MedievalEnums", 1, 0, "CharacterStatus")
-    # qmlRegisterType(EnneagramType, "MedievalEnums", 1, 0, "EnneagramType")
-    # qmlRegisterType(Wing, "MedievalEnums", 1, 0, "Wing")
-    # qmlRegisterType(Instinct, "MedievalEnums", 1, 0, "Instinct")
-    # qmlRegisterType(TriadCenter, "MedievalEnums", 1, 0, "TriadCenter")
-    # qmlRegisterType(StatCategory, "MedievalEnums", 1, 0, "StatCategory")
-    # qmlRegisterType(RelationType, "MedievalEnums", 1, 0, "RelationType")
-    # qmlRegisterType(EventType, "MedievalEnums", 1, 0, "EventType")
-    # qmlRegisterType(ThemeMode, "MedievalEnums", 1, 0, "ThemeMode")
-    # qmlRegisterType(ExportFormat, "MedievalEnums", 1, 0, "ExportFormat")
-
-
-def create_app_theme_singleton(engine: QQmlApplicationEngine) -> QObject:
-    """Create AppTheme singleton with theme controller"""
-    theme_controller = ThemeController()
-
-    # Register the theme controller to be accessible from QML
-    engine.rootContext().setContextProperty("themeController", theme_controller)
-
-    return theme_controller
-
 
 def setup_application() -> QGuiApplication:
     """Setup and configure the Qt application"""
@@ -90,6 +82,9 @@ def setup_application() -> QGuiApplication:
     QCoreApplication.setOrganizationDomain("medieval-character-manager.local")
     QCoreApplication.setApplicationName("Medieval Character Manager")
     QCoreApplication.setApplicationVersion("2.5.0-Phase5")
+
+    # Set Qt Quick Controls style to avoid customization warnings
+    os.environ["QT_QUICK_CONTROLS_STYLE"] = "Basic"
 
     # Create application
     app = QGuiApplication(sys.argv)
@@ -188,9 +183,15 @@ def verify_qml_files() -> bool:
 def setup_engine_context(
     engine: QQmlApplicationEngine, args: argparse.Namespace
 ) -> None:
-    """Setup QML engine context properties"""
+    """Setup QML engine context properties - FIXED ORDER"""
 
     context = engine.rootContext()
+    
+    # CRITICAL: Set simple properties FIRST before controllers
+    # These are used in property bindings and must exist before QML loads
+    context.setContextProperty("debugMode", args.debug)
+    context.setContextProperty("animationsDisabled", args.no_animations)
+    context.setContextProperty("compactMode", args.compact)
 
     # Create and register controllers
     main_controller = MainController()
@@ -213,21 +214,9 @@ def setup_engine_context(
     context.setContextProperty("storageController", storage_controller)
     context.setContextProperty("themeController", theme_controller)
     context.setContextProperty("exportController", export_controller)
-
-    app_theme_file = Path(__file__).parent / "qml" / "styles" / "AppTheme.qml"
-
-    # qmlRegisterSingletonType(
-    #     QUrl("file:///" + app_theme_file.as_posix()), "App.Styles", 1, 0, "AppTheme"
-    # )
-
-    # Set debug mode
-    context.setContextProperty("debugMode", args.debug)
-
-    # Set animation preferences
-    context.setContextProperty("animationsDisabled", args.no_animations)
-
-    # Set compact mode
-    context.setContextProperty("compactMode", args.compact)
+    
+    # Also register a generic 'controller' for compatibility
+    context.setContextProperty("controller", main_controller)
 
     # Provide enum values for QML
     context.setContextProperty(
@@ -237,7 +226,6 @@ def setup_engine_context(
     context.setContextProperty(
         "Affinity", {name: value.value for name, value in Affinity.__members__.items()}
     )
-
     context.setContextProperty(
         "RelationType",
         {name: value.value for name, value in RelationType.__members__.items()},
@@ -256,8 +244,31 @@ def setup_engine_context(
         main_controller.load_character_file(str(args.load))
 
 
+def register_app_theme_singleton(engine: QQmlApplicationEngine) -> bool:
+    """Register the AppTheme singleton - FIXED"""
+    
+    qml_dir = Path(__file__).parent / "qml"
+    app_theme_file = qml_dir / "styles" / "AppTheme.qml"
+    
+    if not app_theme_file.exists():
+        print(f"ERROR: AppTheme.qml not found at {app_theme_file}")
+        return False
+    
+    # Create proper file URL
+    file_url = QUrl.fromLocalFile(str(app_theme_file))
+    
+    try:
+        # Register the singleton with the correct URL format
+        qmlRegisterSingletonType(file_url, "App.Styles", 1, 0, "AppTheme")
+        print(f"✓ AppTheme singleton registered from {app_theme_file}")
+        return True
+    except Exception as e:
+        print(f"ERROR: Failed to register AppTheme singleton: {e}")
+        return False
+
+
 def main() -> int:
-    """Main application entry point"""
+    """Main application entry point - FIXED"""
 
     # Parse command line arguments
     args = parse_arguments()
@@ -265,6 +276,8 @@ def main() -> int:
     if args.debug:
         print("Medieval Character Manager - Phase 5")
         print("Debug mode enabled")
+        # Install custom message handler for better QML debugging
+        qInstallMessageHandler(qml_message_handler)
 
     # Verify QML files exist
     if not verify_qml_files():
@@ -281,19 +294,33 @@ def main() -> int:
     # Create QML engine
     engine = QQmlApplicationEngine()
 
-    # Setup engine context
-    setup_engine_context(engine, args)
-
-    # Add QML import paths
+    # Add QML import paths BEFORE setting context and loading QML
     qml_dir = Path(__file__).parent / "qml"
     engine.addImportPath(str(qml_dir))
     engine.addImportPath(str(qml_dir / "components"))
     engine.addImportPath(str(qml_dir / "views"))
     engine.addImportPath(str(qml_dir / "dialogs"))
     engine.addImportPath(str(qml_dir / "styles"))
+    
+    if args.debug:
+        print("\nQML Import paths:")
+        for path in engine.importPathList():
+            print(f"  - {path}")
+
+    # Register AppTheme singleton BEFORE setting context
+    if not register_app_theme_singleton(engine):
+        print("WARNING: AppTheme singleton registration failed")
+        # Continue anyway, as it might work with relative imports
+
+    # Setup engine context (properties must be set BEFORE loading QML)
+    setup_engine_context(engine, args)
 
     # Load main QML file
     main_qml = qml_dir / "main.qml"
+    
+    if args.debug:
+        print(f"\nLoading main QML from: {main_qml}")
+    
     engine.load(QUrl.fromLocalFile(str(main_qml)))
 
     # Check if loading was successful
@@ -303,11 +330,11 @@ def main() -> int:
         return 1
 
     if args.debug:
-        print("Application started successfully")
-        print(f"Theme: {args.theme}")
-        print(f"Data directory: {args.data_dir or 'default'}")
-        print(f"Animations: {'disabled' if args.no_animations else 'enabled'}")
-        print(f"Mode: {'compact' if args.compact else 'normal'}")
+        print("\n✓ Application started successfully")
+        print(f"  Theme: {args.theme}")
+        print(f"  Data directory: {args.data_dir or 'default'}")
+        print(f"  Animations: {'disabled' if args.no_animations else 'enabled'}")
+        print(f"  Mode: {'compact' if args.compact else 'normal'}")
 
     # Run application
     return app.exec()

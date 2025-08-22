@@ -1,9 +1,9 @@
-import QtQuick
-import QtQuick.Controls
-import QtQuick.Layouts
+import QtQuick 6.9
+import QtQuick.Controls 6.9
+import QtQuick.Layouts 6.9
 import "../styles"
-// import App.Styles
 
+// import App.Styles
 
 Rectangle {
     id: sidebar
@@ -13,10 +13,10 @@ Rectangle {
 
     // Properties
     property alias characterListModel: characterList.model
-    
+
     // Signals
-    signal characterSelected()
-    signal newCharacterRequested()
+    signal characterSelected
+    signal newCharacterRequested
     signal deleteCharacterRequested(string characterId)
 
     ColumnLayout {
@@ -46,37 +46,37 @@ Rectangle {
             id: characterList
             Layout.fillWidth: true
             Layout.fillHeight: true
-            
+
             clip: true
             spacing: AppTheme.spacing.small
-            
+
             delegate: CharacterListItem {
                 width: characterList.width
-                
+
                 characterName: model.name || ""
                 characterLevel: model.level || 1
                 characterId: model.characterId || ""
                 hasImage: model.hasImage || false
-                
+
                 onClicked: {
-                    characterList.currentIndex = index
+                    characterList.currentIndex = index;
                     if (characterListModel && characterListModel.selectCharacter) {
-                        characterListModel.selectCharacter(index)
+                        characterListModel.selectCharacter(index);
                     }
                 }
-                
-                onDeleteRequested: function(charId) {
-                    sidebar.deleteCharacterRequested(charId)
+
+                onDeleteRequested: function (charId) {
+                    sidebar.deleteCharacterRequested(charId);
                 }
             }
-            
+
             // Highlight current item
             highlight: Rectangle {
                 color: AppTheme.primaryColor
                 opacity: 0.3
                 radius: AppTheme.radius.medium
             }
-            
+
             // Empty state
             Label {
                 anchors.centerIn: parent
@@ -96,14 +96,12 @@ Rectangle {
             Button {
                 text: qsTr("New")
                 Layout.fillWidth: true
-                
+
                 background: Rectangle {
-                    color: parent.pressed ? AppTheme.button.pressed :
-                           parent.hovered ? AppTheme.button.hovered :
-                           AppTheme.button.normal
+                    color: parent.pressed ? AppTheme.button.pressed : parent.hovered ? AppTheme.button.hovered : AppTheme.button.normal
                     radius: AppTheme.radius.medium
                 }
-                
+
                 contentItem: Text {
                     text: parent.text
                     font.family: AppTheme.fontFamily
@@ -112,10 +110,10 @@ Rectangle {
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
-                
+
                 onClicked: {
                     // Connect to controller later
-                    console.log("New character clicked")
+                    console.log("New character clicked");
                 }
             }
 
@@ -123,16 +121,12 @@ Rectangle {
                 text: qsTr("Delete")
                 enabled: characterList.currentIndex >= 0
                 Layout.fillWidth: true
-                
+
                 background: Rectangle {
-                    color: parent.enabled ? 
-                           (parent.pressed ? AppTheme.button.destructivePressed :
-                            parent.hovered ? AppTheme.button.destructiveHovered :
-                            AppTheme.button.destructiveNormal) :
-                           AppTheme.button.disabled
+                    color: parent.enabled ? (parent.pressed ? AppTheme.button.destructivePressed : parent.hovered ? AppTheme.button.destructiveHovered : AppTheme.button.destructiveNormal) : AppTheme.button.disabled
                     radius: AppTheme.radius.medium
                 }
-                
+
                 contentItem: Text {
                     text: parent.text
                     font.family: AppTheme.fontFamily
@@ -141,11 +135,11 @@ Rectangle {
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
-                
+
                 onClicked: {
                     if (characterList.currentIndex >= 0) {
                         // Simplified for now - just log
-                        console.log("Delete character clicked")
+                        console.log("Delete character clicked");
                     }
                 }
             }

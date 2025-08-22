@@ -1,162 +1,164 @@
-import QtQuick
-import QtQuick.Controls
-import QtQuick.Layouts
-import QtQuick.Dialogs
+import QtQuick 6.9
+import QtQuick.Controls 6.9
+import QtQuick.Layouts 6.9
+import QtQuick.Dialogs 6.9
 import "../components"
 import "../styles"
+import QtCore
+
 // import App.Styles
 
 Dialog {
     id: settingsDialog
-    
+
     property var themeController: null
     property int selectedTabIndex: 0
-    
+
     title: "Settings"
     width: 800
     height: 600
     modal: true
     standardButtons: Dialog.Ok | Dialog.Cancel | Dialog.Apply
-    
+
     // Apply button handler
     onApplied: {
-        applySettings()
+        applySettings();
     }
-    
+
     // OK button handler
     onAccepted: {
-        applySettings()
+        applySettings();
     }
-    
+
     // Cancel button handler
     onRejected: {
-        revertSettings()
+        revertSettings();
     }
-    
+
     function applySettings() {
         // Apply theme changes
         if (themeController && themeCombo.currentText !== themeController.currentThemeName) {
-            themeController.switchTheme(themeCombo.currentText)
+            themeController.switchTheme(themeCombo.currentText);
         }
-        
+
         // Save other settings
-        AppTheme.animationsEnabled = animationsSwitch.checked
-        AppTheme.soundEnabled = soundSwitch.checked
-        AppTheme.autoSaveEnabled = autoSaveSwitch.checked
-        AppTheme.autoSaveInterval = autoSaveSpinBox.value
+        AppTheme.animationsEnabled = animationsSwitch.checked;
+        AppTheme.soundEnabled = soundSwitch.checked;
+        AppTheme.autoSaveEnabled = autoSaveSwitch.checked;
+        AppTheme.autoSaveInterval = autoSaveSpinBox.value;
     }
-    
+
     function revertSettings() {
         // Revert to original values
-        loadCurrentSettings()
+        loadCurrentSettings();
     }
-    
+
     function loadCurrentSettings() {
         // Load current theme
         if (themeController) {
-            var themes = themeController.availableThemes
+            var themes = themeController.availableThemes;
             for (var i = 0; i < themes.length; i++) {
                 if (themes[i].name === themeController.currentThemeName) {
-                    themeCombo.currentIndex = i
-                    break
+                    themeCombo.currentIndex = i;
+                    break;
                 }
             }
         }
-        
+
         // Load other settings
-        animationsSwitch.checked = AppTheme.animationsEnabled
-        soundSwitch.checked = AppTheme.soundEnabled
-        autoSaveSwitch.checked = AppTheme.autoSaveEnabled
-        autoSaveSpinBox.value = AppTheme.autoSaveInterval
+        animationsSwitch.checked = AppTheme.animationsEnabled;
+        soundSwitch.checked = AppTheme.soundEnabled;
+        autoSaveSwitch.checked = AppTheme.autoSaveEnabled;
+        autoSaveSpinBox.value = AppTheme.autoSaveInterval;
     }
-    
+
     Component.onCompleted: {
-        loadCurrentSettings()
+        loadCurrentSettings();
     }
-    
+
     // Main content
     ColumnLayout {
         anchors.fill: parent
         spacing: AppTheme.spacing.medium
-        
+
         // Tab bar for different settings categories
         TabBar {
             id: settingsTabBar
             Layout.fillWidth: true
             currentIndex: selectedTabIndex
-            
+
             TabButton {
                 text: "Appearance"
                 width: implicitWidth
             }
-            
+
             TabButton {
                 text: "Behavior"
                 width: implicitWidth
             }
-            
+
             TabButton {
                 text: "Data"
                 width: implicitWidth
             }
-            
+
             TabButton {
                 text: "Shortcuts"
                 width: implicitWidth
             }
         }
-        
+
         // Settings content area
         StackLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
             currentIndex: settingsTabBar.currentIndex
-            
+
             // Appearance Tab
             ScrollView {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                
+
                 ColumnLayout {
                     width: parent.width
                     spacing: AppTheme.spacing.large
                     // Theme Selection
-                    
+
                     GroupBox {
                         Layout.fillWidth: true
                         title: "Theme"
-                        
+
                         ColumnLayout {
                             anchors.fill: parent
                             spacing: AppTheme.spacing.medium
-                            
+
                             RowLayout {
                                 Layout.fillWidth: true
-                                
+
                                 Label {
                                     text: "Theme:"
                                     Layout.preferredWidth: 120
                                 }
-                                
+
                                 ComboBox {
                                     id: themeCombo
                                     Layout.fillWidth: true
                                     model: themeController ? themeController.availableThemes.map(t => t.name) : []
-                                    
+
                                     onCurrentTextChanged: {
                                         if (themeController) {
-                                            updateThemePreview()
+                                            updateThemePreview();
                                         }
                                     }
                                 }
-                                
+
                                 Button {
                                     text: "Customize"
                                     enabled: themeCombo.currentText !== ""
                                     onClicked: openCustomThemeDialog()
                                 }
                             }
-                            
+
                             // Theme Preview
                             Rectangle {
                                 Layout.fillWidth: true
@@ -164,30 +166,54 @@ Dialog {
                                 color: AppTheme.colors.surface
                                 border.color: AppTheme.colors.border
                                 radius: AppTheme.radius.medium
-                                
+
                                 GridLayout {
                                     anchors.fill: parent
                                     anchors.margins: AppTheme.spacing.medium
                                     columns: 4
                                     rowSpacing: AppTheme.spacing.small
                                     columnSpacing: AppTheme.spacing.small
-                                    
+
                                     // Color preview squares
                                     Repeater {
                                         model: [
-                                            { name: "Background", color: AppTheme.colors.background },
-                                            { name: "Surface", color: AppTheme.colors.surface },
-                                            { name: "Primary", color: AppTheme.colors.primary },
-                                            { name: "Secondary", color: AppTheme.colors.secondary },
-                                            { name: "Accent", color: AppTheme.colors.accent },
-                                            { name: "Text", color: AppTheme.colors.text },
-                                            { name: "Error", color: AppTheme.colors.error },
-                                            { name: "Success", color: AppTheme.colors.success }
+                                            {
+                                                name: "Background",
+                                                color: AppTheme.colors.background
+                                            },
+                                            {
+                                                name: "Surface",
+                                                color: AppTheme.colors.surface
+                                            },
+                                            {
+                                                name: "Primary",
+                                                color: AppTheme.colors.primary
+                                            },
+                                            {
+                                                name: "Secondary",
+                                                color: AppTheme.colors.secondary
+                                            },
+                                            {
+                                                name: "Accent",
+                                                color: AppTheme.colors.accent
+                                            },
+                                            {
+                                                name: "Text",
+                                                color: AppTheme.colors.text
+                                            },
+                                            {
+                                                name: "Error",
+                                                color: AppTheme.colors.error
+                                            },
+                                            {
+                                                name: "Success",
+                                                color: AppTheme.colors.success
+                                            }
                                         ]
-                                        
+
                                         delegate: Column {
                                             spacing: 2
-                                            
+
                                             Rectangle {
                                                 width: 60
                                                 height: 40
@@ -195,7 +221,7 @@ Dialog {
                                                 border.color: AppTheme.colors.border
                                                 radius: AppTheme.radius.small
                                             }
-                                            
+
                                             Label {
                                                 text: modelData.name
                                                 font.pixelSize: 10
@@ -205,61 +231,61 @@ Dialog {
                                     }
                                 }
                             }
-                            
+
                             // Quick toggle
                             RowLayout {
                                 Layout.fillWidth: true
-                                
+
                                 Label {
                                     text: "Quick Toggle (Ctrl+Shift+T):"
                                     Layout.fillWidth: true
                                 }
-                                
+
                                 Button {
                                     text: themeController && themeController.isDarkMode ? "Switch to Light" : "Switch to Dark"
                                     onClicked: {
                                         if (themeController) {
-                                            themeController.toggleTheme()
-                                            loadCurrentSettings()
+                                            themeController.toggleTheme();
+                                            loadCurrentSettings();
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                    
+
                     // Animation Settings
                     GroupBox {
                         Layout.fillWidth: true
                         title: "Animations"
-                        
+
                         ColumnLayout {
                             anchors.fill: parent
                             spacing: AppTheme.spacing.medium
-                            
+
                             RowLayout {
                                 Layout.fillWidth: true
-                                
+
                                 Label {
                                     text: "Enable Animations:"
                                     Layout.fillWidth: true
                                 }
-                                
+
                                 Switch {
                                     id: animationsSwitch
                                     checked: true
                                 }
                             }
-                            
+
                             RowLayout {
                                 Layout.fillWidth: true
                                 enabled: animationsSwitch.checked
-                                
+
                                 Label {
                                     text: "Animation Speed:"
                                     Layout.preferredWidth: 120
                                 }
-                                
+
                                 Slider {
                                     id: animationSpeedSlider
                                     Layout.fillWidth: true
@@ -268,7 +294,7 @@ Dialog {
                                     value: 1.0
                                     stepSize: 0.1
                                 }
-                                
+
                                 Label {
                                     text: animationSpeedSlider.value.toFixed(1) + "x"
                                     Layout.preferredWidth: 40
@@ -276,37 +302,37 @@ Dialog {
                             }
                         }
                     }
-                    
+
                     // Font Settings
                     GroupBox {
                         Layout.fillWidth: true
                         title: "Fonts"
-                        
+
                         ColumnLayout {
                             anchors.fill: parent
                             spacing: AppTheme.spacing.medium
-                            
+
                             RowLayout {
                                 Layout.fillWidth: true
-                                
+
                                 Label {
                                     text: "Font Size:"
                                     Layout.preferredWidth: 120
                                 }
-                                
+
                                 SpinBox {
                                     id: fontSizeSpinBox
                                     from: 10
                                     to: 20
                                     value: 14
-                                    textFromValue: function(value) {
-                                        return value + " pt"
+                                    textFromValue: function (value) {
+                                        return value + " pt";
                                     }
-                                    valueFromText: function(text) {
-                                        return parseInt(text)
+                                    valueFromText: function (text) {
+                                        return parseInt(text);
                                     }
                                 }
-                                
+
                                 Button {
                                     text: "Reset"
                                     onClicked: fontSizeSpinBox.value = 14
@@ -316,61 +342,61 @@ Dialog {
                     }
                 }
             }
-            
+
             // Behavior Tab
             ScrollView {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                
+
                 ColumnLayout {
                     width: parent.width
                     spacing: AppTheme.spacing.large
-                    
+
                     // General Behavior
                     GroupBox {
                         Layout.fillWidth: true
                         title: "General"
-                        
+
                         ColumnLayout {
                             anchors.fill: parent
                             spacing: AppTheme.spacing.medium
-                            
+
                             RowLayout {
                                 Layout.fillWidth: true
-                                
+
                                 Label {
                                     text: "Sound Effects:"
                                     Layout.fillWidth: true
                                 }
-                                
+
                                 Switch {
                                     id: soundSwitch
                                     checked: false
                                 }
                             }
-                            
+
                             RowLayout {
                                 Layout.fillWidth: true
-                                
+
                                 Label {
                                     text: "Confirm Deletions:"
                                     Layout.fillWidth: true
                                 }
-                                
+
                                 Switch {
                                     id: confirmDeleteSwitch
                                     checked: true
                                 }
                             }
-                            
+
                             RowLayout {
                                 Layout.fillWidth: true
-                                
+
                                 Label {
                                     text: "Show Tooltips:"
                                     Layout.fillWidth: true
                                 }
-                                
+
                                 Switch {
                                     id: tooltipsSwitch
                                     checked: true
@@ -378,62 +404,62 @@ Dialog {
                             }
                         }
                     }
-                    
+
                     // Auto-save Settings
                     GroupBox {
                         Layout.fillWidth: true
                         title: "Auto-save"
-                        
+
                         ColumnLayout {
                             anchors.fill: parent
                             spacing: AppTheme.spacing.medium
-                            
+
                             RowLayout {
                                 Layout.fillWidth: true
-                                
+
                                 Label {
                                     text: "Enable Auto-save:"
                                     Layout.fillWidth: true
                                 }
-                                
+
                                 Switch {
                                     id: autoSaveSwitch
                                     checked: true
                                 }
                             }
-                            
+
                             RowLayout {
                                 Layout.fillWidth: true
                                 enabled: autoSaveSwitch.checked
-                                
+
                                 Label {
                                     text: "Auto-save Interval:"
                                     Layout.preferredWidth: 120
                                 }
-                                
+
                                 SpinBox {
                                     id: autoSaveSpinBox
                                     from: 1
                                     to: 60
                                     value: 5
-                                    textFromValue: function(value) {
-                                        return value + " min"
+                                    textFromValue: function (value) {
+                                        return value + " min";
                                     }
-                                    valueFromText: function(text) {
-                                        return parseInt(text)
+                                    valueFromText: function (text) {
+                                        return parseInt(text);
                                     }
                                 }
                             }
-                            
+
                             RowLayout {
                                 Layout.fillWidth: true
                                 enabled: autoSaveSwitch.checked
-                                
+
                                 Label {
                                     text: "Create Backups:"
                                     Layout.fillWidth: true
                                 }
-                                
+
                                 Switch {
                                     id: backupSwitch
                                     checked: true
@@ -443,56 +469,56 @@ Dialog {
                     }
                 }
             }
-            
+
             // Data Tab
             ScrollView {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                
+
                 ColumnLayout {
                     width: parent.width
                     spacing: AppTheme.spacing.large
-                    
+
                     // Storage Settings
                     GroupBox {
                         Layout.fillWidth: true
                         title: "Storage"
-                        
+
                         ColumnLayout {
                             anchors.fill: parent
                             spacing: AppTheme.spacing.medium
-                            
+
                             RowLayout {
                                 Layout.fillWidth: true
-                                
+
                                 Label {
                                     text: "Data Directory:"
                                     Layout.preferredWidth: 120
                                 }
-                                
+
                                 TextField {
                                     id: dataDirectoryField
                                     Layout.fillWidth: true
                                     readOnly: true
-                                    text: StandardPaths.writableLocation(StandardPaths.AppDataLocation)
+                                    text: Platform.StandardPaths.writableLocation(Platform.StandardPaths.AppDataLocation)
                                 }
-                                
+
                                 Button {
                                     text: "Browse"
                                     onClicked: {
-                                        folderDialog.open()
+                                        folderDialog.open();
                                     }
                                 }
                             }
-                            
+
                             RowLayout {
                                 Layout.fillWidth: true
-                                
+
                                 Label {
                                     text: "Maximum Backups:"
                                     Layout.preferredWidth: 120
                                 }
-                                
+
                                 SpinBox {
                                     id: maxBackupsSpinBox
                                     from: 1
@@ -502,41 +528,41 @@ Dialog {
                             }
                         }
                     }
-                    
+
                     // Import/Export
                     GroupBox {
                         Layout.fillWidth: true
                         title: "Import/Export"
-                        
+
                         ColumnLayout {
                             anchors.fill: parent
                             spacing: AppTheme.spacing.medium
-                            
+
                             RowLayout {
                                 Layout.fillWidth: true
-                                
+
                                 Button {
                                     text: "Export All Characters"
                                     Layout.fillWidth: true
                                     onClicked: exportAllCharacters()
                                 }
-                                
+
                                 Button {
                                     text: "Import Characters"
                                     Layout.fillWidth: true
                                     onClicked: importCharacters()
                                 }
                             }
-                            
+
                             RowLayout {
                                 Layout.fillWidth: true
-                                
+
                                 Button {
                                     text: "Export Settings"
                                     Layout.fillWidth: true
                                     onClicked: exportSettings()
                                 }
-                                
+
                                 Button {
                                     text: "Import Settings"
                                     Layout.fillWidth: true
@@ -545,37 +571,37 @@ Dialog {
                             }
                         }
                     }
-                    
+
                     // Clear Data
                     GroupBox {
                         Layout.fillWidth: true
                         title: "Clear Data"
-                        
+
                         ColumnLayout {
                             anchors.fill: parent
                             spacing: AppTheme.spacing.medium
-                            
+
                             Label {
                                 text: "⚠️ Warning: These actions cannot be undone!"
                                 color: AppTheme.colors.error
                                 font.bold: true
                             }
-                            
+
                             RowLayout {
                                 Layout.fillWidth: true
-                                
+
                                 Button {
                                     text: "Clear Cache"
                                     Layout.fillWidth: true
                                     onClicked: confirmClearCache()
                                 }
-                                
+
                                 Button {
                                     text: "Reset Settings"
                                     Layout.fillWidth: true
                                     onClicked: confirmResetSettings()
                                 }
-                                
+
                                 Button {
                                     text: "Delete All Data"
                                     Layout.fillWidth: true
@@ -587,26 +613,26 @@ Dialog {
                     }
                 }
             }
-            
+
             // Shortcuts Tab
             ScrollView {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                
+
                 ColumnLayout {
                     width: parent.width
                     spacing: AppTheme.spacing.large
-                    
+
                     GroupBox {
                         Layout.fillWidth: true
                         title: "Keyboard Shortcuts"
-                        
+
                         GridLayout {
                             anchors.fill: parent
                             columns: 3
                             rowSpacing: AppTheme.spacing.medium
                             columnSpacing: AppTheme.spacing.large
-                            
+
                             // Headers
                             Label {
                                 text: "Action"
@@ -620,50 +646,110 @@ Dialog {
                                 text: "Description"
                                 font.bold: true
                             }
-                            
+
                             // Shortcuts list
                             Repeater {
                                 model: [
-                                    { action: "New Character", shortcut: "Ctrl+N", description: "Create a new character" },
-                                    { action: "Save", shortcut: "Ctrl+S", description: "Save current character" },
-                                    { action: "Save All", shortcut: "Ctrl+Shift+S", description: "Save all characters" },
-                                    { action: "Load", shortcut: "Ctrl+O", description: "Load character file" },
-                                    { action: "Delete", shortcut: "Delete", description: "Delete selected item" },
-                                    { action: "Overview Tab", shortcut: "Ctrl+1", description: "Switch to Overview tab" },
-                                    { action: "Enneagram Tab", shortcut: "Ctrl+2", description: "Switch to Enneagram tab" },
-                                    { action: "Stats Tab", shortcut: "Ctrl+3", description: "Switch to Stats tab" },
-                                    { action: "Biography Tab", shortcut: "Ctrl+4", description: "Switch to Biography tab" },
-                                    { action: "Relations Tab", shortcut: "Ctrl+5", description: "Switch to Relations tab" },
-                                    { action: "Timeline Tab", shortcut: "Ctrl+6", description: "Switch to Timeline tab" },
-                                    { action: "Toggle Theme", shortcut: "Ctrl+Shift+T", description: "Toggle dark/light theme" },
-                                    { action: "Settings", shortcut: "Ctrl+,", description: "Open settings dialog" },
-                                    { action: "Search", shortcut: "Ctrl+F", description: "Open search dialog" },
-                                    { action: "Quit", shortcut: "Ctrl+Q", description: "Quit application" }
+                                    {
+                                        action: "New Character",
+                                        shortcut: "Ctrl+N",
+                                        description: "Create a new character"
+                                    },
+                                    {
+                                        action: "Save",
+                                        shortcut: "Ctrl+S",
+                                        description: "Save current character"
+                                    },
+                                    {
+                                        action: "Save All",
+                                        shortcut: "Ctrl+Shift+S",
+                                        description: "Save all characters"
+                                    },
+                                    {
+                                        action: "Load",
+                                        shortcut: "Ctrl+O",
+                                        description: "Load character file"
+                                    },
+                                    {
+                                        action: "Delete",
+                                        shortcut: "Delete",
+                                        description: "Delete selected item"
+                                    },
+                                    {
+                                        action: "Overview Tab",
+                                        shortcut: "Ctrl+1",
+                                        description: "Switch to Overview tab"
+                                    },
+                                    {
+                                        action: "Enneagram Tab",
+                                        shortcut: "Ctrl+2",
+                                        description: "Switch to Enneagram tab"
+                                    },
+                                    {
+                                        action: "Stats Tab",
+                                        shortcut: "Ctrl+3",
+                                        description: "Switch to Stats tab"
+                                    },
+                                    {
+                                        action: "Biography Tab",
+                                        shortcut: "Ctrl+4",
+                                        description: "Switch to Biography tab"
+                                    },
+                                    {
+                                        action: "Relations Tab",
+                                        shortcut: "Ctrl+5",
+                                        description: "Switch to Relations tab"
+                                    },
+                                    {
+                                        action: "Timeline Tab",
+                                        shortcut: "Ctrl+6",
+                                        description: "Switch to Timeline tab"
+                                    },
+                                    {
+                                        action: "Toggle Theme",
+                                        shortcut: "Ctrl+Shift+T",
+                                        description: "Toggle dark/light theme"
+                                    },
+                                    {
+                                        action: "Settings",
+                                        shortcut: "Ctrl+,",
+                                        description: "Open settings dialog"
+                                    },
+                                    {
+                                        action: "Search",
+                                        shortcut: "Ctrl+F",
+                                        description: "Open search dialog"
+                                    },
+                                    {
+                                        action: "Quit",
+                                        shortcut: "Ctrl+Q",
+                                        description: "Quit application"
+                                    }
                                 ]
-                                
+
                                 delegate: RowLayout {
                                     Layout.columnSpan: 3
                                     spacing: parent.columnSpacing
-                                    
+
                                     Label {
                                         text: modelData.action
                                         Layout.preferredWidth: 150
                                     }
-                                    
+
                                     Rectangle {
                                         Layout.preferredWidth: 120
                                         height: 30
                                         color: AppTheme.colors.surface
                                         border.color: AppTheme.colors.border
                                         radius: AppTheme.radius.small
-                                        
+
                                         Label {
                                             anchors.centerIn: parent
                                             text: modelData.shortcut
                                             font.family: "monospace"
                                         }
                                     }
-                                    
+
                                     Label {
                                         text: modelData.description
                                         Layout.fillWidth: true
@@ -673,15 +759,15 @@ Dialog {
                             }
                         }
                     }
-                    
+
                     GroupBox {
                         Layout.fillWidth: true
                         title: "Custom Shortcuts"
-                        
+
                         ColumnLayout {
                             anchors.fill: parent
                             spacing: AppTheme.spacing.medium
-                            
+
                             Label {
                                 text: "Custom shortcuts coming soon..."
                                 color: AppTheme.colors.textSecondary
@@ -693,60 +779,60 @@ Dialog {
             }
         }
     }
-    
+
     // Helper functions
     function updateThemePreview() {
-        // This will be called when theme changes
-        // The preview will update automatically through bindings
+    // This will be called when theme changes
+    // The preview will update automatically through bindings
     }
-    
+
     function openCustomThemeDialog() {
         // TODO: Open custom theme creation dialog
-        console.log("Custom theme dialog not yet implemented")
+        console.log("Custom theme dialog not yet implemented");
     }
-    
+
     function exportAllCharacters() {
         // TODO: Implement export functionality
-        console.log("Export all characters")
+        console.log("Export all characters");
     }
-    
+
     function importCharacters() {
         // TODO: Implement import functionality
-        console.log("Import characters")
+        console.log("Import characters");
     }
-    
+
     function exportSettings() {
         // TODO: Implement settings export
-        console.log("Export settings")
+        console.log("Export settings");
     }
-    
+
     function importSettings() {
         // TODO: Implement settings import
-        console.log("Import settings")
+        console.log("Import settings");
     }
-    
+
     function confirmClearCache() {
         // TODO: Show confirmation dialog
-        console.log("Clear cache")
+        console.log("Clear cache");
     }
-    
+
     function confirmResetSettings() {
         // TODO: Show confirmation dialog
-        console.log("Reset settings")
+        console.log("Reset settings");
     }
-    
+
     function confirmDeleteAllData() {
         // TODO: Show confirmation dialog
-        console.log("Delete all data")
+        console.log("Delete all data");
     }
-    
+
     // File dialog for selecting data directory
     FolderDialog {
         id: folderDialog
         title: "Select Data Directory"
-        
+
         onAccepted: {
-            dataDirectoryField.text = folder
+            dataDirectoryField.text = folder;
         }
     }
 }
