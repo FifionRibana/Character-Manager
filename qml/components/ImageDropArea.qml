@@ -7,7 +7,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-import "../styles"
+// import "../styles"
+import App.Styles
 
 Rectangle {
     id: imageDropArea
@@ -21,7 +22,7 @@ Rectangle {
     
     // Visual properties
     property real animationDuration: 200
-    property color dropZoneColor: AppTheme.accentColor
+    property color dropZoneColor: AppTheme.colors.accent
     property color dragActiveColor: Qt.lighter(dropZoneColor, 1.2)
     
     // Supported image formats
@@ -104,7 +105,7 @@ Rectangle {
         Item {
             ColumnLayout {
                 anchors.centerIn: parent
-                spacing: AppTheme.spacingSmall
+                spacing: AppTheme.spacing.small
                 
                 // Drop icon
                 Text {
@@ -186,14 +187,14 @@ Rectangle {
                 Rectangle {
                     anchors.fill: parent
                     visible: displayImage.status === Image.Error
-                    color: AppTheme.backgroundColorSecondary
+                    color: AppTheme.colors.backgroundVariant
                     
                     Text {
                         anchors.centerIn: parent
                         text: "❌\n" + qsTr("Load Error")
                         font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeCaption
-                        color: AppTheme.textColorSecondary
+                        font.pixelSize: AppTheme.fontSize.small
+                        color: AppTheme.colors.textSecondary
                         horizontalAlignment: Text.AlignHCenter
                     }
                 }
@@ -213,7 +214,7 @@ Rectangle {
                 RowLayout {
                     anchors.centerIn: parent
                     visible: parent.opacity > 0
-                    spacing: AppTheme.spacingSmall
+                    spacing: AppTheme.spacing.small
                     
                     // Change image button
                     Button {
@@ -361,13 +362,13 @@ Rectangle {
             case "dragRejected":
                 return Qt.rgba(0.9, 0.3, 0.2, 0.1)
             default:
-                return AppTheme.backgroundColorSecondary
+                return AppTheme.colors.backgroundVariant
         }
     }
     
     function getBorderColor() {
         if (imageLoaded) {
-            return AppTheme.borderColor
+            return AppTheme.colors.border
         }
         
         switch (state) {
@@ -376,7 +377,7 @@ Rectangle {
             case "dragRejected":
                 return "#e74c3c"
             default:
-                return AppTheme.borderColor
+                return AppTheme.colors.border
         }
     }
     
@@ -419,7 +420,7 @@ Rectangle {
             case "dragRejected":
                 return "#e74c3c"
             default:
-                return AppTheme.textColorSecondary
+                return AppTheme.colors.textSecondary
         }
     }
     
@@ -430,7 +431,7 @@ Rectangle {
             case "dragRejected":
                 return "#e74c3c"
             default:
-                return AppTheme.textColorSecondary
+                return AppTheme.colors.textSecondary
         }
     }
     

@@ -7,7 +7,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "../components"
-import "../styles"
+// import "../styles"
+import App.Styles
 
 ScrollView {
     id: enneagramTab
@@ -20,7 +21,7 @@ ScrollView {
     
     ColumnLayout {
         width: enneagramTab.availableWidth
-        spacing: AppTheme.spacingLarge
+        spacing: AppTheme.spacing.large
         
         // Title section
         RowLayout {
@@ -29,9 +30,9 @@ ScrollView {
             Text {
                 text: qsTr("Enneagram Profile")
                 font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSizeDisplay
+                font.pixelSize: AppTheme.fontSize.tiny
                 font.bold: true
-                color: AppTheme.textColor
+                color: AppTheme.colors.text
             }
             
             Item { Layout.fillWidth: true }
@@ -45,7 +46,7 @@ ScrollView {
                 
                 background: Rectangle {
                     radius: 16
-                    color: AppTheme.accentColor
+                    color: AppTheme.colors.accent
                     opacity: parent.hovered ? 0.8 : 0.6
                     
                     Behavior on opacity {
@@ -68,7 +69,7 @@ ScrollView {
         // Main content
         RowLayout {
             Layout.fillWidth: true
-            spacing: AppTheme.spacingLarge
+            spacing: AppTheme.spacing.large
             
             // Left panel - Enneagram Wheel
             Rectangle {
@@ -79,20 +80,20 @@ ScrollView {
                 color: AppTheme.card.background
                 border.color: AppTheme.card.border
                 border.width: AppTheme.borderWidth
-                radius: AppTheme.card.radius
+                radius: AppTheme.radius.medium
                 
                 ColumnLayout {
                     anchors.fill: parent
-                    anchors.margins: AppTheme.spacingMedium
-                    spacing: AppTheme.spacingMedium
+                    anchors.margins: AppTheme.spacing.medium
+                    spacing: AppTheme.spacing.medium
                     
                     // Wheel title
                     Text {
                         text: qsTr("Enneagram Wheel")
                         font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeHeading
+                        font.pixelSize: AppTheme.fontSize.large
                         font.bold: true
-                        color: AppTheme.textColor
+                        color: AppTheme.colors.text
                         Layout.alignment: Qt.AlignHCenter
                     }
                     
@@ -127,8 +128,8 @@ ScrollView {
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 60
-                        color: AppTheme.backgroundColorSecondary || "#F8F9FA"
-                        border.color: AppTheme.borderColorLight || "#DEE2E6"
+                        color: AppTheme.colors.backgroundVariant || "#F8F9FA"
+                        border.color: AppTheme.colors.borderLight || "#DEE2E6"
                         border.width: 1
                         radius: 6
                         
@@ -138,8 +139,8 @@ ScrollView {
                             anchors.margins: 12
                             text: qsTr("Hover over a type to see its description")
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeBody
-                            color: AppTheme.textColorSecondary
+                            font.pixelSize: AppTheme.fontSize.medium
+                            color: AppTheme.colors.textSecondary
                             wrapMode: Text.WordWrap
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -151,7 +152,7 @@ ScrollView {
             ColumnLayout {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignTop
-                spacing: AppTheme.spacingMedium
+                spacing: AppTheme.spacing.medium
                 
                 // Core Type Information
                 Rectangle {
@@ -159,44 +160,44 @@ ScrollView {
                     color: AppTheme.card.background
                     border.color: AppTheme.card.border
                     border.width: AppTheme.borderWidth
-                    radius: AppTheme.card.radius
+                    radius: AppTheme.radius.medium
                     
-                    implicitHeight: coreTypeContent.implicitHeight + 2 * AppTheme.spacingMedium
+                    implicitHeight: coreTypeContent.implicitHeight + 2 * AppTheme.spacing.medium
                     
                     ColumnLayout {
                         id: coreTypeContent
                         anchors.fill: parent
-                        anchors.margins: AppTheme.spacingMedium
-                        spacing: AppTheme.spacingSmall
+                        anchors.margins: AppTheme.spacing.medium
+                        spacing: AppTheme.spacing.small
                         
                         Text {
                             text: qsTr("Core Type")
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeHeading
+                            font.pixelSize: AppTheme.fontSize.large
                             font.bold: true
-                            color: AppTheme.textColor
+                            color: AppTheme.colors.text
                         }
                         
                         Rectangle {
                             Layout.fillWidth: true
                             height: 1
-                            color: AppTheme.borderColor
+                            color: AppTheme.colors.border
                         }
                         
                         Text {
                             text: qsTr("Selected Type") + ": " + 
                                   getTypeName(enneagramWheel.selectedType)
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeBody
-                            color: AppTheme.textColor
+                            font.pixelSize: AppTheme.fontSize.medium
+                            color: AppTheme.colors.text
                             font.bold: true
                         }
                         
                         Text {
                             text: getTypeTitle(enneagramWheel.selectedType)
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeBody
-                            color: AppTheme.textColorSecondary
+                            font.pixelSize: AppTheme.fontSize.medium
+                            color: AppTheme.colors.textSecondary
                             font.italic: true
                         }
                     }
@@ -208,22 +209,22 @@ ScrollView {
                     color: AppTheme.card.background
                     border.color: AppTheme.card.border
                     border.width: AppTheme.borderWidth
-                    radius: AppTheme.card.radius
+                    radius: AppTheme.radius.medium
                     
-                    implicitHeight: wingContent.implicitHeight + 2 * AppTheme.spacingMedium
+                    implicitHeight: wingContent.implicitHeight + 2 * AppTheme.spacing.medium
                     
                     ColumnLayout {
                         id: wingContent
                         anchors.fill: parent
-                        anchors.margins: AppTheme.spacingMedium
-                        spacing: AppTheme.spacingSmall
+                        anchors.margins: AppTheme.spacing.medium
+                        spacing: AppTheme.spacing.small
                         
                         Text {
                             text: qsTr("Wing")
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeHeading
+                            font.pixelSize: AppTheme.fontSize.large
                             font.bold: true
-                            color: AppTheme.textColor
+                            color: AppTheme.colors.text
                         }
                         
                         ComboBox {
@@ -236,7 +237,7 @@ ScrollView {
                             
                             background: Rectangle {
                                 color: AppTheme.input.background
-                                border.color: AppTheme.borderColor
+                                border.color: AppTheme.colors.border
                                 border.width: 1
                                 radius: 4
                             }
@@ -252,9 +253,9 @@ ScrollView {
                             id: wingNotationText
                             text: getWingNotation()
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeBody
+                            font.pixelSize: AppTheme.fontSize.medium
                             font.bold: true
-                            color: AppTheme.accentColor
+                            color: AppTheme.colors.accent
                             visible: wingComboBox.currentValue > 0
                         }
                     }
@@ -266,29 +267,29 @@ ScrollView {
                     color: AppTheme.card.background
                     border.color: AppTheme.card.border
                     border.width: AppTheme.borderWidth
-                    radius: AppTheme.card.radius
+                    radius: AppTheme.radius.medium
                     
-                    implicitHeight: instinctContent.implicitHeight + 2 * AppTheme.spacingMedium
+                    implicitHeight: instinctContent.implicitHeight + 2 * AppTheme.spacing.medium
                     
                     ColumnLayout {
                         id: instinctContent
                         anchors.fill: parent
-                        anchors.margins: AppTheme.spacingMedium
-                        spacing: AppTheme.spacingSmall
+                        anchors.margins: AppTheme.spacing.medium
+                        spacing: AppTheme.spacing.small
                         
                         Text {
                             text: qsTr("Instinctual Variant")
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeHeading
+                            font.pixelSize: AppTheme.fontSize.large
                             font.bold: true
-                            color: AppTheme.textColor
+                            color: AppTheme.colors.text
                         }
                         
                         Text {
                             text: qsTr("Primary instinct (most developed)")
                             font.family: AppTheme.fontFamily || "Inter"
-                            font.pixelSize: AppTheme.fontSizeCaption || 12
-                            color: AppTheme.textColorSecondary
+                            font.pixelSize: AppTheme.fontSize.small || 12
+                            color: AppTheme.colors.textSecondary
                         }
                         
                         ComboBox {
@@ -306,7 +307,7 @@ ScrollView {
                             
                             background: Rectangle {
                                 color: AppTheme.input.background
-                                border.color: AppTheme.borderColor
+                                border.color: AppTheme.colors.border
                                 border.width: 1
                                 radius: 4
                             }
@@ -326,22 +327,22 @@ ScrollView {
                     color: AppTheme.card.background
                     border.color: AppTheme.card.border
                     border.width: AppTheme.borderWidth
-                    radius: AppTheme.card.radius
+                    radius: AppTheme.radius.medium
                     
-                    implicitHeight: developmentContent.implicitHeight + 2 * AppTheme.spacingMedium
+                    implicitHeight: developmentContent.implicitHeight + 2 * AppTheme.spacing.medium
                     
                     ColumnLayout {
                         id: developmentContent
                         anchors.fill: parent
-                        anchors.margins: AppTheme.spacingMedium
-                        spacing: AppTheme.spacingSmall
+                        anchors.margins: AppTheme.spacing.medium
+                        spacing: AppTheme.spacing.small
                         
                         Text {
                             text: qsTr("Development Level")
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeHeading
+                            font.pixelSize: AppTheme.fontSize.large
                             font.bold: true
-                            color: AppTheme.textColor
+                            color: AppTheme.colors.text
                         }
                         
                         RowLayout {
@@ -350,7 +351,7 @@ ScrollView {
                             Text {
                                 text: qsTr("Healthy")
                                 font.family: AppTheme.fontFamily || "Inter"
-                                font.pixelSize: AppTheme.fontSizeCaption || 12
+                                font.pixelSize: AppTheme.fontSize.small || 12
                                 color: "#2ecc71"
                             }
                             
@@ -378,7 +379,7 @@ ScrollView {
                                     width: developmentSlider.availableWidth
                                     height: implicitHeight
                                     radius: 2
-                                    color: AppTheme.borderColor
+                                    color: AppTheme.colors.border
                                     
                                     Rectangle {
                                         width: developmentSlider.visualPosition * parent.width
@@ -395,7 +396,7 @@ ScrollView {
                                     implicitHeight: 20
                                     radius: 10
                                     color: getDevelopmentColor(developmentSlider.value)
-                                    border.color: AppTheme.borderColor
+                                    border.color: AppTheme.colors.border
                                     border.width: 2
                                 }
                             }
@@ -403,7 +404,7 @@ ScrollView {
                             Text {
                                 text: qsTr("Unhealthy")
                                 font.family: AppTheme.fontFamily || "Inter"
-                                font.pixelSize: AppTheme.fontSizeCaption || 12
+                                font.pixelSize: AppTheme.fontSize.small || 12
                                 color: "#e74c3c"
                             }
                         }
@@ -412,8 +413,8 @@ ScrollView {
                             text: qsTr("Level") + " " + Math.round(developmentSlider.value) + 
                                   " - " + getDevelopmentLevelName(Math.round(developmentSlider.value))
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeBody
-                            color: AppTheme.textColor
+                            font.pixelSize: AppTheme.fontSize.medium
+                            color: AppTheme.colors.text
                             font.bold: true
                         }
                     }
@@ -425,41 +426,41 @@ ScrollView {
                     color: AppTheme.card.background
                     border.color: AppTheme.card.border
                     border.width: AppTheme.borderWidth
-                    radius: AppTheme.card.radius
+                    radius: AppTheme.radius.medium
                     
-                    implicitHeight: connectionContent.implicitHeight + 2 * AppTheme.spacingMedium
+                    implicitHeight: connectionContent.implicitHeight + 2 * AppTheme.spacing.medium
                     
                     ColumnLayout {
                         id: connectionContent
                         anchors.fill: parent
-                        anchors.margins: AppTheme.spacingMedium
-                        spacing: AppTheme.spacingSmall
+                        anchors.margins: AppTheme.spacing.medium
+                        spacing: AppTheme.spacing.small
                         
                         Text {
                             text: qsTr("Connections")
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeHeading
+                            font.pixelSize: AppTheme.fontSize.large
                             font.bold: true
-                            color: AppTheme.textColor
+                            color: AppTheme.colors.text
                         }
                         
                         GridLayout {
                             Layout.fillWidth: true
                             columns: 2
-                            columnSpacing: AppTheme.spacingMedium
-                            rowSpacing: AppTheme.spacingSmall
+                            columnSpacing: AppTheme.spacing.medium
+                            rowSpacing: AppTheme.spacing.small
                             
                             Text {
                                 text: qsTr("Integration (Growth):")
                                 font.family: AppTheme.fontFamily
-                                font.pixelSize: AppTheme.fontSizeBody
-                                color: AppTheme.textColorSecondary
+                                font.pixelSize: AppTheme.fontSize.medium
+                                color: AppTheme.colors.textSecondary
                             }
                             
                             Text {
                                 text: qsTr("Type") + " " + getIntegrationPoint(enneagramWheel.selectedType)
                                 font.family: AppTheme.fontFamily
-                                font.pixelSize: AppTheme.fontSizeBody
+                                font.pixelSize: AppTheme.fontSize.medium
                                 color: "#2ecc71"
                                 font.bold: true
                             }
@@ -467,14 +468,14 @@ ScrollView {
                             Text {
                                 text: qsTr("Disintegration (Stress):")
                                 font.family: AppTheme.fontFamily
-                                font.pixelSize: AppTheme.fontSizeBody
-                                color: AppTheme.textColorSecondary
+                                font.pixelSize: AppTheme.fontSize.medium
+                                color: AppTheme.colors.textSecondary
                             }
                             
                             Text {
                                 text: qsTr("Type") + " " + getDisintegrationPoint(enneagramWheel.selectedType)
                                 font.family: AppTheme.fontFamily
-                                font.pixelSize: AppTheme.fontSizeBody
+                                font.pixelSize: AppTheme.fontSize.medium
                                 color: "#e74c3c"
                                 font.bold: true
                             }
@@ -483,8 +484,8 @@ ScrollView {
                         Text {
                             text: qsTr("Green arrows show growth direction, red arrows show stress direction")
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeCaption || 12
-                            color: AppTheme.textColorSecondary
+                            font.pixelSize: AppTheme.fontSize.small || 12
+                            color: AppTheme.colors.textSecondary
                             font.italic: true
                             wrapMode: Text.WordWrap
                             Layout.fillWidth: true
@@ -527,8 +528,8 @@ ScrollView {
                 width: helpPopup.width - 40
                 text: getEnneagramHelp()
                 font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSizeBody
-                color: AppTheme.textColor
+                font.pixelSize: AppTheme.fontSize.medium
+                color: AppTheme.colors.text
                 wrapMode: Text.WordWrap
             }
         }

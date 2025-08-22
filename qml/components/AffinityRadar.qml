@@ -5,7 +5,8 @@
  */
 import QtQuick
 import QtQuick.Controls
-import "../styles"
+// import "../styles"
+import App.Styles
 
 Item {
     id: affinityRadar
@@ -16,9 +17,9 @@ Item {
     property bool showGrid: true
     property bool showLabels: true
     property bool interactive: false
-    property color gridColor: AppTheme.borderColor
-    property color lineColor: AppTheme.accentColor
-    property color fillColor: Qt.rgba(AppTheme.accentColor.r, AppTheme.accentColor.g, AppTheme.accentColor.b, 0.3)
+    property color gridColor: AppTheme.colors.border
+    property color lineColor: AppTheme.colors.accent
+    property color fillColor: Qt.rgba(AppTheme.colors.accent.r, AppTheme.colors.accent.g, AppTheme.colors.accent.b, 0.3)
     
     // Computed properties
     readonly property real centerX: width / 2
@@ -183,7 +184,7 @@ Item {
                 Rectangle {
                     anchors.fill: parent
                     radius: parent.radius
-                    color: isCharacterType() ? AppTheme.accentColor : "transparent"
+                    color: isCharacterType() ? AppTheme.colors.accent : "transparent"
                     opacity: 0.2
                 }
             }
@@ -193,9 +194,9 @@ Item {
                 anchors.centerIn: parent
                 text: typeNumber.toString()
                 font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSizeBody
+                font.pixelSize: AppTheme.fontSize.medium
                 font.bold: isCharacterType()
-                color: isCharacterType() ? AppTheme.accentColor : AppTheme.textColor
+                color: isCharacterType() ? AppTheme.colors.accent : AppTheme.colors.text
             }
             
             MouseArea {
@@ -240,7 +241,7 @@ Item {
         width: 8
         height: 8
         radius: 4
-        color: AppTheme.accentColor
+        color: AppTheme.colors.accent
         border.color: "white"
         border.width: 2
     }
@@ -286,9 +287,9 @@ Item {
             Text {
                 text: qsTr("Affinity")
                 font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSizeCaption
+                font.pixelSize: AppTheme.fontSize.small
                 font.bold: true
-                color: AppTheme.textColor
+                color: AppTheme.colors.text
             }
             
             RowLayout {
@@ -304,8 +305,8 @@ Item {
                 Text {
                     text: qsTr("Low")
                     font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSizeCaption
-                    color: AppTheme.textColorSecondary
+                    font.pixelSize: AppTheme.fontSize.small
+                    color: AppTheme.colors.textSecondary
                 }
             }
             
@@ -322,8 +323,8 @@ Item {
                 Text {
                     text: qsTr("Medium")
                     font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSizeCaption
-                    color: AppTheme.textColorSecondary
+                    font.pixelSize: AppTheme.fontSize.small
+                    color: AppTheme.colors.textSecondary
                 }
             }
             
@@ -340,8 +341,8 @@ Item {
                 Text {
                     text: qsTr("High")
                     font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSizeCaption
-                    color: AppTheme.textColorSecondary
+                    font.pixelSize: AppTheme.fontSize.small
+                    color: AppTheme.colors.textSecondary
                 }
             }
         }

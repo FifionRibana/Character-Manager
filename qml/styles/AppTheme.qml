@@ -21,6 +21,7 @@ QtObject {
     // Dynamic colors from theme controller
     readonly property var colors: QtObject {
         property color background: themeController ? themeController.colors.background : "#FFFFFF"
+        property color backgroundVariant: themeController ? themeController.colors.backgroundVariant : "#F8F9FA"
         property color surface: themeController ? themeController.colors.surface : "#F5F5F5"
         property color surfaceVariant: themeController ? themeController.colors.surfaceVariant : "#E0E0E0"
         property color primary: themeController ? themeController.colors.primary : "#6200EE"
@@ -35,6 +36,7 @@ QtObject {
         property color textSecondary: themeController ? themeController.colors.textSecondary : "#757575"
         property color textDisabled: themeController ? themeController.colors.textDisabled : "#9E9E9E"
         property color border: themeController ? themeController.colors.border : "#BDBDBD"
+        property color borderLight: themeController ? themeController.colors.borderLight : "#DEE2E6"
         property color shadow: themeController ? themeController.colors.shadow : "#000000"
         property color overlay: themeController ? themeController.colors.overlay : "rgba(0, 0, 0, 0.5)"
         
@@ -57,7 +59,33 @@ QtObject {
         property color tooltip: isDarkMode ? "#424242" : "#616161"
         property color tooltipText: "#FFFFFF"
     }
+
+    readonly property var fontFamily: 'Inter, "Segoe UI", Roboto, sans-serif'
+
+    readonly property var input: QtObject {
+        property color background: themeController ? themeController.input.background : "#FFFFFF"
+        property color border: themeController ? themeController.input.border : "#E0E0E0"
+        property color borderFocus: themeController ? themeController.input.borderFocus : "#2196F3"
+        property color placeholder: themeController ? themeController.input.placeholder : "#9E9E9E"
+    }
     
+    readonly property var card: QtObject {
+        property color background: themeController ? themeController.card.background : "#FFFFFF"
+        property color border: themeController ? themeController.card.border : "#E0E0E0"
+    }
+    
+    readonly property var button: QtObject {
+        property color normal: themeController ? themeController.button.normal : "#2196F3"
+        property color pressed: themeController ? themeController.button.pressed : "#1976D2"
+        property color hovered: themeController ? themeController.button.hovered : "#1565C0"
+        property color disabled: themeController ? themeController.button.disabled : "#BDBDBD"
+        
+        // Destructive
+        property color destructiveNormal: themeController ? themeController.button.destructiveNormal : "#FFFFFF"
+        property color destructivePressed: themeController ? themeController.button.destructivePressed : "#FFFFFF"
+        property color destructiveHovered: themeController ? themeController.button.destructiveHovered : "#FFFFFF"
+    }
+
     // Spacing values from theme controller
     readonly property var spacing: QtObject {
         property int tiny: themeController ? themeController.metrics.spacing_xs : 4

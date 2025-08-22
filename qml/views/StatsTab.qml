@@ -7,7 +7,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "../components"
-import "../styles"
+// import "../styles"
+import App.Styles
 
 ScrollView {
     id: statsTab
@@ -19,7 +20,7 @@ ScrollView {
     
     ColumnLayout {
         width: statsTab.availableWidth
-        spacing: AppTheme.spacingLarge || 24
+        spacing: AppTheme.spacing.large || 24
         
         // Title and quick actions
         RowLayout {
@@ -30,22 +31,22 @@ ScrollView {
                 font.family: AppTheme.fontFamily || "Inter"
                 font.pixelSize: AppTheme.fontSizeDisplay || 32
                 font.bold: true
-                color: AppTheme.textColor || "#212121"
+                color: AppTheme.colors.text || "#212121"
             }
             
             Item { Layout.fillWidth: true }
             
             // Quick action buttons
             RowLayout {
-                spacing: AppTheme.spacingMedium || 16
+                spacing: AppTheme.spacing.medium || 16
                 
                 Button {
                     text: qsTr("Standard Array")
                     font.family: AppTheme.fontFamily || "Inter"
-                    font.pixelSize: AppTheme.fontSizeBody || 14
+                    font.pixelSize: AppTheme.fontSize.medium || 14
                     
                     background: Rectangle {
-                        color: parent.hovered ? Qt.lighter(AppTheme.accentColor || "#FF5722", 1.1) : (AppTheme.accentColor || "#FF5722")
+                        color: parent.hovered ? Qt.lighter(AppTheme.colors.accent || "#FF5722", 1.1) : (AppTheme.colors.accent || "#FF5722")
                         radius: 6
                         
                         Behavior on color {
@@ -73,7 +74,7 @@ ScrollView {
                 Button {
                     text: qsTr("4d6 Roll")
                     font.family: AppTheme.fontFamily || "Inter"
-                    font.pixelSize: AppTheme.fontSizeBody || 14
+                    font.pixelSize: AppTheme.fontSize.medium || 14
                     
                     background: Rectangle {
                         color: parent.hovered ? Qt.lighter("#2ecc71", 1.1) : "#2ecc71"
@@ -104,7 +105,7 @@ ScrollView {
                 Button {
                     text: qsTr("Reset to 10")
                     font.family: AppTheme.fontFamily || "Inter"
-                    font.pixelSize: AppTheme.fontSizeBody || 14
+                    font.pixelSize: AppTheme.fontSize.medium || 14
                     
                     background: Rectangle {
                         color: parent.hovered ? Qt.lighter("#95a5a6", 1.1) : "#95a5a6"
@@ -140,31 +141,31 @@ ScrollView {
             color: AppTheme.card.background || "#FFFFFF"
             border.color: AppTheme.card.border || "#E0E0E0"
             border.width: AppTheme.borderWidth || 1
-            radius: AppTheme.card.radius || 8
+            radius: AppTheme.radius.medium || 8
             
-            implicitHeight: summaryContent.implicitHeight + 2 * (AppTheme.spacingMedium || 16)
+            implicitHeight: summaryContent.implicitHeight + 2 * (AppTheme.spacing.medium || 16)
             
             RowLayout {
                 id: summaryContent
                 anchors.fill: parent
-                anchors.margins: AppTheme.spacingMedium || 16
-                spacing: AppTheme.spacingLarge || 24
+                anchors.margins: AppTheme.spacing.medium || 16
+                spacing: AppTheme.spacing.large || 24
                 
                 // Total points
                 ColumnLayout {
-                    spacing: AppTheme.spacingSmall || 8
+                    spacing: AppTheme.spacing.small || 8
                     
                     Text {
                         text: qsTr("Total Points")
                         font.family: AppTheme.fontFamily || "Inter"
-                        font.pixelSize: AppTheme.fontSizeCaption || 12
-                        color: AppTheme.textColorSecondary || "#757575"
+                        font.pixelSize: AppTheme.fontSize.small || 12
+                        color: AppTheme.colors.textSecondary || "#757575"
                     }
                     
                     Text {
                         text: getTotalPoints().toString()
                         font.family: AppTheme.fontFamily || "Inter"
-                        font.pixelSize: AppTheme.fontSizeHeading || 20
+                        font.pixelSize: AppTheme.fontSize.large || 20
                         font.bold: true
                         color: getTotalPointsColor()
                     }
@@ -173,50 +174,50 @@ ScrollView {
                 Rectangle {
                     width: 1
                     Layout.fillHeight: true
-                    color: AppTheme.borderColor || "#E0E0E0"
+                    color: AppTheme.colors.border || "#E0E0E0"
                 }
                 
                 // Average stat
                 ColumnLayout {
-                    spacing: AppTheme.spacingSmall || 8
+                    spacing: AppTheme.spacing.small || 8
                     
                     Text {
                         text: qsTr("Average")
                         font.family: AppTheme.fontFamily || "Inter"
-                        font.pixelSize: AppTheme.fontSizeCaption || 12
-                        color: AppTheme.textColorSecondary || "#757575"
+                        font.pixelSize: AppTheme.fontSize.small || 12
+                        color: AppTheme.colors.textSecondary || "#757575"
                     }
                     
                     Text {
                         text: getAverageScore().toFixed(1)
                         font.family: AppTheme.fontFamily || "Inter"
-                        font.pixelSize: AppTheme.fontSizeHeading || 20
+                        font.pixelSize: AppTheme.fontSize.large || 20
                         font.bold: true
-                        color: AppTheme.textColor || "#212121"
+                        color: AppTheme.colors.text || "#212121"
                     }
                 }
                 
                 Rectangle {
                     width: 1
                     Layout.fillHeight: true
-                    color: AppTheme.borderColor || "#E0E0E0"
+                    color: AppTheme.colors.border || "#E0E0E0"
                 }
                 
                 // Point buy cost (if applicable)
                 ColumnLayout {
-                    spacing: AppTheme.spacingSmall || 8
+                    spacing: AppTheme.spacing.small || 8
                     
                     Text {
                         text: qsTr("Point Buy Cost")
                         font.family: AppTheme.fontFamily || "Inter"
-                        font.pixelSize: AppTheme.fontSizeCaption || 12
-                        color: AppTheme.textColorSecondary || "#757575"
+                        font.pixelSize: AppTheme.fontSize.small || 12
+                        color: AppTheme.colors.textSecondary || "#757575"
                     }
                     
                     Text {
                         text: getPointBuyCost().toString() + "/27"
                         font.family: AppTheme.fontFamily || "Inter"
-                        font.pixelSize: AppTheme.fontSizeHeading || 20
+                        font.pixelSize: AppTheme.fontSize.large || 20
                         font.bold: true
                         color: getPointBuyCost() <= 27 ? "#2ecc71" : "#e74c3c"
                     }
@@ -226,19 +227,19 @@ ScrollView {
                 
                 // Modifier bonus indicator
                 ColumnLayout {
-                    spacing: AppTheme.spacingSmall || 8
+                    spacing: AppTheme.spacing.small || 8
                     
                     Text {
                         text: qsTr("Modifier Bonus")
                         font.family: AppTheme.fontFamily || "Inter"
-                        font.pixelSize: AppTheme.fontSizeCaption || 12
-                        color: AppTheme.textColorSecondary || "#757575"
+                        font.pixelSize: AppTheme.fontSize.small || 12
+                        color: AppTheme.colors.textSecondary || "#757575"
                     }
                     
                     Text {
                         text: getTotalModifiers() >= 0 ? "+" + getTotalModifiers() : getTotalModifiers().toString()
                         font.family: AppTheme.fontFamily || "Inter"
-                        font.pixelSize: AppTheme.fontSizeHeading || 20
+                        font.pixelSize: AppTheme.fontSize.large || 20
                         font.bold: true
                         color: getTotalModifiers() >= 0 ? "#2ecc71" : "#e74c3c"
                     }
@@ -250,8 +251,8 @@ ScrollView {
         GridLayout {
             Layout.fillWidth: true
             columns: 3
-            columnSpacing: AppTheme.spacingLarge || 24
-            rowSpacing: AppTheme.spacingLarge || 24
+            columnSpacing: AppTheme.spacing.large || 24
+            rowSpacing: AppTheme.spacing.large || 24
             
             // Strength
             StatWidget {
@@ -341,25 +342,25 @@ ScrollView {
         // Point buy explanation
         Rectangle {
             Layout.fillWidth: true
-            color: AppTheme.backgroundColorSecondary || "#F8F9FA"
-            border.color: AppTheme.borderColorLight || "#DEE2E6"
+            color: AppTheme.colors.backgroundVariant || "#F8F9FA"
+            border.color: AppTheme.colors.borderLight || "#DEE2E6"
             border.width: 1
             radius: 6
             
-            implicitHeight: explanationContent.implicitHeight + 2 * (AppTheme.spacingMedium || 16)
+            implicitHeight: explanationContent.implicitHeight + 2 * (AppTheme.spacing.medium || 16)
             
             ColumnLayout {
                 id: explanationContent
                 anchors.fill: parent
-                anchors.margins: AppTheme.spacingMedium || 16
-                spacing: AppTheme.spacingSmall || 8
+                anchors.margins: AppTheme.spacing.medium || 16
+                spacing: AppTheme.spacing.small || 8
                 
                 Text {
                     text: qsTr("Stat Generation Methods")
                     font.family: AppTheme.fontFamily || "Inter"
-                    font.pixelSize: AppTheme.fontSizeHeading || 20
+                    font.pixelSize: AppTheme.fontSize.large || 20
                     font.bold: true
-                    color: AppTheme.textColor || "#212121"
+                    color: AppTheme.colors.text || "#212121"
                 }
                 
                 Text {
@@ -368,8 +369,8 @@ ScrollView {
                               "• Point Buy: Start with 8 in each stat, spend 27 points to increase (costs vary)\n" +
                               "• Manual: Click +/- buttons or use spinboxes to set exact values")
                     font.family: AppTheme.fontFamily || "Inter"
-                    font.pixelSize: AppTheme.fontSizeBody || 14
-                    color: AppTheme.textColorSecondary || "#757575"
+                    font.pixelSize: AppTheme.fontSize.medium || 14
+                    color: AppTheme.colors.textSecondary || "#757575"
                     wrapMode: Text.WordWrap
                     Layout.fillWidth: true
                 }
@@ -392,7 +393,7 @@ ScrollView {
         if (total > baseline + 6) return "#3498db"  // Blue for high
         if (total > baseline) return "#2ecc71"      // Green for above average
         if (total < baseline - 6) return "#e74c3c" // Red for low
-        return AppTheme.textColor || "#212121"      // Normal for average
+        return AppTheme.colors.text || "#212121"      // Normal for average
     }
     
     function getAverageScore() {

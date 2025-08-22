@@ -2,11 +2,13 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "../styles"
+// import App.Styles
+
 
 Rectangle {
     id: sidebar
-    color: AppTheme.surfaceColor
-    border.color: AppTheme.borderColor
+    color: AppTheme.colors.surface
+    border.color: AppTheme.colors.border
     border.width: 1
 
     // Properties
@@ -28,7 +30,7 @@ Rectangle {
             font.family: AppTheme.fontFamily
             font.pixelSize: AppTheme.fontSizeTitle
             font.bold: true
-            color: AppTheme.textColor
+            color: AppTheme.colors.text
             Layout.alignment: Qt.AlignHCenter
         }
 
@@ -36,7 +38,7 @@ Rectangle {
         Rectangle {
             Layout.fillWidth: true
             height: 1
-            color: AppTheme.borderColor
+            color: AppTheme.colors.border
         }
 
         // Character list
@@ -46,7 +48,7 @@ Rectangle {
             Layout.fillHeight: true
             
             clip: true
-            spacing: AppTheme.spacingSmall
+            spacing: AppTheme.spacing.small
             
             delegate: CharacterListItem {
                 width: characterList.width
@@ -72,7 +74,7 @@ Rectangle {
             highlight: Rectangle {
                 color: AppTheme.primaryColor
                 opacity: 0.3
-                radius: AppTheme.borderRadius
+                radius: AppTheme.radius.medium
             }
             
             // Empty state
@@ -80,8 +82,8 @@ Rectangle {
                 anchors.centerIn: parent
                 text: qsTr("No characters")
                 font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSizeBody
-                color: AppTheme.textColorSecondary
+                font.pixelSize: AppTheme.fontSize.medium
+                color: AppTheme.colors.textSecondary
                 visible: characterList.count === 0
             }
         }
@@ -89,7 +91,7 @@ Rectangle {
         // Button row
         RowLayout {
             Layout.fillWidth: true
-            spacing: AppTheme.spacingSmall
+            spacing: AppTheme.spacing.small
 
             Button {
                 text: qsTr("New")
@@ -99,14 +101,14 @@ Rectangle {
                     color: parent.pressed ? AppTheme.button.pressed :
                            parent.hovered ? AppTheme.button.hovered :
                            AppTheme.button.normal
-                    radius: AppTheme.borderRadius
+                    radius: AppTheme.radius.medium
                 }
                 
                 contentItem: Text {
                     text: parent.text
                     font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSizeBody
-                    color: AppTheme.textColorLight
+                    font.pixelSize: AppTheme.fontSize.medium
+                    color: AppTheme.colors.textSecondary
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -128,14 +130,14 @@ Rectangle {
                             parent.hovered ? AppTheme.button.destructiveHovered :
                             AppTheme.button.destructiveNormal) :
                            AppTheme.button.disabled
-                    radius: AppTheme.borderRadius
+                    radius: AppTheme.radius.medium
                 }
                 
                 contentItem: Text {
                     text: parent.text
                     font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSizeBody
-                    color: parent.enabled ? AppTheme.textColorLight : AppTheme.textColorSecondary
+                    font.pixelSize: AppTheme.fontSize.medium
+                    color: parent.enabled ? AppTheme.colors.textSecondary : AppTheme.colors.textSecondary
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }

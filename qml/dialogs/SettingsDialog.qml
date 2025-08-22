@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import "../components"
 import "../styles"
+// import App.Styles
 
 Dialog {
     id: settingsDialog
@@ -119,8 +120,8 @@ Dialog {
                 ColumnLayout {
                     width: parent.width
                     spacing: AppTheme.spacing.large
-                    
                     // Theme Selection
+                    
                     GroupBox {
                         Layout.fillWidth: true
                         title: "Theme"

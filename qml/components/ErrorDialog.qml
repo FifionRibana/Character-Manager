@@ -7,6 +7,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "../styles"
+// import App.Styles
 
 Dialog {
     id: errorDialog
@@ -70,8 +71,8 @@ Dialog {
         
         RowLayout {
             anchors.fill: parent
-            anchors.margins: AppTheme.spacingLarge
-            spacing: AppTheme.spacingMedium
+            anchors.margins: AppTheme.spacing.large
+            spacing: AppTheme.spacing.medium
             
             // Error icon
             Rectangle {
@@ -92,9 +93,9 @@ Dialog {
             Text {
                 text: errorTitle
                 font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSizeHeading
+                font.pixelSize: AppTheme.fontSize.large
                 font.bold: true
-                color: AppTheme.textColor
+                color: AppTheme.colors.text
                 Layout.fillWidth: true
                 elide: Text.ElideRight
             }
@@ -117,7 +118,7 @@ Dialog {
                     text: "×"
                     font.pixelSize: 20
                     font.bold: true
-                    color: AppTheme.textColorSecondary
+                    color: AppTheme.colors.textSecondary
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -129,8 +130,8 @@ Dialog {
     
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: AppTheme.spacingLarge
-        spacing: AppTheme.spacingMedium
+        anchors.margins: AppTheme.spacing.large
+        spacing: AppTheme.spacing.medium
         
         // Main error message
         ScrollView {
@@ -141,15 +142,15 @@ Dialog {
             TextArea {
                 text: errorMessage
                 font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSizeBody
-                color: AppTheme.textColor
+                font.pixelSize: AppTheme.fontSize.medium
+                color: AppTheme.colors.text
                 wrapMode: TextArea.Wrap
                 readOnly: true
                 selectByMouse: true
                 
                 background: Rectangle {
-                    color: AppTheme.backgroundColorSecondary
-                    border.color: AppTheme.borderColorLight
+                    color: AppTheme.colors.backgroundVariant
+                    border.color: AppTheme.colors.borderLight
                     border.width: 1
                     radius: 6
                 }
@@ -160,35 +161,35 @@ Dialog {
         ColumnLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            spacing: AppTheme.spacingSmall
+            spacing: AppTheme.spacing.small
             visible: errorDetails.length > 0
             
             Button {
                 text: showDetails ? qsTr("Hide Details") : qsTr("Show Details")
                 font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSizeBody
+                font.pixelSize: AppTheme.fontSize.medium
                 Layout.alignment: Qt.AlignLeft
                 
                 background: Rectangle {
                     color: parent.hovered ? Qt.rgba(0, 0, 0, 0.05) : "transparent"
-                    border.color: AppTheme.borderColor
+                    border.color: AppTheme.colors.border
                     border.width: 1
                     radius: 4
                 }
                 
                 contentItem: RowLayout {
-                    spacing: AppTheme.spacingSmall
+                    spacing: AppTheme.spacing.small
                     
                     Text {
                         text: parent.parent.text
                         font: parent.parent.font
-                        color: AppTheme.textColor
+                        color: AppTheme.colors.text
                     }
                     
                     Text {
                         text: showDetails ? "▼" : "▶"
-                        font.pixelSize: AppTheme.fontSizeCaption
-                        color: AppTheme.textColorSecondary
+                        font.pixelSize: AppTheme.fontSize.medium
+                        color: AppTheme.colors.textSecondary
                         
                         Behavior on rotation {
                             NumberAnimation { duration: 200 }
@@ -210,15 +211,15 @@ Dialog {
                 TextArea {
                     text: errorDetails
                     font.family: "Consolas, Monaco, monospace"
-                    font.pixelSize: AppTheme.fontSizeCaption
-                    color: AppTheme.textColorSecondary
+                    font.pixelSize: AppTheme.fontSize.medium
+                    color: AppTheme.colors.textSecondary
                     wrapMode: TextArea.Wrap
                     readOnly: true
                     selectByMouse: true
                     
                     background: Rectangle {
                         color: AppTheme.card.background
-                        border.color: AppTheme.borderColor
+                        border.color: AppTheme.colors.border
                         border.width: 1
                         radius: 6
                     }
@@ -230,7 +231,7 @@ Dialog {
         RowLayout {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignRight
-            spacing: AppTheme.spacingMedium
+            spacing: AppTheme.spacing.medium
             
             // Copy error button
             Button {
@@ -238,7 +239,7 @@ Dialog {
                 visible: errorMessage.length > 0 || errorDetails.length > 0
                 
                 background: Rectangle {
-                    color: parent.hovered ? Qt.lighter(AppTheme.borderColor, 1.1) : AppTheme.borderColor
+                    color: parent.hovered ? Qt.lighter(AppTheme.colors.border, 1.1) : AppTheme.colors.border
                     radius: 6
                     
                     Behavior on color {
@@ -249,7 +250,7 @@ Dialog {
                 contentItem: Text {
                     text: parent.text
                     font: parent.font
-                    color: AppTheme.textColor
+                    color: AppTheme.colors.text
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }

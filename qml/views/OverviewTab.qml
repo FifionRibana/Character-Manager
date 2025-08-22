@@ -2,7 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Effects
-import "../styles"
+// import "../styles"
+import App.Styles
 
 ScrollView {
     id: overviewTab
@@ -16,7 +17,7 @@ ScrollView {
     
     ColumnLayout {
         width: overviewTab.availableWidth
-        spacing: AppTheme.spacingLarge
+        spacing: AppTheme.spacing.large
         
         // Edit mode button
         Button {
@@ -28,14 +29,14 @@ ScrollView {
                 color: parent.pressed ? AppTheme.button.pressed :
                        parent.hovered ? AppTheme.button.hovered :
                        AppTheme.button.normal
-                radius: AppTheme.borderRadius
+                radius: AppTheme.radius.medium
             }
             
             contentItem: Text {
                 text: parent.text
                 font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSizeBody
-                color: AppTheme.textColorLight
+                font.pixelSize: AppTheme.fontSize.medium
+                color: AppTheme.colors.textSecondary
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }
@@ -50,43 +51,43 @@ ScrollView {
             color: AppTheme.card.background
             border.color: AppTheme.card.border
             border.width: AppTheme.borderWidth
-            radius: AppTheme.card.radius
+            radius: AppTheme.radius.medium
             
-            implicitHeight: headerContent.implicitHeight + 2 * AppTheme.spacingLarge
+            implicitHeight: headerContent.implicitHeight + 2 * AppTheme.spacing.large
             
             ColumnLayout {
                 id: headerContent
                 anchors.fill: parent
-                anchors.margins: AppTheme.spacingLarge
-                spacing: AppTheme.spacingMedium
+                anchors.margins: AppTheme.spacing.large
+                spacing: AppTheme.spacing.medium
                 
                 // Title
                 Text {
                     text: qsTr("Character")
                     font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSizeHeading
+                    font.pixelSize: AppTheme.fontSize.large
                     font.bold: true
-                    color: AppTheme.textColor
+                    color: AppTheme.colors.text
                 }
                 
                 // Separator
                 Rectangle {
                     Layout.fillWidth: true
                     height: 1
-                    color: AppTheme.borderColor
+                    color: AppTheme.colors.border
                 }
                 
                 // Content
                 RowLayout {
-                    spacing: AppTheme.spacingLarge
+                    spacing: AppTheme.spacing.large
                     
                     // Portrait
                     Rectangle {
                         width: 120
                         height: 120
-                        radius: AppTheme.borderRadiusLarge
+                        radius: AppTheme.radius.large
                         color: AppTheme.surfaceColorDark
-                        border.color: AppTheme.borderColor
+                        border.color: AppTheme.colors.border
                         border.width: 1
                         
                         Layout.alignment: Qt.AlignTop
@@ -95,8 +96,8 @@ ScrollView {
                             anchors.centerIn: parent
                             text: qsTr("No Image")
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeBody
-                            color: AppTheme.textColorSecondary
+                            font.pixelSize: AppTheme.fontSize.medium
+                            color: AppTheme.colors.textSecondary
                         }
                     }
                     
@@ -109,9 +110,9 @@ ScrollView {
                         Text {
                             text: characterModel ? characterModel.name : ""
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeDisplay
+                            font.pixelSize: AppTheme.fontSize.medium
                             font.bold: true
-                            color: AppTheme.textColor
+                            color: AppTheme.colors.text
                             wrapMode: Text.WordWrap
                             Layout.fillWidth: true
                         }
@@ -119,8 +120,8 @@ ScrollView {
                         Text {
                             text: qsTr("Level") + " " + (characterModel ? characterModel.level : 1)
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeHeading
-                            color: AppTheme.textColorSecondary
+                            font.pixelSize: AppTheme.fontSize.large
+                            color: AppTheme.colors.textSecondary
                         }
                     }
                 }
@@ -134,47 +135,47 @@ ScrollView {
             color: AppTheme.card.background
             border.color: AppTheme.card.border
             border.width: AppTheme.borderWidth
-            radius: AppTheme.card.radius
+            radius: AppTheme.radius.medium
             
-            implicitHeight: statsContent.implicitHeight + 2 * AppTheme.spacingLarge
+            implicitHeight: statsContent.implicitHeight + 2 * AppTheme.spacing.large
             
             ColumnLayout {
                 id: statsContent
                 anchors.fill: parent
-                anchors.margins: AppTheme.spacingLarge
-                spacing: AppTheme.spacingMedium
+                anchors.margins: AppTheme.spacing.large
+                spacing: AppTheme.spacing.medium
                 
                 // Title
                 Text {
                     text: qsTr("Ability Scores")
                     font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSizeHeading
+                    font.pixelSize: AppTheme.fontSize.large
                     font.bold: true
-                    color: AppTheme.textColor
+                    color: AppTheme.colors.text
                 }
                 
                 // Separator
                 Rectangle {
                     Layout.fillWidth: true
                     height: 1
-                    color: AppTheme.borderColor
+                    color: AppTheme.colors.border
                 }
                 
                 // Stats grid
                 GridLayout {
                     columns: 3
-                    columnSpacing: AppTheme.spacingLarge
-                    rowSpacing: AppTheme.spacingMedium
+                    columnSpacing: AppTheme.spacing.large
+                    rowSpacing: AppTheme.spacing.medium
                     
                     // Strength
                     ColumnLayout {
-                        spacing: AppTheme.spacingSmall
+                        spacing: AppTheme.spacing.small
                         
                         Text {
                             text: qsTr("Strength")
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeBody
-                            color: AppTheme.textColorSecondary
+                            font.pixelSize: AppTheme.fontSize.medium
+                            color: AppTheme.colors.textSecondary
                             horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
                         }
@@ -190,9 +191,9 @@ ScrollView {
                                 anchors.centerIn: parent
                                 text: characterModel ? characterModel.strength.toString() : "10"
                                 font.family: AppTheme.fontFamily
-                                font.pixelSize: AppTheme.fontSizeHeading
+                                font.pixelSize: AppTheme.fontSize.large
                                 font.bold: true
-                                color: AppTheme.textColorLight
+                                color: AppTheme.colors.textSecondary
                             }
                         }
                         
@@ -203,7 +204,7 @@ ScrollView {
                                 return modifier >= 0 ? "+" + modifier : modifier.toString()
                             }
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeBody
+                            font.pixelSize: AppTheme.fontSize.medium
                             color: {
                                 let value = characterModel ? characterModel.strength : 10
                                 let modifier = Math.floor((value - 10) / 2)
@@ -216,13 +217,13 @@ ScrollView {
                     
                     // Agility
                     ColumnLayout {
-                        spacing: AppTheme.spacingSmall
+                        spacing: AppTheme.spacing.small
                         
                         Text {
                             text: qsTr("Agility")
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeBody
-                            color: AppTheme.textColorSecondary
+                            font.pixelSize: AppTheme.fontSize.medium
+                            color: AppTheme.colors.textSecondary
                             horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
                         }
@@ -238,9 +239,9 @@ ScrollView {
                                 anchors.centerIn: parent
                                 text: characterModel ? characterModel.agility.toString() : "10"
                                 font.family: AppTheme.fontFamily
-                                font.pixelSize: AppTheme.fontSizeHeading
+                                font.pixelSize: AppTheme.fontSize.large
                                 font.bold: true
-                                color: AppTheme.textColorLight
+                                color: AppTheme.colors.textSecondary
                             }
                         }
                         
@@ -251,7 +252,7 @@ ScrollView {
                                 return modifier >= 0 ? "+" + modifier : modifier.toString()
                             }
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeBody
+                            font.pixelSize: AppTheme.fontSize.medium
                             color: {
                                 let value = characterModel ? characterModel.agility : 10
                                 let modifier = Math.floor((value - 10) / 2)
@@ -264,13 +265,13 @@ ScrollView {
                     
                     // Constitution
                     ColumnLayout {
-                        spacing: AppTheme.spacingSmall
+                        spacing: AppTheme.spacing.small
                         
                         Text {
                             text: qsTr("Constitution")
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeBody
-                            color: AppTheme.textColorSecondary
+                            font.pixelSize: AppTheme.fontSize.medium
+                            color: AppTheme.colors.textSecondary
                             horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
                         }
@@ -286,9 +287,9 @@ ScrollView {
                                 anchors.centerIn: parent
                                 text: characterModel ? characterModel.constitution.toString() : "10"
                                 font.family: AppTheme.fontFamily
-                                font.pixelSize: AppTheme.fontSizeHeading
+                                font.pixelSize: AppTheme.fontSize.large
                                 font.bold: true
-                                color: AppTheme.textColorLight
+                                color: AppTheme.colors.textSecondary
                             }
                         }
                         
@@ -299,7 +300,7 @@ ScrollView {
                                 return modifier >= 0 ? "+" + modifier : modifier.toString()
                             }
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeBody
+                            font.pixelSize: AppTheme.fontSize.medium
                             color: {
                                 let value = characterModel ? characterModel.constitution : 10
                                 let modifier = Math.floor((value - 10) / 2)
@@ -312,13 +313,13 @@ ScrollView {
                     
                     // Intelligence
                     ColumnLayout {
-                        spacing: AppTheme.spacingSmall
+                        spacing: AppTheme.spacing.small
                         
                         Text {
                             text: qsTr("Intelligence")
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeBody
-                            color: AppTheme.textColorSecondary
+                            font.pixelSize: AppTheme.fontSize.medium
+                            color: AppTheme.colors.textSecondary
                             horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
                         }
@@ -334,9 +335,9 @@ ScrollView {
                                 anchors.centerIn: parent
                                 text: characterModel ? characterModel.intelligence.toString() : "10"
                                 font.family: AppTheme.fontFamily
-                                font.pixelSize: AppTheme.fontSizeHeading
+                                font.pixelSize: AppTheme.fontSize.large
                                 font.bold: true
-                                color: AppTheme.textColorLight
+                                color: AppTheme.colors.textSecondary
                             }
                         }
                         
@@ -347,7 +348,7 @@ ScrollView {
                                 return modifier >= 0 ? "+" + modifier : modifier.toString()
                             }
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeBody
+                            font.pixelSize: AppTheme.fontSize.medium
                             color: {
                                 let value = characterModel ? characterModel.intelligence : 10
                                 let modifier = Math.floor((value - 10) / 2)
@@ -360,13 +361,13 @@ ScrollView {
                     
                     // Wisdom
                     ColumnLayout {
-                        spacing: AppTheme.spacingSmall
+                        spacing: AppTheme.spacing.small
                         
                         Text {
                             text: qsTr("Wisdom")
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeBody
-                            color: AppTheme.textColorSecondary
+                            font.pixelSize: AppTheme.fontSize.medium
+                            color: AppTheme.colors.textSecondary
                             horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
                         }
@@ -382,9 +383,9 @@ ScrollView {
                                 anchors.centerIn: parent
                                 text: characterModel ? characterModel.wisdom.toString() : "10"
                                 font.family: AppTheme.fontFamily
-                                font.pixelSize: AppTheme.fontSizeHeading
+                                font.pixelSize: AppTheme.fontSize.large
                                 font.bold: true
-                                color: AppTheme.textColorLight
+                                color: AppTheme.colors.textSecondary
                             }
                         }
                         
@@ -395,7 +396,7 @@ ScrollView {
                                 return modifier >= 0 ? "+" + modifier : modifier.toString()
                             }
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeBody
+                            font.pixelSize: AppTheme.fontSize.medium
                             color: {
                                 let value = characterModel ? characterModel.wisdom : 10
                                 let modifier = Math.floor((value - 10) / 2)
@@ -408,13 +409,13 @@ ScrollView {
                     
                     // Charisma
                     ColumnLayout {
-                        spacing: AppTheme.spacingSmall
+                        spacing: AppTheme.spacing.small
                         
                         Text {
                             text: qsTr("Charisma")
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeBody
-                            color: AppTheme.textColorSecondary
+                            font.pixelSize: AppTheme.fontSize.medium
+                            color: AppTheme.colors.textSecondary
                             horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
                         }
@@ -430,9 +431,9 @@ ScrollView {
                                 anchors.centerIn: parent
                                 text: characterModel ? characterModel.charisma.toString() : "10"
                                 font.family: AppTheme.fontFamily
-                                font.pixelSize: AppTheme.fontSizeHeading
+                                font.pixelSize: AppTheme.fontSize.large
                                 font.bold: true
-                                color: AppTheme.textColorLight
+                                color: AppTheme.colors.textSecondary
                             }
                         }
                         
@@ -443,7 +444,7 @@ ScrollView {
                                 return modifier >= 0 ? "+" + modifier : modifier.toString()
                             }
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeBody
+                            font.pixelSize: AppTheme.fontSize.medium
                             color: {
                                 let value = characterModel ? characterModel.charisma : 10
                                 let modifier = Math.floor((value - 10) / 2)

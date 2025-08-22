@@ -6,7 +6,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import "../styles"
+// import "../styles"
+import App.Styles
 
 Rectangle {
     id: statWidget
@@ -38,7 +39,7 @@ Rectangle {
     color: AppTheme.card.background
     border.color: AppTheme.card.border
     border.width: AppTheme.borderWidth || 1
-    radius: AppTheme.card.radius || 8
+    radius: AppTheme.radius.medium || 8
     
     implicitWidth: 220
     implicitHeight: 160
@@ -46,7 +47,7 @@ Rectangle {
     // Hover effect
     Rectangle {
         anchors.fill: parent
-        color: AppTheme.accentColor || "#FF5722"
+        color: AppTheme.colors.accent || "#FF5722"
         opacity: parent.hovered ? 0.05 : 0
         radius: parent.radius
         
@@ -65,8 +66,8 @@ Rectangle {
     
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: AppTheme.spacingMedium || 16
-        spacing: AppTheme.spacingSmall || 8
+        anchors.margins: AppTheme.spacing.medium || 16
+        spacing: AppTheme.spacing.small || 8
         
         // Header section
         RowLayout {
@@ -80,9 +81,9 @@ Rectangle {
                 Text {
                     text: statName
                     font.family: AppTheme.fontFamily || "Inter"
-                    font.pixelSize: AppTheme.fontSizeHeading || 20
+                    font.pixelSize: AppTheme.fontSize.large || 20
                     font.bold: true
-                    color: AppTheme.textColor || "#212121"
+                    color: AppTheme.colors.text || "#212121"
                     elide: Text.ElideRight
                     Layout.fillWidth: true
                 }
@@ -90,8 +91,8 @@ Rectangle {
                 Text {
                     text: statAbbreviation
                     font.family: AppTheme.fontFamily || "Inter"
-                    font.pixelSize: AppTheme.fontSizeCaption || 12
-                    color: AppTheme.textColorSecondary || "#757575"
+                    font.pixelSize: AppTheme.fontSize.small || 12
+                    color: AppTheme.colors.textSecondary || "#757575"
                     font.bold: true
                 }
             }
@@ -107,7 +108,7 @@ Rectangle {
                     color: parent.enabled ? 
                            (parent.pressed ? Qt.darker("#e74c3c", 1.2) : 
                             parent.hovered ? Qt.lighter("#e74c3c", 1.1) : "#e74c3c") :
-                           (AppTheme.borderColor || "#E0E0E0")
+                           (AppTheme.colors.border || "#E0E0E0")
                     
                     Behavior on color {
                         ColorAnimation { duration: animationDuration }
@@ -119,7 +120,7 @@ Rectangle {
                     font.family: AppTheme.fontFamily || "Inter"
                     font.pixelSize: 18
                     font.bold: true
-                    color: parent.enabled ? "white" : (AppTheme.textColorSecondary || "#757575")
+                    color: parent.enabled ? "white" : (AppTheme.colors.textSecondary || "#757575")
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -189,7 +190,7 @@ Rectangle {
                     Text {
                         text: qsTr("MOD")
                         font.family: AppTheme.fontFamily || "Inter"
-                        font.pixelSize: AppTheme.fontSizeCaption || 12
+                        font.pixelSize: AppTheme.fontSize.small || 12
                         color: "white"
                         opacity: 0.8
                         Layout.alignment: Qt.AlignHCenter
@@ -198,7 +199,7 @@ Rectangle {
                     Text {
                         text: modifierText
                         font.family: AppTheme.fontFamily || "Inter"
-                        font.pixelSize: AppTheme.fontSizeHeading || 20
+                        font.pixelSize: AppTheme.fontSize.large || 20
                         font.bold: true
                         color: "white"
                         Layout.alignment: Qt.AlignHCenter
@@ -217,7 +218,7 @@ Rectangle {
                 
                 background: Rectangle {
                     color: AppTheme.input.background || "#FFFFFF"
-                    border.color: AppTheme.accentColor || "#FF5722"
+                    border.color: AppTheme.colors.accent || "#FF5722"
                     border.width: 2
                     radius: 8
                 }
@@ -269,7 +270,7 @@ Rectangle {
                     color: parent.enabled ? 
                            (parent.pressed ? Qt.darker("#2ecc71", 1.2) : 
                             parent.hovered ? Qt.lighter("#2ecc71", 1.1) : "#2ecc71") :
-                           (AppTheme.borderColor || "#E0E0E0")
+                           (AppTheme.colors.border || "#E0E0E0")
                     
                     Behavior on color {
                         ColorAnimation { duration: animationDuration }
@@ -281,7 +282,7 @@ Rectangle {
                     font.family: AppTheme.fontFamily || "Inter"
                     font.pixelSize: 18
                     font.bold: true
-                    color: parent.enabled ? "white" : (AppTheme.textColorSecondary || "#757575")
+                    color: parent.enabled ? "white" : (AppTheme.colors.textSecondary || "#757575")
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -306,8 +307,8 @@ Rectangle {
             Text {
                 text: minValue + "–" + maxValue
                 font.family: AppTheme.fontFamily || "Inter"
-                font.pixelSize: AppTheme.fontSizeCaption || 12
-                color: AppTheme.textColorSecondary || "#757575"
+                font.pixelSize: AppTheme.fontSize.small || 12
+                color: AppTheme.colors.textSecondary || "#757575"
                 font.italic: true
             }
         }

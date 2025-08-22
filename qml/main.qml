@@ -9,6 +9,8 @@ import "components"
 import "views"
 import "dialogs"
 import "styles"
+// import App.Styles
+// import App.Controllers
 
 ApplicationWindow {
     id: mainWindow
@@ -329,8 +331,8 @@ ApplicationWindow {
             id: sidebar
             Layout.preferredWidth: compactMode ? 200 : 250
             Layout.fillHeight: true
-            characterList: controller.characterList
-            currentCharacterId: controller.currentCharacter ? controller.currentCharacter.id : ""
+            // characterList: controller.characterList
+            // currentCharacterId: controller.currentCharacter ? controller.currentCharacter.id : ""
             
             onCharacterSelected: function(characterId) {
                 controller.selectCharacter(characterId)
@@ -371,12 +373,14 @@ ApplicationWindow {
                 visible: controller.currentCharacter !== null
                 characterModel: controller.currentCharacter
                 
-                onImageChanged: function(imagePath) {
+                onImageChangeRequested: function(imagePath) {
                     if (controller.currentCharacter) {
                         controller.currentCharacter.imagePath = imagePath
                         unsavedChanges = true
                     }
                 }
+
+                onEditModeChanged: { characterHeader.editMode = !characterHeader.editMode }
             }
             
             // Tab view
@@ -387,9 +391,9 @@ ApplicationWindow {
                 visible: controller.currentCharacter !== null
                 characterModel: controller.currentCharacter
                 
-                onDataChanged: {
-                    unsavedChanges = true
-                }
+                // onDataChanged: {
+                //     unsavedChanges = true
+                // }
             }
             
             // Empty state
@@ -592,7 +596,7 @@ ApplicationWindow {
             Qt.quit()
         }
         
-        onDiscarded: {
+        onRejected: {
             Qt.quit()
         }
     }

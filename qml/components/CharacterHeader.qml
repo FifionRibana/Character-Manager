@@ -8,6 +8,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import "../styles"
+// import App.Styles
 
 Rectangle {
     id: characterHeader
@@ -30,15 +31,15 @@ Rectangle {
     color: AppTheme.card.background
     border.color: AppTheme.card.border
     border.width: AppTheme.borderWidth
-    radius: AppTheme.card.radius
+    radius: AppTheme.radius.medium
     
-    implicitHeight: contentLayout.implicitHeight + 2 * AppTheme.spacingLarge
+    implicitHeight: contentLayout.implicitHeight + 2 * AppTheme.spacing.large
     
     RowLayout {
         id: contentLayout
         anchors.fill: parent
-        anchors.margins: AppTheme.spacingLarge
-        spacing: AppTheme.spacingLarge
+        anchors.margins: AppTheme.spacing.large
+        spacing: AppTheme.spacing.large
         
         // Character image section
         Item {
@@ -59,7 +60,7 @@ Rectangle {
                     anchors.margins: -2
                     radius: parent.radius + 2
                     color: "transparent"
-                    border.color: AppTheme.shadowColor
+                    border.color: AppTheme.colors.shadow
                     border.width: 1
                     opacity: 0.2
                     z: -1
@@ -70,8 +71,8 @@ Rectangle {
                     id: imageBackground
                     anchors.fill: parent
                     radius: 8
-                    color: AppTheme.backgroundColorSecondary
-                    border.color: AppTheme.borderColor
+                    color: AppTheme.colors.backgroundVariant
+                    border.color: AppTheme.colors.border
                     border.width: 2
                     
                     Image {
@@ -85,7 +86,7 @@ Rectangle {
                         Rectangle {
                             anchors.fill: parent
                             visible: characterImage.status !== Image.Ready
-                            color: AppTheme.backgroundColorSecondary
+                            color: AppTheme.colors.backgroundVariant
                             radius: 6
                             
                             Text {
@@ -94,7 +95,7 @@ Rectangle {
                                 font.family: AppTheme.fontFamily
                                 font.pixelSize: imageSize * 0.3
                                 font.bold: true
-                                color: AppTheme.textColorSecondary
+                                color: AppTheme.colors.textSecondary
                             }
                         }
                         
@@ -122,7 +123,7 @@ Rectangle {
                             anchors.centerIn: parent
                             text: qsTr("Change Image")
                             font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSizeBody
+                            font.pixelSize: AppTheme.fontSize.medium
                             font.bold: true
                             color: "white"
                             visible: parent.opacity > 0
@@ -153,7 +154,7 @@ Rectangle {
                 width: 40
                 height: 24
                 radius: 12
-                color: AppTheme.accentColor
+                color: AppTheme.colors.accent
                 border.color: "white"
                 border.width: 2
                 
@@ -161,7 +162,7 @@ Rectangle {
                     anchors.centerIn: parent
                     text: characterModel ? characterModel.level.toString() : "1"
                     font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSizeCaption
+                    font.pixelSize: AppTheme.fontSize.small
                     font.bold: true
                     color: "white"
                 }
@@ -172,12 +173,12 @@ Rectangle {
         ColumnLayout {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
-            spacing: AppTheme.spacingSmall
+            spacing: AppTheme.spacing.small
             
             // Name section
             RowLayout {
                 Layout.fillWidth: true
-                spacing: AppTheme.spacingMedium
+                spacing: AppTheme.spacing.medium
                 
                 // Name display/edit
                 Item {
@@ -190,9 +191,9 @@ Rectangle {
                         anchors.fill: parent
                         text: characterModel ? characterModel.name : qsTr("Unnamed Character")
                         font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeDisplay
+                        font.pixelSize: AppTheme.fontSize.medium
                         font.bold: true
-                        color: AppTheme.textColor
+                        color: AppTheme.colors.text
                         elide: Text.ElideRight
                         verticalAlignment: Text.AlignVCenter
                         visible: !editMode
@@ -204,13 +205,13 @@ Rectangle {
                         anchors.fill: parent
                         text: characterModel ? characterModel.name : ""
                         font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeDisplay
+                        font.pixelSize: AppTheme.fontSize.medium
                         font.bold: true
                         visible: editMode
                         
                         background: Rectangle {
                             color: AppTheme.input.background
-                            border.color: AppTheme.borderColor
+                            border.color: AppTheme.colors.border
                             border.width: 1
                             radius: 4
                         }
@@ -234,11 +235,11 @@ Rectangle {
                 Button {
                     text: editMode ? qsTr("Done") : qsTr("Edit")
                     font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSizeBody
+                    font.pixelSize: AppTheme.fontSize.medium
                     
                     background: Rectangle {
-                        color: editMode ? AppTheme.accentColor : "transparent"
-                        border.color: AppTheme.accentColor
+                        color: editMode ? AppTheme.colors.accent : "transparent"
+                        border.color: AppTheme.colors.accent
                         border.width: 2
                         radius: 6
                         opacity: parent.hovered ? 0.8 : 1.0
@@ -251,12 +252,13 @@ Rectangle {
                     contentItem: Text {
                         text: parent.text
                         font: parent.font
-                        color: editMode ? "white" : AppTheme.accentColor
+                        color: editMode ? "white" : AppTheme.colors.accent
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
                     
                     onClicked: {
+                        console.log("Edit clicked")
                         editModeToggled()
                     }
                 }
@@ -265,13 +267,13 @@ Rectangle {
             // Level section
             RowLayout {
                 Layout.fillWidth: true
-                spacing: AppTheme.spacingMedium
+                spacing: AppTheme.spacing.medium
                 
                 Text {
                     text: qsTr("Level:")
                     font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSizeHeading
-                    color: AppTheme.textColorSecondary
+                    font.pixelSize: AppTheme.fontSize.large
+                    color: AppTheme.colors.textSecondary
                 }
                 
                 // Level display/edit
@@ -285,9 +287,9 @@ Rectangle {
                         anchors.fill: parent
                         text: characterModel ? characterModel.level.toString() : "1"
                         font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeHeading
+                        font.pixelSize: AppTheme.fontSize.large
                         font.bold: true
-                        color: AppTheme.accentColor
+                        color: AppTheme.colors.accent
                         verticalAlignment: Text.AlignVCenter
                         visible: !editMode
                     }
@@ -302,8 +304,8 @@ Rectangle {
                         visible: editMode
                         
                         background: Rectangle {
-                            color: AppTheme.input.background
-                            border.color: AppTheme.borderColor
+                            color: AppTheme.colors.background
+                            border.color: AppTheme.colors.border
                             border.width: 1
                             radius: 4
                         }
@@ -322,25 +324,25 @@ Rectangle {
             // Additional info row
             RowLayout {
                 Layout.fillWidth: true
-                spacing: AppTheme.spacingLarge
+                spacing: AppTheme.spacing.large
                 
                 // Enneagram type display
                 RowLayout {
-                    spacing: AppTheme.spacingSmall
+                    spacing: AppTheme.spacing.small
                     
                     Text {
                         text: qsTr("Type:")
                         font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeBody
-                        color: AppTheme.textColorSecondary
+                        font.pixelSize: AppTheme.fontSize.medium
+                        color: AppTheme.colors.textSecondary
                     }
                     
                     Text {
                         text: getEnneagramDisplay()
                         font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSizeBody
+                        font.pixelSize: AppTheme.fontSize.medium
                         font.bold: true
-                        color: AppTheme.textColor
+                        color: AppTheme.colors.text
                     }
                 }
                 
@@ -350,8 +352,8 @@ Rectangle {
                 Text {
                     text: qsTr("Modified: ") + getLastModified()
                     font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSizeCaption
-                    color: AppTheme.textColorSecondary
+                    font.pixelSize: AppTheme.fontSize.small
+                    color: AppTheme.colors.textSecondary
                     font.italic: true
                 }
             }

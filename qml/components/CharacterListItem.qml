@@ -2,12 +2,13 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "../styles"
+// import App.Styles
 
 Rectangle {
     id: listItem
     height: 60
     color: mouseArea.containsMouse ? AppTheme.surfaceColorDark : "transparent"
-    radius: AppTheme.borderRadius
+    radius: AppTheme.radius.medium
     
     // Properties
     property string characterName: ""
@@ -45,16 +46,16 @@ Rectangle {
             height: 40
             radius: 20
             color: hasImage ? "transparent" : AppTheme.getEnneagramColor(1)
-            border.color: AppTheme.borderColor
+            border.color: AppTheme.colors.border
             border.width: 1
             
             Text {
                 anchors.centerIn: parent
                 text: hasImage ? "" : (characterName.length > 0 ? characterName.charAt(0).toUpperCase() : "?")
                 font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSizeHeading
+                font.pixelSize: AppTheme.fontSize.large
                 font.bold: true
-                color: AppTheme.textColor
+                color: AppTheme.colors.text
                 visible: !hasImage
             }
             
@@ -69,9 +70,9 @@ Rectangle {
             Text {
                 text: characterName || qsTr("Unnamed Character")
                 font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSizeBody
+                font.pixelSize: AppTheme.fontSize.medium
                 font.bold: true
-                color: AppTheme.textColor
+                color: AppTheme.colors.text
                 elide: Text.ElideRight
                 Layout.fillWidth: true
             }
@@ -80,7 +81,7 @@ Rectangle {
                 text: qsTr("Level") + " " + characterLevel
                 font.family: AppTheme.fontFamily
                 font.pixelSize: AppTheme.fontSizeSmall
-                color: AppTheme.textColorSecondary
+                color: AppTheme.colors.textSecondary
             }
         }
         
@@ -97,7 +98,7 @@ Rectangle {
                 font.family: AppTheme.fontFamily
                 font.pixelSize: AppTheme.fontSizeSmall
                 font.bold: true
-                color: AppTheme.textColorLight
+                color: AppTheme.colors.textSecondary
             }
         }
     }

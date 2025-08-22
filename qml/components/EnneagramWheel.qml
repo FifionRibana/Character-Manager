@@ -5,7 +5,8 @@
  */
 import QtQuick
 import QtQuick.Controls
-import "../styles"
+// import "../styles"
+import App.Styles
 
 Item {
     id: enneagramWheel
@@ -64,7 +65,7 @@ Item {
             ctx.imageSmoothingEnabled = true
             
             // Draw outer circle
-            ctx.strokeStyle = AppTheme.borderColor
+            ctx.strokeStyle = AppTheme.colors.border
             ctx.lineWidth = 2
             ctx.beginPath()
             ctx.arc(centerX, centerY, outerRadius, 0, 2 * Math.PI)
@@ -76,7 +77,7 @@ Item {
         
         function drawEnneagramSymbol(ctx) {
             // Draw the inner triangle (3-6-9)
-            ctx.strokeStyle = AppTheme.borderColor
+            ctx.strokeStyle = AppTheme.colors.border
             ctx.lineWidth = 1.5
             ctx.setLineDash([5, 3])
             
@@ -98,7 +99,7 @@ Item {
             ctx.stroke()
             
             // Draw the hexagon (1-4-2-8-5-7)
-            ctx.strokeStyle = AppTheme.borderColorLight
+            ctx.strokeStyle = AppTheme.colors.borderLight
             ctx.lineWidth = 1
             ctx.setLineDash([3, 2])
             
@@ -247,7 +248,7 @@ Item {
                 font.family: AppTheme.fontFamily
                 font.pixelSize: isSelected ? 16 : 14
                 font.bold: true
-                color: isSelected ? "white" : AppTheme.textColor
+                color: isSelected ? "white" : AppTheme.colors.text
                 
                 Behavior on font.pixelSize {
                     NumberAnimation { duration: animationDuration }
@@ -298,7 +299,7 @@ Item {
         width: 8
         height: 8
         radius: 4
-        color: AppTheme.accentColor
+        color: AppTheme.colors.accent
         border.color: "white"
         border.width: 1
     }
