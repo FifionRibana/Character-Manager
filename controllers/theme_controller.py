@@ -37,6 +37,13 @@ class ColorRole(StrEnum):
     BORDER_LIGHT = "borderLight"
     SHADOW = "shadow"
     OVERLAY = "overlay"
+    CARD = "card"
+
+
+@dataclass
+class CardColors:
+    background: str = "#FFFFFF"
+    border: str = "#E0E0E0"
 
 
 @dataclass
@@ -63,6 +70,8 @@ class ThemeColors:
     shadow: str = "#000000"
     overlay: str = "rgba(0, 0, 0, 0.5)"
 
+    card: CardColors = field(default_factory=CardColors)
+
     def to_dict(self) -> Dict[str, str]:
         """Convert colors to dictionary for QML"""
         return {
@@ -85,6 +94,10 @@ class ThemeColors:
             ColorRole.BORDER_LIGHT: self.border_light,
             ColorRole.SHADOW: self.shadow,
             ColorRole.OVERLAY: self.overlay,
+            ColorRole.CARD: {
+                ColorRole.BACKGROUND: self.card.background,
+                ColorRole.BORDER: self.card.border,
+            },
         }
 
 
@@ -98,6 +111,18 @@ class ThemeMetrics:
     spacing_lg: int = 24
     spacing_xl: int = 32
 
+    margin_xs: int = 4
+    margin_sm: int = 8
+    margin_md: int = 16
+    margin_lg: int = 24
+    margin_xl: int = 32
+
+    padding_xs: int = 4
+    padding_sm: int = 8
+    padding_md: int = 16
+    padding_lg: int = 24
+    padding_xl: int = 32
+
     radius_sm: int = 4
     radius_md: int = 8
     radius_lg: int = 16
@@ -106,6 +131,7 @@ class ThemeMetrics:
     font_size_sm: int = 12
     font_size_md: int = 14
     font_size_lg: int = 18
+    font_size_tt: int = 20
     font_size_xl: int = 24
     font_size_xxl: int = 32
 

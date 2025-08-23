@@ -6,7 +6,7 @@ This module provides the NarrativeModel class that manages timeline events
 for QML consumption with chronological sorting and filtering.
 """
 
-from dataclasses import field
+from dataclasses import dataclass, field
 from typing import ClassVar, List, Optional, Dict, Any
 from PyQt6.QtCore import (
     QAbstractListModel,
@@ -45,6 +45,7 @@ class NarrativeRoleConstant:
     SortOrderRole = Qt.ItemDataRole.UserRole + 11
 
 
+@dataclass
 class NarrativeModel(QAbstractListModel):
     """Model for managing character narrative events in QML."""
 

@@ -27,6 +27,7 @@ ApplicationWindow {
     property string currentFile: ""
     property bool isLoading: false
     property int autoSaveCounter: 0
+    property bool editMode: MainController.editMode
 
 
     Connections {
@@ -206,24 +207,6 @@ ApplicationWindow {
             Layout.fillHeight: true
             spacing: 0
 
-            // Character header
-            CharacterHeader {
-                Layout.fillWidth: true
-                Layout.preferredHeight: 160
-                visible: MainController.currentCharacter !== null
-                characterModel: MainController.currentCharacter
-
-            }
-
-            // Tab view
-            TabView {
-                id: iTabView
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                visible: MainController.currentCharacter !== null
-                characterModel: MainController.currentCharacter
-            }
-
             // Empty State
             Item {
                 Layout.fillWidth: true
@@ -262,6 +245,75 @@ ApplicationWindow {
                         highlighted: true
                         onClicked: MainController.create_new_character()
                     }
+                }
+            }
+
+            // Character header
+            CharacterHeader {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 160
+                visible: MainController.currentCharacter !== null //&& !iMainWindow.editMode
+                characterModel: MainController.currentCharacter
+                editMode: iMainWindow.editMode
+            }
+
+            OverviewTab {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                visible: MainController.currentCharacter !== null && !iMainWindow.editMode
+                characterModel: MainController.currentCharacter
+            }
+
+            // Tab view
+            TabView {
+                id: iTabView
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                visible: MainController.currentCharacter !== null && iMainWindow.editMode
+                characterModel: MainController.currentCharacter
+            }
+
+
+            StackLayout {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                currentIndex: iTabView.currentIndex
+                visible: MainController.currentCharacter !== null && iMainWindow.editMode
+
+                CharacterEditTab {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    characterModel: MainController.currentCharacter
+                }
+                
+                EnneagramTab {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    characterModel: MainController.currentCharacter
+                }
+                
+                StatsTab {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    characterModel: MainController.currentCharacter
+                }
+                
+                BiographyTab {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    characterModel: MainController.currentCharacter
+                }
+                
+                RelationshipsTab {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    // characterModel: MainController.currentCharacter
+                }
+                
+                NarrativeTab {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    // characterModel: MainController.currentCharacter
                 }
             }
         }

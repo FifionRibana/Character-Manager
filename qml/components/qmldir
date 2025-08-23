@@ -3,6 +3,8 @@
 
 module Components
 
+Card 1.0 Card.qml
+
 # Phase 1 Components - Foundation
 Sidebar 1.0 Sidebar.qml
 

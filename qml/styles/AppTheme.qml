@@ -107,6 +107,24 @@ QtObject {
         property int huge: themeController ? themeController.metrics.spacing_xl : 32
     }
 
+    // Margin values from theme controller
+    readonly property var margin: QtObject {
+        property int tiny: themeController ? themeController.metrics.margin_xs : 4
+        property int small: themeController ? themeController.metrics.margin_sm : 8
+        property int medium: themeController ? themeController.metrics.margin_md : 16
+        property int large: themeController ? themeController.metrics.margin_lg : 24
+        property int huge: themeController ? themeController.metrics.margin_xl : 32
+    }
+
+    // Padding values from theme controller
+    readonly property var padding: QtObject {
+        property int tiny: themeController ? themeController.padding.margin_xs : 4
+        property int small: themeController ? themeController.padding.margin_sm : 8
+        property int medium: themeController ? themeController.padding.margin_md : 16
+        property int large: themeController ? themeController.padding.margin_lg : 24
+        property int huge: themeController ? themeController.padding.margin_xl : 32
+    }
+
     // Border radius values
     readonly property var radius: QtObject {
         property int small: themeController ? themeController.metrics.radius_sm : 4
@@ -121,7 +139,7 @@ QtObject {
         property int small: themeController ? themeController.metrics.font_size_sm : 12
         property int medium: themeController ? themeController.metrics.font_size_md : 14
         property int large: themeController ? themeController.metrics.font_size_lg : 18
-        property int title: themeController ? themeController.metrics.font_size_lg : 18
+        property int title: themeController ? themeController.metrics.font_size_tt : 20
         property int huge: themeController ? themeController.metrics.font_size_xl : 24
         property int giant: themeController ? themeController.metrics.font_size_xxl : 32
     }

@@ -17,6 +17,7 @@ from data.enums import (
     DEFAULT_STAT_VALUE,
     InstinctualVariant,
     StorageKeys,
+    UIConstants,
     ValidationLimits,
 )
 from models.relationship_model import RelationshipModel
@@ -64,6 +65,7 @@ class CharacterModel(QObject):
     _narrative_model: NarrativeModel = field(init=False, default_factory=lambda: NarrativeModel())
 
     _auto_save_timer: QTimer = field(init=False, default_factory=lambda: QTimer())
+    _auto_save_interval: int = field(init=False, default=UIConstants.AUTOSAVE_INTERVAL)
 
     def __post_init__(self):
         QObject.__init__(self)
@@ -85,7 +87,6 @@ class CharacterModel(QObject):
         # Auto-save timer
         self._auto_save_timer.setSingleShot(True)
         self._auto_save_timer.timeout.connect(self._on_auto_save)
-        self._auto_save_interval = 2000  # 2 seconds
 
         # Connect sub-model signals
         self._setup_sub_model_connections()

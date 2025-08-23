@@ -9,6 +9,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 
 import App.Styles
+import App.Controllers
 
 Rectangle {
     id: characterHeader
@@ -263,7 +264,7 @@ Rectangle {
 
                     onClicked: {
                         console.log("Edit clicked");
-                        editModeToggled();
+                        MainController.toggleEditMode();
                     }
                 }
             }
