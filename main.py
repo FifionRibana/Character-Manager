@@ -18,6 +18,7 @@ from PyQt6.QtQml import (
     qmlRegisterSingletonInstance,
 )
 
+from controllers.image_controller import ImageController
 from controllers.main_controller import MainController
 from controllers.storage_controller import StorageController
 from controllers.theme_controller import ThemeController
@@ -183,6 +184,15 @@ def register_app_theme_singleton() -> bool:
 def register_app_controller_singleton() -> bool:
     try:
         qmlRegisterSingletonInstance(
+            "App.Controllers",
+            1,
+            0,
+            "ImageController",
+            ImageController(),
+        )
+        print(f"✓ ImageController singleton registered")
+
+        qmlRegisterSingletonInstance(
             "App.Controllers", 1, 0, "MainController", MainController()
         )
         print(f"✓ MainController singleton registered")
@@ -232,7 +242,6 @@ def main() -> int:
     # Setup application
     app = setup_application()
 
-
     # Create QML engine
     engine = QQmlApplicationEngine()
 
@@ -245,7 +254,6 @@ def main() -> int:
         for path in engine.importPathList():
             print(f"  - {path}")
 
-            
     # Register QML types
     if not register_qml_types():
         print("WARNING: App.Types registration failed")

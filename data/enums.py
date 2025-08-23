@@ -441,6 +441,19 @@ class FileExtension(StrEnum):
     JPEG = ".jpeg"
 
 
+class ImageFormat(StrEnum):
+    """Enumeration of supported image formats."""
+    
+    JPEG = "jpeg"
+    JPG = "jpg"
+    PNG = "png"
+    GIF = "gif"
+    BMP = "bmp"
+    WEBP = "webp"
+    TIFF = "tiff"
+    SVG = "svg"
+
+
 class UIConstants(IntEnum):
     """UI dimension and timing constants."""
 

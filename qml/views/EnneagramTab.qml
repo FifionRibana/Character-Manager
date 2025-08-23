@@ -3,11 +3,12 @@
  * Complete Enneagram personality editing tab
  * Includes EnneagramWheel and all psychological aspects
  */
-import QtQuick 6.9
-import QtQuick.Controls 6.9
-import QtQuick.Layouts 6.9
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+
 import "../components"
-// import "../styles"
+
 import App.Styles
 
 ScrollView {

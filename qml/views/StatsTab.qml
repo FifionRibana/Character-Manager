@@ -37,7 +37,7 @@ ScrollView {
             totalModifiers: getTotalModifiers()
 
             onReset: statsTab.resetToTens()
-            onRollStatsRequested: statsTab.rollStats()
+            onRollStatsRequested: statsTab.rollStats
         }
             
         // Stats grid

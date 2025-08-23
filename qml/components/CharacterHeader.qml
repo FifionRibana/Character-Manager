@@ -23,7 +23,7 @@ Rectangle {
     property real imageSize: 120
 
     // Signals
-    signal imageChangeRequested
+    signal imageChangeRequested(string image)
     signal nameChanged(string newName)
     signal levelChanged(int newLevel)
     signal editModeToggled
@@ -80,7 +80,7 @@ Rectangle {
                         id: characterImage
                         anchors.fill: parent
                         anchors.margins: 2
-                        fillMode: Image.PreserveAspectCrop
+                        fillMode: Image.PreserveAspectFit
                         source: getImageSource()
 
                         // Placeholder when no image
@@ -381,7 +381,8 @@ Rectangle {
             // 1. Loading the image file
             // 2. Converting to base64
             // 3. Updating the character model
-            imageChangeRequested();
+            characterModel.imageData = ImageController.load_image_to_base64(imageDialog.selectedFile)
+            imageChangeRequested(imageDialog.selectedFile);
         }
     }
 

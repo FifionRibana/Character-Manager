@@ -113,7 +113,7 @@ class MainController(QObject):
 
         except Exception as e:
             print(f"Failed to create character: {str(e)}")
-            self.errorOccurred.emit(f"Failed to create character: {str(e)}")
+            self.errorOccurred.emit("Creation error", f"Failed to create character: {str(e)}")
 
     @pyqtSlot(str)
     def select_character(self, character_id):
@@ -123,9 +123,9 @@ class MainController(QObject):
             if character:
                 self.currentCharacter = character
             else:
-                self.errorOccurred.emit(f"Character not found: {character_id}")
+                self.errorOccurred.emit("Selection error", f"Character not found: {character_id}")
         except Exception as e:
-            self.errorOccurred.emit(f"Failed to select character: {str(e)}")
+            self.errorOccurred.emit("Selection error", f"Failed to select character: {str(e)}")
 
     @pyqtSlot(str)
     def delete_character(self, character_id):
@@ -141,7 +141,7 @@ class MainController(QObject):
             self.characterDeleted.emit()
 
         except Exception as e:
-            self.errorOccurred.emit(f"Failed to delete character: {str(e)}")
+            self.errorOccurred.emit("Delete error", f"Failed to delete character: {str(e)}")
 
     @pyqtSlot()
     def save_current_character(self):
@@ -185,9 +185,9 @@ class MainController(QObject):
         """Load a character from a file"""
         try:
             # TODO: Implement file loading
-            self.errorOccurred.emit("File loading not yet implemented")
+            self.errorOccurred.emit("Load error", "File loading not yet implemented")
         except Exception as e:
-            self.errorOccurred.emit(f"Failed to load character: {str(e)}")
+            self.errorOccurred.emit("Load error", f"Failed to load character: {str(e)}")
 
     @pyqtSlot(str)
     def filter_characters(self, search_text):
@@ -197,7 +197,7 @@ class MainController(QObject):
             # self._character_list_model.setFilterText(search_text)
             pass  # TODO: Implement filtering
         except Exception as e:
-            self.errorOccurred.emit(f"Failed to filter characters: {str(e)}")
+            self.errorOccurred.emit("Filter error", f"Failed to filter characters: {str(e)}")
 
     def load_character_file(self, file_path):
         """Python method to load a character file (called from main.py)"""
