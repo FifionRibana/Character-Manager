@@ -322,6 +322,16 @@ class EventType(StrEnum):
     GENERAL = "general"
 
 
+class EventChapter(StrEnum):
+    CHILDHOOD = "Childhood"
+    ADOLESCENCE = "Adolescence"
+    YOUNG_ADULT = "Yound Adult"
+    ADULT = "Adult"
+    MATURE = "Mature"
+    UNDATED = "Undated"
+    TIMELINE_DEFAULT = "Timeline"
+
+
 class StorageKeys(StrEnum):
     """Keys for data serialization and storage."""
 
@@ -329,11 +339,14 @@ class StorageKeys(StrEnum):
     CHARACTER_ID = "character_id"
     NAME = "name"
     LEVEL = "level"
+    AGE = "age"
     ENNEAGRAM_TYPE = "enneagram_type"
     DEVELOPMENT_LEVEL = "development_level"
     BIOGRAPHY = "biography"
     IMAGE_PATH = "image_path"
     IMAGE_DATA = "image_data"
+    OCCUPATION = "occupation"
+    LOCATION = "location"
 
     # Stats
     STATS = "stats"
@@ -350,6 +363,12 @@ class StorageKeys(StrEnum):
     WING = "wing"
     INSTINCTUAL_STACK = "instinctual_stack"
     TYPE_AFFINITIES = "type_affinities"
+    INTEGRATION_POINT = "integration_point"
+    DISINTEGRATION_POINT = "disintegration_point"
+    TRITYPE_SECONDARY = "tritype_secondary"
+    TRITYPE_TERTIARY = "tritype_tertiary"
+    DOMINANT_INSTINCT_STRENGTH = "dominant_instinct_strength"
+    SELF_AWARENESS_LEVEL = "self_awareness_level"
 
     # Relationships
     RELATIONSHIPS = "relationships"
@@ -357,23 +376,58 @@ class StorageKeys(StrEnum):
     TARGET_NAME = "target_name"
     RELATIONSHIP_TYPE = "relationship_type"
     DESCRIPTION = "description"
+    RELATIONSHIP_STRENGTH = "relationship_strength"
+
+    POSITIVE_RELATIONSHIP = "is_positive"
 
     # Narrative
     NARRATIVE = "narrative_events"
     AFFILIATIONS = "affiliations"
+    EVENT_TITLE = "title"
+    EVENT_TYPE = "type"
+    EVENT_DESCRIPTION = "description"
+    EVENT_DATE = "date"
+    EVENT_IMPORTANCE = "importance"
 
     # Metadata
     CREATED_AT = "created_at"
     UPDATED_AT = "updated_at"
     VERSION = "version"
 
+    TAGS = "tags"
+    NOTES = "notes"
 
-class Theme(StrEnum):
-    """Application theme options."""
+    RELATIONSHIP_COUNT = "relationship_count"
+    EVENT_COUNT = "event_count"
+
+    TOTAL_STAT_POINTS = "total_stat_points"
+    HAS_IMAGE = "has_image"
+    LAST_MODIFIED = "last_modified"
+
+    CURRENT_THEME = "current_theme"
+
+    # Theme
+    THEME_NAME = "name"
+    THEME_MODE = "mode"
+    THEME_COLORS = "colors"
+    THEME_METRICS = "metrics"
+    THEME_CUSTOM_FLAG = "is_custom"
+
+    # File info
+    FILE_INFO_SIZE = "size"
+    FILE_INFO_MODIFIED = "modified"
+    FILE_INFO_CREATED = "created"
+    FILE_INFO_READABLE = "readable"
+    FILE_INFO_WRITABLE = "writable"
+
+
+class ThemeMode(StrEnum):
+    """Available theme modes for the application"""
 
     LIGHT = "light"
     DARK = "dark"
-    AUTO = "auto"  # Follow system theme
+    SYSTEM = "system"  # Follow system preference
+    CUSTOM = "custom"  # User-defined custom theme
 
 
 class FileExtension(StrEnum):
@@ -414,18 +468,32 @@ class ValidationLimits(IntEnum):
     MAX_STAT_VALUE = 25
     MIN_DEVELOPMENT_LEVEL = 1
     MAX_DEVELOPMENT_LEVEL = 9
+    MIN_EVENT_IMPORTANCE = 1
+    MAX_EVENT_IMPORTANCE = 10
+    MIN_RELATIONSHIP_STRENGTH = 1
+    MAX_RELATIONSHIP_STRENGTH = 10
     MAX_BIOGRAPHY_LENGTH = 10000
     MAX_RELATIONSHIP_DESCRIPTION_LENGTH = 500
+
+    MINOR_EVENT_TYPE_THRESHOLD = 3
+    MAJOR_EVENT_TYPE_THRESHOLD = 8
+
+    CHILDHOOD_AGE_LIMIT = 12
+    ADOLESCENCE_AGE_LIMIT = 17
+    YOUNG_ADULT_AGE_LIMIT = 25
+    ADULT_AGE_LIMIT = 40
+    MAX_AGE_LIMIT = 100
 
 
 class FileConstants:
     """File and directory constants using pathlib."""
 
     # Application directories
-    APP_NAME: Final[str] = "MedievalCharacterManager"
-    CONFIG_DIR: Final[Path] = Path.home() / ".config" / APP_NAME
-    DATA_DIR: Final[Path] = Path.home() / ".local" / "share" / APP_NAME
-    CACHE_DIR: Final[Path] = Path.home() / ".cache" / APP_NAME
+    APP_NAME: Final[str] = "CharacterManager"
+    CONFIG_DIR: Final[Path] = Path(__file__).parent / ".config"
+    DATA_DIR: Final[Path] = Path(__file__).parent / ".local" / "share"
+    CACHE_DIR: Final[Path] = Path(__file__).parent / ".cache"
+    THEME_DIR: Final[Path] = Path(__file__).parent / ".themes"
 
     # File names
     SETTINGS_FILE: Final[str] = "settings.json"
@@ -439,6 +507,13 @@ class FileConstants:
     # Backup settings
     MAX_BACKUPS: Final[int] = 5
     BACKUP_SUFFIX: Final[str] = ".backup"
+
+
+class StatusType(StrEnum):
+    STATUS_ERROR = "error"
+    STATUS_WARNING = "warning"
+    STATUS_SUCCESS = "success"
+    STATUS_INFO = "info"
 
 
 class ErrorCodes(IntEnum):
@@ -485,4 +560,9 @@ ValidationResult = tuple[bool, str]  # (is_valid, error_message)
 DEFAULT_STAT_VALUE: Final[int] = 10
 DEFAULT_DEVELOPMENT_LEVEL: Final[int] = 5
 DEFAULT_CHARACTER_LEVEL: Final[int] = 1
+DEFAULT_CHARACTER_AGE: Final[int] = 25
+DEFAULT_RELATIONSHIP_STRENGTH: Final[int] = 5
+DEFAULT_EVENT_IMPORTANCE: Final[int] = 5
 DEFAULT_ENNEAGRAM_TYPE: Final[EnneagramType] = EnneagramType.TYPE_9
+
+UNKNOWN_CHARACTER_AGE: Final[int] = -1

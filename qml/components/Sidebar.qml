@@ -21,14 +21,14 @@ Rectangle {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: AppTheme.spacing
-        spacing: AppTheme.spacing
+        anchors.margins: AppTheme.spacing.tiny
+        spacing: AppTheme.spacing.tiny
 
         // Title
         Text {
             text: qsTr("Characters")
             font.family: AppTheme.fontFamily
-            font.pixelSize: AppTheme.fontSizeTitle
+            font.pixelSize: AppTheme.fontSize.title
             font.bold: true
             color: AppTheme.colors.text
             Layout.alignment: Qt.AlignHCenter
@@ -55,7 +55,7 @@ Rectangle {
 
                 characterName: model.name || ""
                 characterLevel: model.level || 1
-                characterId: model.characterId || ""
+                characterId: model.id || ""
                 hasImage: model.hasImage || false
 
                 onClicked: {
@@ -70,11 +70,11 @@ Rectangle {
 
             // Highlight current item
             highlight: Rectangle {
-                color: AppTheme.primaryColor
+                color: AppTheme.colors.primary
                 opacity: 0.3
                 radius: AppTheme.radius.medium
             }
-
+            
             // Empty state
             Label {
                 anchors.centerIn: parent
@@ -85,6 +85,7 @@ Rectangle {
                 visible: characterList.count === 0
             }
         }
+
 
         // Button row
         RowLayout {

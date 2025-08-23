@@ -4,7 +4,6 @@ import QtQuick.Layouts 6.9
 import QtQuick.Dialogs 6.9
 import "../components"
 import "../styles"
-import QtCore
 
 // import App.Styles
 

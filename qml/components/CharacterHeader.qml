@@ -3,13 +3,12 @@
  * Header component showing character's basic information
  * Includes image, name, level, and quick actions
  */
-import QtQuick 6.9
-import QtQuick.Controls 6.9
-import QtQuick.Layouts 6.9
-import QtQuick.Dialogs 6.9
-import "../styles"
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import QtQuick.Dialogs
 
-// import App.Styles
+import App.Styles
 
 Rectangle {
     id: characterHeader
@@ -31,7 +30,7 @@ Rectangle {
     // Styling
     color: AppTheme.card.background
     border.color: AppTheme.card.border
-    border.width: AppTheme.borderWidth
+    border.width: AppTheme.border.thin
     radius: AppTheme.radius.medium
 
     implicitHeight: contentLayout.implicitHeight + 2 * AppTheme.spacing.large

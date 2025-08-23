@@ -8,7 +8,7 @@ import "../styles"
 Rectangle {
     id: listItem
     height: 60
-    color: mouseArea.containsMouse ? AppTheme.surfaceColorDark : "transparent"
+    color: mouseArea.containsMouse ? AppTheme.colors.surfaceVariant : "transparent"
     radius: AppTheme.radius.medium
 
     // Properties
@@ -38,16 +38,16 @@ Rectangle {
 
     RowLayout {
         anchors.fill: parent
-        anchors.margins: AppTheme.spacing
-        spacing: AppTheme.spacing
+        anchors.margins: AppTheme.spacing.tiny
+        spacing: AppTheme.spacing.tiny
 
         // Character avatar placeholder
         Rectangle {
             width: 40
             height: 40
             radius: 20
-            color: hasImage ? "transparent" : AppTheme.getEnneagramColor(1)
-            border.color: AppTheme.colors.border
+            color: hasImage ? "transparent" : AppTheme.enneagramColors[1]
+                border.color: AppTheme.colors.border
             border.width: 1
 
             Text {
@@ -81,7 +81,7 @@ Rectangle {
             Text {
                 text: qsTr("Level") + " " + characterLevel
                 font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSizeSmall
+                font.pixelSize: AppTheme.fontSize.small
                 color: AppTheme.colors.textSecondary
             }
         }
@@ -91,13 +91,13 @@ Rectangle {
             width: 24
             height: 24
             radius: 12
-            color: AppTheme.primaryColor
+            color: AppTheme.colors.primary
 
             Text {
                 anchors.centerIn: parent
                 text: characterLevel.toString()
                 font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSizeSmall
+                font.pixelSize: AppTheme.fontSize.small
                 font.bold: true
                 color: AppTheme.colors.textSecondary
             }

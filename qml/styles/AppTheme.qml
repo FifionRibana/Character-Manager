@@ -62,6 +62,18 @@ QtObject {
 
     readonly property var fontFamily: 'Inter, "Segoe UI", Roboto, sans-serif'
 
+    readonly property var enneagramColors: [
+        "#E3F2FD", // Type 1 - Light Blue
+        "#F3E5F5", // Type 2 - Light Purple
+        "#E8F5E8", // Type 3 - Light Green
+        "#FFF3E0", // Type 4 - Light Orange
+        "#E0F2F1", // Type 5 - Light Teal
+        "#FCE4EC", // Type 6 - Light Pink
+        "#FFFDE7", // Type 7 - Light Yellow
+        "#FFEBEE", // Type 8 - Light Red
+        "#F1F8E9"  // Type 9 - Light Light Green
+    ]
+
     readonly property var input: QtObject {
         property color background: themeController ? themeController.input.background : "#FFFFFF"
         property color border: themeController ? themeController.input.border : "#E0E0E0"
@@ -109,8 +121,16 @@ QtObject {
         property int small: themeController ? themeController.metrics.font_size_sm : 12
         property int medium: themeController ? themeController.metrics.font_size_md : 14
         property int large: themeController ? themeController.metrics.font_size_lg : 18
+        property int title: themeController ? themeController.metrics.font_size_lg : 18
         property int huge: themeController ? themeController.metrics.font_size_xl : 24
         property int giant: themeController ? themeController.metrics.font_size_xxl : 32
+    }
+
+    // Borders
+    readonly property var border: QtObject {
+        property int thin: themeController ? themeController.metrics.border_thin : 1
+        property int medium: themeController ? themeController.metrics.border_medium : 2
+        property int wide: themeController ? themeController.metrics.border_wide : 4
     }
 
     // Icon sizes
