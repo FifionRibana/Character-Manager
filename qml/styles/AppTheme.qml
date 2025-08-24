@@ -363,6 +363,52 @@ QtObject {
         }
     }
 
+    function getStatColor(value) {
+        // Color coding based on stat value
+        if (value >= 18) return "#8e44ad"      // Epic (purple)
+        if (value >= 16) return "#2ecc71"      // Excellent (green)
+        if (value >= 14) return "#3498db"      // Good (blue)
+        if (value >= 12) return "#f39c12"      // Above average (orange)
+        if (value >= 10) return "#95a5a6"      // Average (gray)
+        if (value >= 8) return "#e67e22"       // Below average (dark orange)
+        return "#e74c3c"                       // Poor (red)
+    }
+    
+    function getStatTextColor(value) {
+        // Color coding based on stat value
+        if (value >= 18) return "#dedede"      // Epic (purple)
+        if (value >= 16) return "#212121"      // Excellent (green)
+        if (value >= 14) return "#dedede"      // Good (blue)
+        if (value >= 12) return "#212121"      // Above average (orange)
+        if (value >= 10) return "#212121"      // Average (gray)
+        if (value >= 8) return "#212121"       // Below average (dark orange)
+        return "#dedede"                       // Poor (red)
+    }
+    
+    function getModifierColor(modifier) {
+        if (modifier > 0) return "#2ecc71"     // Positive - green
+        if (modifier < 0) return "#e74c3c"     // Negative - red
+        return "#95a5a6"                       // Zero - gray
+    }
+    
+    function getAffiliationIcon(affiliation) {
+        var lower = affiliation.toLowerCase()
+        
+        // Organization type detection
+        if (lower.includes("guild")) return "🔨"
+        if (lower.includes("guard") || lower.includes("watch")) return "🛡️"
+        if (lower.includes("church") || lower.includes("temple")) return "⛪"
+        if (lower.includes("mage") || lower.includes("magic")) return "🔮"
+        if (lower.includes("noble") || lower.includes("house")) return "👑"
+        if (lower.includes("ranger") || lower.includes("forest")) return "🏹"
+        if (lower.includes("merchant") || lower.includes("trade")) return "💰"
+        if (lower.includes("academy") || lower.includes("school")) return "📚"
+        if (lower.includes("order") || lower.includes("knight")) return "⚔️"
+        
+        // Default icon
+        return "🏛️"
+    }
+
     // Signal for theme changes
     signal themeChanged
 

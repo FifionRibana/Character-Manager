@@ -1,0 +1,142 @@
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+
+import App.Styles
+
+import "../../../components"
+
+Card {
+    id: iCard
+
+    implicitHeight: biographyContent.implicitHeight + AppTheme.spacing.huge
+
+    property string biography: ""
+
+    signal biographyChangeRequested(string biographyText)
+
+    contentItem: ColumnLayout {
+        id: biographyContent
+        anchors.fill: parent
+        anchors.margins: AppTheme.spacing.large
+        spacing: AppTheme.spacing.medium
+        
+        // Biography header
+        RowLayout {
+            Layout.fillWidth: true
+            
+            Text {
+                text: qsTr("Character Biography")
+                font.family: AppTheme.fontFamily
+                font.pixelSize: AppTheme.fontSize.large
+                font.bold: true
+                color: AppTheme.colors.text
+            }
+            
+            Item { Layout.fillWidth: true }
+            
+            Text {
+                id: characterCount
+                text: biographyTextArea.text.length + "/10000"
+                font.family: AppTheme.fontFamily
+                font.pixelSize: AppTheme.fontSize.small
+                color: getCharacterCountColor()
+            }
+        }
+        
+        Rectangle {
+            Layout.fillWidth: true
+            height: 1
+            color: AppTheme.colors.border
+        }
+        
+        // Biography text editor
+        ScrollView {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 300
+            Layout.minimumHeight: 200
+            
+            TextArea {
+                id: biographyTextArea
+                
+                text: iCard.biography
+                placeholderText: qsTr("Write your character's background story, personality, goals, and history here.\n\n" +
+                                    "Consider including:\n" +
+                                    "• Childhood and upbringing\n" +
+                                    "• Major life events\n" +
+                                    "• Personality traits and quirks\n" +
+                                    "• Goals and motivations\n" +
+                                    "• Fears and weaknesses\n" +
+                                    "• Relationships with family and friends\n" +
+                                    "• Professional background or training")
+                
+                font.family: AppTheme.fontFamily
+                font.pixelSize: AppTheme.fontSize.medium
+                color: AppTheme.colors.text
+                wrapMode: TextArea.Wrap
+                selectByMouse: true
+                
+                background: Rectangle {
+                    color: AppTheme.input.background
+                    border.color: parent.activeFocus ? (AppTheme.colors.accent) : (AppTheme.colors.border)
+                    border.width: parent.activeFocus ? 2 : 1
+                    radius: 6
+                    
+                    Behavior on border.color {
+                        ColorAnimation { duration: 150 }
+                    }
+                    
+                    Behavior on border.width {
+                        NumberAnimation { duration: 150 }
+                    }
+                }
+                
+                onTextChanged: {
+                    if (text !== iCard.biography) {
+                        // Throttle updates to avoid excessive property changes
+                        saveTimer.restart()
+                    }
+                }
+                
+                // Auto-save timer
+                Timer {
+                    id: saveTimer
+                    interval: 500
+                    onTriggered: iCard.biographyChangeRequested(biographyTextArea.text)
+                }
+            }
+        }
+        
+        // Writing tips
+        Rectangle {
+            Layout.fillWidth: true
+            color: AppTheme.colors.backgroundVariant
+            border.color: AppTheme.colors.borderLight
+            border.width: 1
+            radius: 6
+            
+            implicitHeight: tipsContent.implicitHeight + AppTheme.spacing.medium
+            
+            RowLayout {
+                id: tipsContent
+                anchors.fill: parent
+                anchors.margins: AppTheme.spacing.small
+                spacing: AppTheme.spacing.small
+                
+                Text {
+                    text: "💡"
+                    font.pixelSize: AppTheme.fontSize.medium
+                }
+                
+                Text {
+                    text: qsTr("Tip: A good biography helps bring your character to life. Focus on their personality, motivations, and what makes them unique.")
+                    font.family: AppTheme.fontFamily
+                    font.pixelSize: AppTheme.fontSize.small
+                    color: AppTheme.colors.textSecondary
+                    wrapMode: Text.WordWrap
+                    Layout.fillWidth: true
+                }
+            }
+        }
+    }
+}

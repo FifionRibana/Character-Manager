@@ -6,7 +6,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-// import "../styles"
+
 import App.Styles
 
 Rectangle {
@@ -32,8 +32,8 @@ Rectangle {
     // Computed properties - with null safety
     readonly property int modifier: Math.floor((statValue - 10) / 2)
     readonly property string modifierText: modifier >= 0 ? "+" + modifier : modifier.toString()
-    readonly property color statColor: getStatColor(statValue)
-    readonly property color modifierColor: getModifierColor(modifier)
+    readonly property color statColor: AppTheme.getStatColor(statValue)
+    readonly property color modifierColor: AppTheme.getModifierColor(modifier)
     
     // Widget styling
     color: AppTheme.card.background
@@ -365,23 +365,6 @@ Rectangle {
     onValueDecreased: decreaseAnimation.start()
     
     // Helper functions
-    function getStatColor(value) {
-        // Color coding based on stat value
-        if (value >= 18) return "#8e44ad"      // Epic (purple)
-        if (value >= 16) return "#2ecc71"      // Excellent (green)
-        if (value >= 14) return "#3498db"      // Good (blue)
-        if (value >= 12) return "#f39c12"      // Above average (orange)
-        if (value >= 10) return "#95a5a6"      // Average (gray)
-        if (value >= 8) return "#e67e22"       // Below average (dark orange)
-        return "#e74c3c"                       // Poor (red)
-    }
-    
-    function getModifierColor(modifier) {
-        if (modifier > 0) return "#2ecc71"     // Positive - green
-        if (modifier < 0) return "#e74c3c"     // Negative - red
-        return "#95a5a6"                       // Zero - gray
-    }
-    
     function getStatDescription(value) {
         if (value >= 18) return qsTr("Legendary")
         if (value >= 16) return qsTr("Exceptional")

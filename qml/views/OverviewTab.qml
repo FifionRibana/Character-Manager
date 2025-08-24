@@ -25,7 +25,7 @@ ScrollView {
 
             color: AppTheme.card.background
             border.color: AppTheme.card.border
-            border.width: AppTheme.borderWidth
+            border.width: AppTheme.border.thin
             radius: AppTheme.radius.medium
 
             implicitHeight: statsContent.implicitHeight + 2 * AppTheme.spacing.large
@@ -84,7 +84,7 @@ ScrollView {
                                 font.family: AppTheme.fontFamily
                                 font.pixelSize: AppTheme.fontSize.large
                                 font.bold: true
-                                color: AppTheme.colors.textSecondary
+                                color: AppTheme.getStatTextColor(characterModel ? characterModel.strength : 10)
                             }
                         }
 
@@ -99,7 +99,7 @@ ScrollView {
                             color: {
                                 let value = characterModel ? characterModel.strength : 10;
                                 let modifier = Math.floor((value - 10) / 2);
-                                return AppTheme.getStatModifierColor(modifier);
+                                return AppTheme.getModifierColor(modifier);
                             }
                             horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
@@ -132,7 +132,7 @@ ScrollView {
                                 font.family: AppTheme.fontFamily
                                 font.pixelSize: AppTheme.fontSize.large
                                 font.bold: true
-                                color: AppTheme.colors.textSecondary
+                                color: AppTheme.getStatTextColor(characterModel ? characterModel.agility : 10)
                             }
                         }
 
@@ -147,7 +147,7 @@ ScrollView {
                             color: {
                                 let value = characterModel ? characterModel.agility : 10;
                                 let modifier = Math.floor((value - 10) / 2);
-                                return AppTheme.getStatModifierColor(modifier);
+                                return AppTheme.getModifierColor(modifier);
                             }
                             horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
@@ -180,7 +180,7 @@ ScrollView {
                                 font.family: AppTheme.fontFamily
                                 font.pixelSize: AppTheme.fontSize.large
                                 font.bold: true
-                                color: AppTheme.colors.textSecondary
+                                color: AppTheme.getStatTextColor(characterModel ? characterModel.constitution : 10)
                             }
                         }
 
@@ -195,7 +195,7 @@ ScrollView {
                             color: {
                                 let value = characterModel ? characterModel.constitution : 10;
                                 let modifier = Math.floor((value - 10) / 2);
-                                return AppTheme.getStatModifierColor(modifier);
+                                return AppTheme.getModifierColor(modifier);
                             }
                             horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
@@ -228,7 +228,7 @@ ScrollView {
                                 font.family: AppTheme.fontFamily
                                 font.pixelSize: AppTheme.fontSize.large
                                 font.bold: true
-                                color: AppTheme.colors.textSecondary
+                                color: AppTheme.getStatTextColor(characterModel ? characterModel.intelligence : 10)
                             }
                         }
 
@@ -243,7 +243,7 @@ ScrollView {
                             color: {
                                 let value = characterModel ? characterModel.intelligence : 10;
                                 let modifier = Math.floor((value - 10) / 2);
-                                return AppTheme.getStatModifierColor(modifier);
+                                return AppTheme.getModifierColor(modifier);
                             }
                             horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
@@ -276,7 +276,7 @@ ScrollView {
                                 font.family: AppTheme.fontFamily
                                 font.pixelSize: AppTheme.fontSize.large
                                 font.bold: true
-                                color: AppTheme.colors.textSecondary
+                                color: AppTheme.getStatTextColor(characterModel ? characterModel.wisdom : 10)
                             }
                         }
 
@@ -291,7 +291,7 @@ ScrollView {
                             color: {
                                 let value = characterModel ? characterModel.wisdom : 10;
                                 let modifier = Math.floor((value - 10) / 2);
-                                return AppTheme.getStatModifierColor(modifier);
+                                return AppTheme.getModifierColor(modifier);
                             }
                             horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
@@ -324,7 +324,7 @@ ScrollView {
                                 font.family: AppTheme.fontFamily
                                 font.pixelSize: AppTheme.fontSize.large
                                 font.bold: true
-                                color: AppTheme.colors.textSecondary
+                                color: AppTheme.getStatTextColor(characterModel ? characterModel.charisma : 10)
                             }
                         }
 
@@ -339,7 +339,7 @@ ScrollView {
                             color: {
                                 let value = characterModel ? characterModel.charisma : 10;
                                 let modifier = Math.floor((value - 10) / 2);
-                                return AppTheme.getStatModifierColor(modifier);
+                                return AppTheme.getModifierColor(modifier);
                             }
                             horizontalAlignment: Text.AlignHCenter
                             Layout.alignment: Qt.AlignHCenter
