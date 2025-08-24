@@ -29,8 +29,6 @@ ApplicationWindow {
     property int autoSaveCounter: 0
     property bool editMode: MainController.editMode
 
-    Component.onCompleted: console.log("Result", ImageController.test_method())
-
     Connections {
         target: ImageController
         function onErrorOccurred(label, message) {

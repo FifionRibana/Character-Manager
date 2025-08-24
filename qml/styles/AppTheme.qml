@@ -127,6 +127,7 @@ QtObject {
 
     // Border radius values
     readonly property var radius: QtObject {
+        property int tiny: themeController ? themeController.metrics.radius_xs : 2
         property int small: themeController ? themeController.metrics.radius_sm : 4
         property int medium: themeController ? themeController.metrics.radius_md : 8
         property int large: themeController ? themeController.metrics.radius_lg : 16
@@ -146,9 +147,9 @@ QtObject {
 
     // Borders
     readonly property var border: QtObject {
-        property int thin: themeController ? themeController.metrics.border_thin : 1
-        property int medium: themeController ? themeController.metrics.border_medium : 2
-        property int wide: themeController ? themeController.metrics.border_wide : 4
+        property int thin: themeController ? themeController.metrics.border_xs : 1
+        property int medium: themeController ? themeController.metrics.border_md : 2
+        property int wide: themeController ? themeController.metrics.border_xl : 4
     }
 
     // Icon sizes

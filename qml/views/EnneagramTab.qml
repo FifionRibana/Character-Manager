@@ -1,13 +1,14 @@
 /**
  * EnneagramTab.qml
  * Complete Enneagram personality editing tab
- * Includes EnneagramWheel and all psychological aspects
+ * Includes enneagramWheelPanel and all psychological aspects
  */
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
 import "../components"
+import "./tabs/enneagram"
 
 import App.Styles
 
@@ -15,500 +16,155 @@ ScrollView {
     id: enneagramTab
 
     property var characterModel
-    property alias selectedType: enneagramWheel.selectedType
+
+    property int selectedType: characterModel && characterModel.enneagramType !== undefined ? characterModel.enneagramType : 9
+    property int wing: characterModel && characterModel.enneagramWing !== undefined ? characterModel.enneagramWing : 0
+    property int instinctualVariantIndex: characterModel && characterModel.instinct !== undefined ? getInstinctualVariantIndex(characterModel.instinct) : 0
+    property int developmentLevel: characterModel && characterModel.developmentLevel !== undefined ? characterModel.developmentLevel : 5
 
     contentWidth: availableWidth
     clip: true
 
+    property var instinctualModel: [
+        {
+            text: qsTr("Self-Preservation (SP)"),
+            value: "sp"
+        },
+        {
+            text: qsTr("Social (SO)"),
+            value: "so"
+        },
+        {
+            text: qsTr("Sexual/One-to-One (SX)"),
+            value: "sx"
+        }
+    ]
+
+    // Quick help button
+    // Button {
+    //     text: "?"
+    //     anchors.right: parent.right
+    //     anchors.top: parent.top
+    //     implicitWidth: 32
+    //     implicitHeight: 32
+    //     font.bold: true
+
+    //     z: 1
+
+    //     background: Rectangle {
+    //         radius: 16
+    //         color: AppTheme.colors.accent
+    //         opacity: parent.hovered ? 0.8 : 0.6
+
+    //         Behavior on opacity {
+    //             NumberAnimation {
+    //                 duration: 150
+    //             }
+    //         }
+    //     }
+
+    //     contentItem: Text {
+    //         text: parent.text
+    //         font: parent.font
+    //         color: "white"
+    //         horizontalAlignment: Text.AlignHCenter
+    //         verticalAlignment: Text.AlignVCenter
+    //     }
+
+    //     onClicked: helpPopup.open()
+    // }
+
     ColumnLayout {
         width: enneagramTab.availableWidth
         spacing: AppTheme.spacing.large
-
-        // Title section
-        RowLayout {
-            Layout.fillWidth: true
-
-            Text {
-                text: qsTr("Enneagram Profile")
-                font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSize.tiny
-                font.bold: true
-                color: AppTheme.colors.text
-            }
-
-            Item {
-                Layout.fillWidth: true
-            }
-
-            // Quick help button
-            Button {
-                text: "?"
-                implicitWidth: 32
-                implicitHeight: 32
-                font.bold: true
-
-                background: Rectangle {
-                    radius: 16
-                    color: AppTheme.colors.accent
-                    opacity: parent.hovered ? 0.8 : 0.6
-
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 150
-                        }
-                    }
-                }
-
-                contentItem: Text {
-                    text: parent.text
-                    font: parent.font
-                    color: "white"
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                }
-
-                onClicked: helpPopup.open()
-            }
-        }
 
         // Main content
         RowLayout {
             Layout.fillWidth: true
             spacing: AppTheme.spacing.large
 
+            Layout.leftMargin: AppTheme.margin.small
+            Layout.rightMargin: AppTheme.margin.small
+            Layout.topMargin: AppTheme.margin.small
+
             // Left panel - Enneagram Wheel
-            Rectangle {
+            EnneagramTabWheelPanel {
+                id: enneagramWheelPanel
+
+                selectedType: enneagramTab.selectedType
+
                 Layout.preferredWidth: 480
                 Layout.preferredHeight: 480
                 Layout.alignment: Qt.AlignTop
-
-                color: AppTheme.card.background
-                border.color: AppTheme.card.border
-                border.width: AppTheme.borderWidth
-                radius: AppTheme.radius.medium
-
-                ColumnLayout {
-                    anchors.fill: parent
-                    anchors.margins: AppTheme.spacing.medium
-                    spacing: AppTheme.spacing.medium
-
-                    // Wheel title
-                    Text {
-                        text: qsTr("Enneagram Wheel")
-                        font.family: AppTheme.fontFamily
-                        font.pixelSize: AppTheme.fontSize.large
-                        font.bold: true
-                        color: AppTheme.colors.text
-                        Layout.alignment: Qt.AlignHCenter
+                
+                onTypeSelected: function (type) {
+                    if (characterModel) {
+                        characterModel.enneagramType = type;
+                        updateWingOptions();
                     }
+                }
 
-                    // The wheel component
-                    EnneagramWheel {
-                        id: enneagramWheel
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        Layout.minimumWidth: 400
-                        Layout.minimumHeight: 400
-
-                        selectedType: characterModel && characterModel.enneagramType !== undefined ? characterModel.enneagramType : 9
-
-                        onTypeSelected: function (type) {
-                            if (characterModel) {
-                                characterModel.enneagramType = type;
-                                updateWingOptions();
-                            }
-                        }
-
-                        onTypeHovered: function (type) {
-                            if (type > 0) {
-                                typeInfoText.text = getTypeDescription(type);
-                            } else {
-                                typeInfoText.text = qsTr("Hover over a type to see its description");
-                            }
-                        }
-                    }
-
-                    // Type info display
-                    Rectangle {
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: 60
-                        color: AppTheme.colors.backgroundVariant || "#F8F9FA"
-                        border.color: AppTheme.colors.borderLight || "#DEE2E6"
-                        border.width: 1
-                        radius: 6
-
-                        Text {
-                            id: typeInfoText
-                            anchors.fill: parent
-                            anchors.margins: 12
-                            text: qsTr("Hover over a type to see its description")
-                            font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSize.medium
-                            color: AppTheme.colors.textSecondary
-                            wrapMode: Text.WordWrap
-                            verticalAlignment: Text.AlignVCenter
-                        }
+                onTypeHovered: function (type) {
+                    if (type > 0) {
+                        enneagramWheelPanel.typeInfo = getTypeDescription(type);
+                    } else {
+                        enneagramWheelPanel.typeInfo = qsTr("Hover over a type to see its description");
                     }
                 }
             }
 
             // Right panel - Controls and details
-            ColumnLayout {
+            EnneagramTabControlPanel {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignTop
-                spacing: AppTheme.spacing.medium
 
-                // Core Type Information
-                Rectangle {
-                    Layout.fillWidth: true
-                    color: AppTheme.card.background
-                    border.color: AppTheme.card.border
-                    border.width: AppTheme.borderWidth
-                    radius: AppTheme.radius.medium
+                selectedType: enneagramTab.selectedType
+                wing: enneagramTab.wing
+                instinctualVariantIndex: enneagramTab.instinctualVariantIndex
+                developmentLevel: enneagramTab.developmentLevel
 
-                    implicitHeight: coreTypeContent.implicitHeight + 2 * AppTheme.spacing.medium
+                typeName: getTypeName(selectedType)
+                typeTitle: getTypeTitle(selectedType)
+                developmentLevelName: getDevelopmentLevelName(Math.round(developmentLevel))
+                developmentColor: getDevelopmentColor(developmentLevel)
+                integrationPoint: getIntegrationPoint(selectedType)
+                disintegrationPoint: getDisintegrationPoint(selectedType)
 
-                    ColumnLayout {
-                        id: coreTypeContent
-                        anchors.fill: parent
-                        anchors.margins: AppTheme.spacing.medium
-                        spacing: AppTheme.spacing.small
-
-                        Text {
-                            text: qsTr("Core Type")
-                            font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSize.large
-                            font.bold: true
-                            color: AppTheme.colors.text
-                        }
-
-                        Rectangle {
-                            Layout.fillWidth: true
-                            height: 1
-                            color: AppTheme.colors.border
-                        }
-
-                        Text {
-                            text: qsTr("Selected Type") + ": " + getTypeName(enneagramWheel.selectedType)
-                            font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSize.medium
-                            color: AppTheme.colors.text
-                            font.bold: true
-                        }
-
-                        Text {
-                            text: getTypeTitle(enneagramWheel.selectedType)
-                            font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSize.medium
-                            color: AppTheme.colors.textSecondary
-                            font.italic: true
-                        }
+                wingModel: iWingModel
+                instinctualModel: enneagramTab.instinctualModel
+                
+                onWingChangeRequested: function(newWing) {
+                    if (characterModel && newWing !== undefined) {
+                        characterModel.enneagramWing = newWing;
                     }
                 }
 
-                // Wing Selection
-                Rectangle {
-                    Layout.fillWidth: true
-                    color: AppTheme.card.background
-                    border.color: AppTheme.card.border
-                    border.width: AppTheme.borderWidth
-                    radius: AppTheme.radius.medium
-
-                    implicitHeight: wingContent.implicitHeight + 2 * AppTheme.spacing.medium
-
-                    ColumnLayout {
-                        id: wingContent
-                        anchors.fill: parent
-                        anchors.margins: AppTheme.spacing.medium
-                        spacing: AppTheme.spacing.small
-
-                        Text {
-                            text: qsTr("Wing")
-                            font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSize.large
-                            font.bold: true
-                            color: AppTheme.colors.text
-                        }
-
-                        ComboBox {
-                            id: wingComboBox
-                            Layout.fillWidth: true
-
-                            model: wingModel
-                            textRole: "text"
-                            valueRole: "value"
-
-                            background: Rectangle {
-                                color: AppTheme.input.background
-                                border.color: AppTheme.colors.border
-                                border.width: 1
-                                radius: 4
-                            }
-
-                            onCurrentValueChanged: {
-                                if (characterModel && currentValue !== undefined) {
-                                    characterModel.enneagramWing = currentValue;
-                                }
-                            }
-                        }
-
-                        Text {
-                            id: wingNotationText
-                            text: getWingNotation()
-                            font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSize.medium
-                            font.bold: true
-                            color: AppTheme.colors.accent
-                            visible: wingComboBox.currentValue > 0
-                        }
+                onInstinctualVariantChangeRequested: function (newInstinctualVariant) {
+                    if (characterModel && newInstinctualVariant !== undefined) {
+                        characterModel.instinct = newInstinctualVariant;
                     }
                 }
 
-                // Instinctual Variant
-                Rectangle {
-                    Layout.fillWidth: true
-                    color: AppTheme.card.background
-                    border.color: AppTheme.card.border
-                    border.width: AppTheme.borderWidth
-                    radius: AppTheme.radius.medium
-
-                    implicitHeight: instinctContent.implicitHeight + 2 * AppTheme.spacing.medium
-
-                    ColumnLayout {
-                        id: instinctContent
-                        anchors.fill: parent
-                        anchors.margins: AppTheme.spacing.medium
-                        spacing: AppTheme.spacing.small
-
-                        Text {
-                            text: qsTr("Instinctual Variant")
-                            font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSize.large
-                            font.bold: true
-                            color: AppTheme.colors.text
-                        }
-
-                        Text {
-                            text: qsTr("Primary instinct (most developed)")
-                            font.family: AppTheme.fontFamily || "Inter"
-                            font.pixelSize: AppTheme.fontSize.small || 12
-                            color: AppTheme.colors.textSecondary
-                        }
-
-                        ComboBox {
-                            id: instinctComboBox
-                            Layout.fillWidth: true
-
-                            model: [
-                                {
-                                    text: qsTr("Self-Preservation (SP)"),
-                                    value: "sp"
-                                },
-                                {
-                                    text: qsTr("Social (SO)"),
-                                    value: "so"
-                                },
-                                {
-                                    text: qsTr("Sexual/One-to-One (SX)"),
-                                    value: "sx"
-                                }
-                            ]
-
-                            textRole: "text"
-                            valueRole: "value"
-
-                            background: Rectangle {
-                                color: AppTheme.input.background
-                                border.color: AppTheme.colors.border
-                                border.width: 1
-                                radius: 4
-                            }
-
-                            onCurrentValueChanged: {
-                                if (characterModel && currentValue !== undefined) {
-                                    characterModel.instinctualVariant = currentValue;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // Development Level
-                Rectangle {
-                    Layout.fillWidth: true
-                    color: AppTheme.card.background
-                    border.color: AppTheme.card.border
-                    border.width: AppTheme.borderWidth
-                    radius: AppTheme.radius.medium
-
-                    implicitHeight: developmentContent.implicitHeight + 2 * AppTheme.spacing.medium
-
-                    ColumnLayout {
-                        id: developmentContent
-                        anchors.fill: parent
-                        anchors.margins: AppTheme.spacing.medium
-                        spacing: AppTheme.spacing.small
-
-                        Text {
-                            text: qsTr("Development Level")
-                            font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSize.large
-                            font.bold: true
-                            color: AppTheme.colors.text
-                        }
-
-                        RowLayout {
-                            Layout.fillWidth: true
-
-                            Text {
-                                text: qsTr("Healthy")
-                                font.family: AppTheme.fontFamily || "Inter"
-                                font.pixelSize: AppTheme.fontSize.small || 12
-                                color: "#2ecc71"
-                            }
-
-                            Slider {
-                                id: developmentSlider
-                                Layout.fillWidth: true
-                                from: 1
-                                to: 9
-                                value: characterModel && characterModel.developmentLevel !== undefined ? characterModel.developmentLevel : 5
-                                stepSize: 1
-                                snapMode: Slider.SnapAlways
-
-                                onValueChanged: {
-                                    if (characterModel && value !== undefined) {
-                                        characterModel.developmentLevel = value;
-                                    }
-                                }
-
-                                background: Rectangle {
-                                    x: developmentSlider.leftPadding
-                                    y: developmentSlider.topPadding + developmentSlider.availableHeight / 2 - height / 2
-                                    implicitWidth: 200
-                                    implicitHeight: 4
-                                    width: developmentSlider.availableWidth
-                                    height: implicitHeight
-                                    radius: 2
-                                    color: AppTheme.colors.border
-
-                                    Rectangle {
-                                        width: developmentSlider.visualPosition * parent.width
-                                        height: parent.height
-                                        color: getDevelopmentColor(developmentSlider.value)
-                                        radius: 2
-                                    }
-                                }
-
-                                handle: Rectangle {
-                                    x: developmentSlider.leftPadding + developmentSlider.visualPosition * (developmentSlider.availableWidth - width)
-                                    y: developmentSlider.topPadding + developmentSlider.availableHeight / 2 - height / 2
-                                    implicitWidth: 20
-                                    implicitHeight: 20
-                                    radius: 10
-                                    color: getDevelopmentColor(developmentSlider.value)
-                                    border.color: AppTheme.colors.border
-                                    border.width: 2
-                                }
-                            }
-
-                            Text {
-                                text: qsTr("Unhealthy")
-                                font.family: AppTheme.fontFamily || "Inter"
-                                font.pixelSize: AppTheme.fontSize.small || 12
-                                color: "#e74c3c"
-                            }
-                        }
-
-                        Text {
-                            text: qsTr("Level") + " " + Math.round(developmentSlider.value) + " - " + getDevelopmentLevelName(Math.round(developmentSlider.value))
-                            font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSize.medium
-                            color: AppTheme.colors.text
-                            font.bold: true
-                        }
-                    }
-                }
-
-                // Integration/Disintegration info
-                Rectangle {
-                    Layout.fillWidth: true
-                    color: AppTheme.card.background
-                    border.color: AppTheme.card.border
-                    border.width: AppTheme.borderWidth
-                    radius: AppTheme.radius.medium
-
-                    implicitHeight: connectionContent.implicitHeight + 2 * AppTheme.spacing.medium
-
-                    ColumnLayout {
-                        id: connectionContent
-                        anchors.fill: parent
-                        anchors.margins: AppTheme.spacing.medium
-                        spacing: AppTheme.spacing.small
-
-                        Text {
-                            text: qsTr("Connections")
-                            font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSize.large
-                            font.bold: true
-                            color: AppTheme.colors.text
-                        }
-
-                        GridLayout {
-                            Layout.fillWidth: true
-                            columns: 2
-                            columnSpacing: AppTheme.spacing.medium
-                            rowSpacing: AppTheme.spacing.small
-
-                            Text {
-                                text: qsTr("Integration (Growth):")
-                                font.family: AppTheme.fontFamily
-                                font.pixelSize: AppTheme.fontSize.medium
-                                color: AppTheme.colors.textSecondary
-                            }
-
-                            Text {
-                                text: qsTr("Type") + " " + getIntegrationPoint(enneagramWheel.selectedType)
-                                font.family: AppTheme.fontFamily
-                                font.pixelSize: AppTheme.fontSize.medium
-                                color: "#2ecc71"
-                                font.bold: true
-                            }
-
-                            Text {
-                                text: qsTr("Disintegration (Stress):")
-                                font.family: AppTheme.fontFamily
-                                font.pixelSize: AppTheme.fontSize.medium
-                                color: AppTheme.colors.textSecondary
-                            }
-
-                            Text {
-                                text: qsTr("Type") + " " + getDisintegrationPoint(enneagramWheel.selectedType)
-                                font.family: AppTheme.fontFamily
-                                font.pixelSize: AppTheme.fontSize.medium
-                                color: "#e74c3c"
-                                font.bold: true
-                            }
-                        }
-
-                        Text {
-                            text: qsTr("Green arrows show growth direction, red arrows show stress direction")
-                            font.family: AppTheme.fontFamily
-                            font.pixelSize: AppTheme.fontSize.small || 12
-                            color: AppTheme.colors.textSecondary
-                            font.italic: true
-                            wrapMode: Text.WordWrap
-                            Layout.fillWidth: true
-                        }
+                onDevelopmentLevelChangeRequested: function(newDevelopmentLevel) {
+                    if (characterModel && newDevelopmentLevel !== undefined) {
+                        characterModel.developmentLevel = newDevelopmentLevel;
                     }
                 }
             }
+        }
+
+        EnneagramTabFooter {
+            Layout.fillWidth: true
+
+            Layout.leftMargin: AppTheme.margin.small
+            Layout.rightMargin: AppTheme.margin.small
+            Layout.bottomMargin: AppTheme.margin.small
         }
     }
 
     // Wing model for ComboBox
     ListModel {
-        id: wingModel
+        id: iWingModel
 
         ListElement {
             text: "No Wing"
@@ -550,30 +206,33 @@ ScrollView {
 
     // Functions
     function updateWingOptions() {
-        wingModel.clear();
-        wingModel.append({
+        iWingModel.clear();
+        iWingModel.append({
             text: qsTr("No Wing"),
             value: 0
         });
 
-        var type = enneagramWheel.selectedType;
+        var type = enneagramTab.selectedType;
         var leftWing = type === 1 ? 9 : type - 1;
         var rightWing = type === 9 ? 1 : type + 1;
 
-        wingModel.append({
+        iWingModel.append({
             text: qsTr("Wing") + " " + leftWing,
             value: leftWing
         });
-        wingModel.append({
+        iWingModel.append({
             text: qsTr("Wing") + " " + rightWing,
             value: rightWing
         });
     }
 
-    function getWingNotation() {
-        if (wingComboBox.currentValue <= 0)
-            return "";
-        return enneagramWheel.selectedType + "w" + wingComboBox.currentValue;
+    function getInstinctualVariantIndex(value) {
+        var instinctualVariant = {
+            "sp": 0,
+            "so": 1,
+            "sx": 2
+        }
+        return instinctualVariant[value] || 0
     }
 
     function getTypeName(type) {
@@ -651,13 +310,6 @@ ScrollView {
         return disintegrations[type] || 0;
     }
 
-    function getDevelopmentColor(level) {
-        if (level <= 3)
-            return "#2ecc71";      // Healthy - Green
-        if (level <= 6)
-            return "#f39c12";     // Average - Orange
-        return "#e74c3c";                     // Unhealthy - Red
-    }
 
     function getDevelopmentLevelName(level) {
         var names = {
@@ -681,7 +333,7 @@ ScrollView {
     // Initialize when character changes
     onCharacterModelChanged: {
         if (characterModel) {
-            enneagramWheel.selectedType = characterModel.enneagramType || 9;
+            enneagramWheelPanel.selectedType = characterModel.enneagramType || 9;
             updateWingOptions();
         }
     }

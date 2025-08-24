@@ -13,6 +13,7 @@ from PyQt6.QtCore import QObject, pyqtSignal, pyqtProperty, pyqtSlot, QTimer
 from data.character import Character
 from data.enums import (
     DEFAULT_CHARACTER_AGE,
+    DEFAULT_DEVELOPMENT_LEVEL,
     DEFAULT_ENNEAGRAM_TYPE,
     DEFAULT_STAT_VALUE,
     InstinctualVariant,
@@ -58,6 +59,7 @@ class CharacterModel(QObject):
     enneagramChanged: ClassVar[pyqtSignal] = pyqtSignal()
     enneagramTypeChanged: ClassVar[pyqtSignal] = pyqtSignal()
     wingChanged: ClassVar[pyqtSignal] = pyqtSignal()
+    developmentLevelChanged: ClassVar[pyqtSignal] = pyqtSignal()
     instinctChanged: ClassVar[pyqtSignal] = pyqtSignal()
 
     _character: Character = field(default_factory=lambda: Character())
@@ -440,7 +442,7 @@ class CharacterModel(QObject):
     def instinct(self) -> str:
         """Get Instinctual Variant."""
         return (
-            self._character.enneagram.instinct.value
+            self._character.enneagram.instinctual_variant.value
             if self._character
             else InstinctualVariant.SELF_PRESERVATION
         )
@@ -448,11 +450,11 @@ class CharacterModel(QObject):
     @instinct.setter
     def instinct(self, value: str) -> None:
         """Set Instinctual Variant."""
-        if self._character and self._character.enneagram.instinct.value != value:
+        if self._character and self._character.enneagram.instinctual_variant.value != value:
             from data.enums import InstinctualVariant
 
             try:
-                self._character.enneagram.instinct = InstinctualVariant(value)
+                self._character.enneagram.instinctual_variant = InstinctualVariant(value)
                 self._character.touch()
                 self.instinctChanged.emit()
                 self.enneagramChanged.emit()
@@ -460,6 +462,23 @@ class CharacterModel(QObject):
                 self._schedule_auto_save()
             except ValueError:
                 pass  # Invalid value
+
+    @pyqtProperty(int, notify=developmentLevelChanged)
+    def developmentLevel(self) -> int:
+        """Get Enneagram development level."""
+        return self._character.enneagram.development_level if self._character else DEFAULT_DEVELOPMENT_LEVEL
+
+    @developmentLevel.setter
+    def developmentLevel(self, value: int) -> None:
+        """Set Enneagram development level."""
+        if self._character and self._character.enneagram.development_level != value:
+            self._character.enneagram.development_level = value
+            self._character.touch()
+            self.developmentLevelChanged.emit()
+            self.enneagramChanged.emit()
+            self.characterChanged.emit()
+            self._schedule_auto_save()
+        
 
     # === Phase 4: Sub-Models Properties ===
 

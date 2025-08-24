@@ -219,9 +219,17 @@ Rectangle {
                             radius: 4
                         }
 
+                        onTextChanged: {
+                            if (characterModel && characterModel.name !== text) {
+                                characterModel.name = text
+                                nameChanged(text)
+                            }
+                        }
+
                         onEditingFinished: {
                             if (characterModel && text !== characterModel.name) {
-                                nameChanged(text);
+                                characterModel.name = text
+                                nameChanged(text)
                             }
                         }
 

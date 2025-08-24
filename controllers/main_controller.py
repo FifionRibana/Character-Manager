@@ -4,6 +4,7 @@ Main controller with properly initialized properties
 """
 
 from dataclasses import dataclass, field
+import traceback
 from typing import Any, ClassVar, Dict
 from PyQt6.QtCore import QObject, pyqtSignal, pyqtProperty, pyqtSlot
 from PyQt6.QtQml import QQmlEngine
@@ -168,7 +169,7 @@ class MainController(QObject):
                 self.statusChanged.emit(f"Saved {self._current_character.name}")
 
         except Exception as e:
-            self.errorOccurred.emit("Save Error", f"Failed to save character: {str(e)}")
+            self.errorOccurred.emit("Save Error", f"Failed to save character: {str(e)}\n{traceback.format_exc()}")
 
     def _dict_to_json_string(self, data: Dict[str, Any]) -> str:
         """Convert dictionary to JSON string."""

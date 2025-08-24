@@ -18,6 +18,7 @@ from .enums import (
     ValidationLimits,
     DEFAULT_ENNEAGRAM_TYPE,
     DEFAULT_DEVELOPMENT_LEVEL,
+    DEFAULT_INSTINCTUAL_VARIANT,
 )
 
 
@@ -44,6 +45,10 @@ class EnneagramProfile:
             InstinctualVariant.SEXUAL,
         ]
     )
+
+    # TODO: Replace just the main by a sortable list
+    # Main instinctual variant
+    instinctual_variant: InstinctualVariant = DEFAULT_INSTINCTUAL_VARIANT
 
     # Development and psychological health
     development_level: int = DEFAULT_DEVELOPMENT_LEVEL
@@ -351,6 +356,7 @@ class EnneagramProfile:
                 v.value for v in self.instinctual_stack
             ],
             StorageKeys.DEVELOPMENT_LEVEL.value: self.development_level,
+            StorageKeys.INSTINCTUAL_VARIANT.value: self.instinctual_variant,
             StorageKeys.INTEGRATION_POINT.value: (
                 self.integration_point.value if self.integration_point else None
             ),
@@ -398,6 +404,13 @@ class EnneagramProfile:
                 wing = EnneagramType(data[StorageKeys.WING.value])
             except ValueError:
                 wing = None
+
+        # Parse instinctual variant
+        instinctual_variant = DEFAULT_INSTINCTUAL_VARIANT
+        try:
+            instinctual_variant = InstinctualVariant(data.get(StorageKeys.INSTINCTUAL_VARIANT.value, DEFAULT_INSTINCTUAL_VARIANT.value))
+        except (ValueError, TypeError):
+            pass # Use default
 
         # Parse instinctual stack
         instinctual_stack = [
@@ -493,6 +506,7 @@ class EnneagramProfile:
         return cls(
             main_type=main_type,
             wing=wing,
+            instinctual_variant= instinctual_variant,
             instinctual_stack=instinctual_stack,
             development_level=development_level,
             integration_point=integration_point,

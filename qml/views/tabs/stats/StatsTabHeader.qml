@@ -6,11 +6,6 @@ import "../../../components"
 
 Card {
     id: iCard
-    Layout.fillWidth: true
-
-    Layout.leftMargin: AppTheme.margin.small
-    Layout.rightMargin: AppTheme.margin.small
-    Layout.topMargin: AppTheme.margin.small
 
     implicitHeight: headerContent.implicitHeight + AppTheme.spacing.huge
 
@@ -70,6 +65,17 @@ Card {
                         verticalAlignment: Text.AlignVCenter
                     }
                     
+
+
+
+
+
+
+
+
+
+
+                    
                     onClicked: rollStatsRequested()
                     
                     ToolTip {
@@ -81,6 +87,7 @@ Card {
                 
                 Button {
                     text: qsTr("Reset to 10")
+        
                     font.family: AppTheme.fontFamily
                     font.pixelSize: AppTheme.fontSize.medium
                     

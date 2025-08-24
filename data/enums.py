@@ -362,6 +362,7 @@ class StorageKeys(StrEnum):
     MAIN_TYPE = "main_type"
     WING = "wing"
     INSTINCTUAL_STACK = "instinctual_stack"
+    INSTINCTUAL_VARIANT = "instinctual_variant"
     TYPE_AFFINITIES = "type_affinities"
     INTEGRATION_POINT = "integration_point"
     DISINTEGRATION_POINT = "disintegration_point"
@@ -572,6 +573,7 @@ ValidationResult = tuple[bool, str]  # (is_valid, error_message)
 # Constants for default values
 DEFAULT_STAT_VALUE: Final[int] = 10
 DEFAULT_DEVELOPMENT_LEVEL: Final[int] = 5
+DEFAULT_INSTINCTUAL_VARIANT: Final[InstinctualVariant] = InstinctualVariant.SELF_PRESERVATION
 DEFAULT_CHARACTER_LEVEL: Final[int] = 1
 DEFAULT_CHARACTER_AGE: Final[int] = 25
 DEFAULT_RELATIONSHIP_STRENGTH: Final[int] = 5

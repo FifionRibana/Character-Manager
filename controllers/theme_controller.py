@@ -105,6 +105,10 @@ class ThemeColors:
 class ThemeMetrics:
     """Theme spacing and sizing metrics"""
 
+    border_xs: int = 1
+    border_md: int = 2
+    border_xl: int = 4
+
     spacing_xs: int = 4
     spacing_sm: int = 8
     spacing_md: int = 16
@@ -123,6 +127,7 @@ class ThemeMetrics:
     padding_lg: int = 24
     padding_xl: int = 32
 
+    radius_xs: int = 2
     radius_sm: int = 4
     radius_md: int = 8
     radius_lg: int = 16
