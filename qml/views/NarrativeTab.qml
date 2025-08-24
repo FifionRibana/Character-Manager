@@ -2,7 +2,9 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
+
 import "../components"
+import "./tabs/narrative"
 
 ScrollView {
     id: narrativeTab
@@ -17,431 +19,48 @@ ScrollView {
         spacing: 24
         
         // Header section
-        Rectangle {
+        NarrativeTabHeader {
             Layout.fillWidth: true
-            color: "#ffffff"
-            border.color: "#e0e0e0"
-            border.width: 1
-            radius: 8
-            
-            implicitHeight: headerContent.implicitHeight + 32
-            
-            ColumnLayout {
-                id: headerContent
-                anchors.fill: parent
-                anchors.margins: 16
-                spacing: 16
-                
-                RowLayout {
-                    Layout.fillWidth: true
-                    
-                    Text {
-                        text: "Character Timeline"
-                        font.pixelSize: 20
-                        font.bold: true
-                        color: "#212121"
-                        Layout.fillWidth: true
-                    }
-                    
-                    Button {
-                        text: "Add Event"
-                        onClicked: addEventDialog.open()
-                        
-                        background: Rectangle {
-                            color: parent.pressed ? "#388E3C" : 
-                                   parent.hovered ? "#45A049" : "#4CAF50"
-                            radius: 4
-                        }
-                        
-                        contentItem: Text {
-                            text: parent.text
-                            color: "#ffffff"
-                            font.pixelSize: 12
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                    }
-                }
-                
-                Rectangle {
-                    Layout.fillWidth: true
-                    height: 1
-                    color: "#e0e0e0"
-                }
-                
-                Text {
-                    text: "Chronicle important events, milestones, and story moments in your character's life."
-                    font.pixelSize: 12
-                    color: "#757575"
-                    wrapMode: Text.WordWrap
-                    Layout.fillWidth: true
-                }
-                
-                // Statistics row
-                RowLayout {
-                    Layout.fillWidth: true
-                    spacing: 24
-                    
-                    ColumnLayout {
-                        spacing: 4
-                        
-                        Text {
-                            text: narrativeModel ? narrativeModel.count : 0
-                            font.pixelSize: 24
-                            font.bold: true
-                            color: "#FF9800"
-                            Layout.alignment: Qt.AlignHCenter
-                        }
-                        
-                        Text {
-                            text: "Total Events"
-                            font.pixelSize: 10
-                            color: "#757575"
-                            Layout.alignment: Qt.AlignHCenter
-                        }
-                    }
-                    
-                    Rectangle {
-                        width: 1
-                        height: 40
-                        color: "#e0e0e0"
-                    }
-                    
-                    ColumnLayout {
-                        spacing: 4
-                        
-                        Text {
-                            text: getMajorEventCount()
-                            font.pixelSize: 24
-                            font.bold: true
-                            color: "#3F51B5"
-                            Layout.alignment: Qt.AlignHCenter
-                        }
-                        
-                        Text {
-                            text: "Major Events"
-                            font.pixelSize: 10
-                            color: "#757575"
-                            Layout.alignment: Qt.AlignHCenter
-                        }
-                    }
-                    
-                    Rectangle {
-                        width: 1
-                        height: 40
-                        color: "#e0e0e0"
-                    }
-                    
-                    ColumnLayout {
-                        spacing: 4
-                        
-                        Text {
-                            text: getUniqueTagCount()
-                            font.pixelSize: 24
-                            font.bold: true
-                            color: "#9C27B0"
-                            Layout.alignment: Qt.AlignHCenter
-                        }
-                        
-                        Text {
-                            text: "Tags Used"
-                            font.pixelSize: 10
-                            color: "#757575"
-                            Layout.alignment: Qt.AlignHCenter
-                        }
-                    }
-                    
-                    Item { Layout.fillWidth: true }
-                }
-            }
+
+            Layout.leftMargin: AppTheme.margin.small
+            Layout.rightMargin: AppTheme.margin.small
+            Layout.topMargin: AppTheme.margin.small
+
+            eventCount: narrativeModel ? narrativeModel.count : 0
+
+            majorEventCount: getMajorEventCount()
+            uniqueEventCount: getUniqueTagCount()
+
+            onAddEventRequested: addEventDialog.open()
         }
         
         // View controls section
-        Rectangle {
+        NarrativeTabFilter {
+            id: iNarrativeTabFilter
             Layout.fillWidth: true
-            color: "#f8f9fa"
-            border.color: "#dee2e6"
-            border.width: 1
-            radius: 6
-            
-            implicitHeight: controlsContent.implicitHeight + 16
-            
-            RowLayout {
-                id: controlsContent
-                anchors.fill: parent
-                anchors.margins: 8
-                spacing: 12
-                
-                Text {
-                    text: "View:"
-                    font.pixelSize: 11
-                    color: "#495057"
-                }
-                
-                ButtonGroup {
-                    id: viewModeGroup
-                    buttons: [timelineViewBtn, importanceViewBtn, chapterViewBtn]
-                }
-                
-                Button {
-                    id: timelineViewBtn
-                    text: "Timeline"
-                    checkable: true
-                    checked: true
-                    
-                    ButtonGroup.group: viewModeGroup
-                    
-                    background: Rectangle {
-                        color: parent.checked ? "#007bff" : 
-                               (parent.pressed ? "#e9ecef" : 
-                                parent.hovered ? "#f8f9fa" : "transparent")
-                        border.color: "#007bff"
-                        border.width: 1
-                        radius: 4
-                    }
-                    
-                    contentItem: Text {
-                        text: parent.text
-                        font.pixelSize: 10
-                        color: parent.checked ? "#ffffff" : "#007bff"
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                    
-                    onClicked: {
-                        setSortMode("timeline")
-                    }
-                }
-                
-                Button {
-                    id: importanceViewBtn
-                    text: "Importance"
-                    checkable: true
-                    
-                    ButtonGroup.group: viewModeGroup
-                    
-                    background: Rectangle {
-                        color: parent.checked ? "#007bff" : 
-                               (parent.pressed ? "#e9ecef" : 
-                                parent.hovered ? "#f8f9fa" : "transparent")
-                        border.color: "#007bff"
-                        border.width: 1
-                        radius: 4
-                    }
-                    
-                    contentItem: Text {
-                        text: parent.text
-                        font.pixelSize: 10
-                        color: parent.checked ? "#ffffff" : "#007bff"
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                    
-                    onClicked: {
-                        setSortMode("importance")
-                    }
-                }
-                
-                Button {
-                    id: chapterViewBtn
-                    text: "Chapter"
-                    checkable: true
-                    
-                    ButtonGroup.group: viewModeGroup
-                    
-                    background: Rectangle {
-                        color: parent.checked ? "#007bff" : 
-                               (parent.pressed ? "#e9ecef" : 
-                                parent.hovered ? "#f8f9fa" : "transparent")
-                        border.color: "#007bff"
-                        border.width: 1
-                        radius: 4
-                    }
-                    
-                    contentItem: Text {
-                        text: parent.text
-                        font.pixelSize: 10
-                        color: parent.checked ? "#ffffff" : "#007bff"
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                    
-                    onClicked: {
-                        setSortMode("chapter")
-                    }
-                }
-                
-                Rectangle {
-                    width: 1
-                    height: 20
-                    color: "#dee2e6"
-                }
-                
-                Text {
-                    text: "Filter:"
-                    font.pixelSize: 11
-                    color: "#495057"
-                }
-                
-                ComboBox {
-                    id: tagFilter
-                    model: getAvailableTags()
-                    currentIndex: 0
-                    
-                    Layout.preferredWidth: 120
-                    
-                    background: Rectangle {
-                        color: "#ffffff"
-                        border.color: "#ced4da"
-                        border.width: 1
-                        radius: 4
-                    }
-                    
-                    contentItem: Text {
-                        text: parent.displayText
-                        font.pixelSize: 11
-                        color: "#212529"
-                        verticalAlignment: Text.AlignVCenter
-                        leftPadding: 8
-                    }
-                    
-                    onCurrentTextChanged: {
-                        filterEventsByTag()
-                    }
-                }
-                
-                Item { Layout.fillWidth: true }
-                
-                Button {
-                    text: "Export Timeline"
-                    implicitHeight: 28
-                    
-                    background: Rectangle {
-                        color: parent.pressed ? "#28a745" : 
-                               parent.hovered ? "#34ce57" : "#28a745"
-                        border.width: 0
-                        radius: 4
-                    }
-                    
-                    contentItem: Text {
-                        text: parent.text
-                        font.pixelSize: 10
-                        color: "#ffffff"
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                    
-                    onClicked: {
-                        exportTimeline()
-                    }
-                }
-            }
+
+            Layout.leftMargin: AppTheme.margin.small
+            Layout.rightMargin: AppTheme.margin.small
+
+            availableTags: getAvailableTags()
+
+            onSortModeChangeRequested: function(sortMode) { setSortMode(sortMode) }
+
+            onFilterEventsByTagRequested: function(tag) { filterEventsByTag(tag) }
+            onExportTimelineRequested: exportTimeline()
         }
         
         // Timeline section
-        Rectangle {
+        NarrativeTabContent {
             Layout.fillWidth: true
             Layout.minimumHeight: 400
-            color: "#ffffff"
-            border.color: "#e0e0e0"
-            border.width: 1
-            radius: 8
-            
-            // Timeline background line
-            Rectangle {
-                id: timelineBackgroundLine
-                x: 16
-                y: 20
-                width: 2
-                height: parent.height - 40
-                color: "#e0e0e0"
-                visible: timelineViewBtn.checked
-            }
-            
-            ScrollView {
-                anchors.fill: parent
-                anchors.margins: 16
-                anchors.leftMargin: 48  // Space for timeline line
-                contentWidth: availableWidth
-                
-                ListView {
-                    id: eventsList
-                    width: parent.width
-                    
-                    model: narrativeModel
-                    spacing: 16
-                    clip: true
-                    
-                    delegate: TimelineEvent {
-                        width: eventsList.width
-                        
-                        onEditRequested: function(eventId) {
-                            editEvent(eventId)
-                        }
-                        
-                        onDeleteRequested: function(eventId) {
-                            confirmDeleteEventDialog.eventId = eventId
-                            confirmDeleteEventDialog.eventTitle = model.title
-                            confirmDeleteEventDialog.open()
-                        }
-                        
-                        onImportanceChangeRequested: function(eventId, newImportance) {
-                            if (narrativeModel) {
-                                const event = narrativeModel.getEvent(eventId)
-                                if (event) {
-                                    narrativeModel.updateEvent(
-                                        eventId,
-                                        event.title,
-                                        event.description,
-                                        event.date,
-                                        newImportance,
-                                        event.tags || []
-                                    )
-                                }
-                            }
-                        }
-                    }
-                    
-                    // Empty state
-                    Rectangle {
-                        anchors.centerIn: parent
-                        width: 300
-                        height: 150
-                        color: "transparent"
-                        visible: eventsList.count === 0
-                        
-                        ColumnLayout {
-                            anchors.centerIn: parent
-                            spacing: 12
-                            
-                            Text {
-                                text: "📅"
-                                font.pixelSize: 48
-                                color: "#e0e0e0"
-                                Layout.alignment: Qt.AlignHCenter
-                            }
-                            
-                            Text {
-                                text: "No events yet."
-                                font.pixelSize: 16
-                                font.bold: true
-                                color: "#bdbdbd"
-                                Layout.alignment: Qt.AlignHCenter
-                            }
-                            
-                            Text {
-                                text: "Click 'Add Event' to start building your character's timeline.\nRecord births, meetings, adventures, tragedies, and victories."
-                                font.pixelSize: 12
-                                color: "#757575"
-                                horizontalAlignment: Text.AlignHCenter
-                                wrapMode: Text.WordWrap
-                                Layout.alignment: Qt.AlignHCenter
-                                Layout.preferredWidth: 250
-                            }
-                        }
-                    }
-                }
-            }
+
+            Layout.leftMargin: AppTheme.margin.small
+            Layout.rightMargin: AppTheme.margin.small
+            Layout.bottomMargin: AppTheme.margin.small
+
+            narrativeModel: narrativeTab.narrativeModel
+            timelineView: iNarrativeTabFilter.timelineMode
         }
     }
     
@@ -814,8 +433,8 @@ ScrollView {
         // TODO: Implement different sorting modes
     }
     
-    function filterEventsByTag() {
-        console.log("Filtering by tag:", tagFilter.currentText)
+    function filterEventsByTag(tag) {
+        console.log("Filtering by tag:", )
         // TODO: Implement tag filtering
     }
     
