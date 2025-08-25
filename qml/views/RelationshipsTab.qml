@@ -16,8 +16,7 @@ Item {
     
     ColumnLayout {
         anchors.fill: parent
-        // width: relationshipsTab.availableWidth
-        spacing: AppTheme.spacing.large
+        spacing: AppTheme.spacing.small
         
         // Header section
         RelationshipsTabHeader {
@@ -33,189 +32,120 @@ Item {
             negativeRelationshipCount: getNegativeRelationshipCount()
 
             onAddRelationshipRequested: addRelationshipDialog.open()
+            onFilterRelationshipsRequested: filterRelationships()
         }
         
         // Filter section
         RelationshipsTabFilter {
-            relationshipTypes: getAllRelationshipTypes()
-            
-        }
-        Rectangle {
             Layout.fillWidth: true
-            color: "#f8f9fa"
-            border.color: "#dee2e6"
-            border.width: 1
-            radius: 6
-            
-            implicitHeight: filterContent.implicitHeight + 16
-            
-            RowLayout {
-                id: filterContent
-                anchors.fill: parent
-                anchors.margins: 8
-                spacing: 12
-                
-                Text {
-                    text: "Filter by:"
-                    font.pixelSize: 11
-                    color: "#495057"
-                }
-                
-                ComboBox {
-                    id: relationshipTypeFilter
-                    model: getAllRelationshipTypes()
-                    textRole: "display"
-                    valueRole: "value"
-                    currentIndex: 0
-                    
-                    Layout.preferredWidth: 120
-                    
-                    background: Rectangle {
-                        color: "#ffffff"
-                        border.color: "#ced4da"
-                        border.width: 1
-                        radius: 4
-                    }
-                    
-                    contentItem: Text {
-                        text: parent.displayText
-                        font.pixelSize: 11
-                        color: "#212529"
-                        verticalAlignment: Text.AlignVCenter
-                        leftPadding: 8
-                    }
-                    
-                    onCurrentValueChanged: {
-                        filterRelationships()
-                    }
-                }
-                
-                Text {
-                    text: "Search:"
-                    font.pixelSize: 11
-                    color: "#495057"
-                }
-                
-                TextField {
-                    id: searchField
-                    placeholderText: "Character name..."
-                    Layout.preferredWidth: 150
-                    
-                    background: Rectangle {
-                        color: "#ffffff"
-                        border.color: "#ced4da"
-                        border.width: 1
-                        radius: 4
-                    }
-                    
-                    onTextChanged: {
-                        filterRelationships()
-                    }
-                }
-                
-                Item { Layout.fillWidth: true }
-                
-                Button {
-                    text: "Clear Filters"
-                    implicitHeight: 28
-                    
-                    background: Rectangle {
-                        color: parent.pressed ? "#e9ecef" : 
-                               parent.hovered ? "#f8f9fa" : "transparent"
-                        border.color: "#6c757d"
-                        border.width: 1
-                        radius: 4
-                    }
-                    
-                    contentItem: Text {
-                        text: parent.text
-                        font.pixelSize: 10
-                        color: "#6c757d"
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                    
-                    onClicked: {
-                        relationshipTypeFilter.currentIndex = 0
-                        searchField.text = ""
-                    }
-                }
-            }
+            relationshipTypes: getAllRelationshipTypes()
+
+            Layout.leftMargin: AppTheme.margin.small
+            Layout.rightMargin: AppTheme.margin.small
         }
         
+        
         // Relationships list
-        Rectangle {
+        RelationshipsTabContent {
             Layout.fillWidth: true
-            Layout.minimumHeight: 300
-            color: "#ffffff"
-            border.color: "#e0e0e0"
-            border.width: 1
-            radius: 8
-            
-            ListView {
-                id: relationshipsList
-                anchors.fill: parent
-                anchors.margins: 16
-                
-                model: relationshipModel
-                spacing: 12
-                clip: true
-                
-                delegate: RelationshipWidget {
-                    width: relationshipsList.width
-                    
-                    onEditRequested: function(targetId) {
-                        editRelationship(targetId)
-                    }
-                    
-                    onDeleteRequested: function(targetId) {
-                        confirmDeleteDialog.targetId = targetId
-                        confirmDeleteDialog.targetName = model.targetName
-                        confirmDeleteDialog.open()
-                    }
-                    
-                    onStrengthChangeRequested: function(targetId, newStrength) {
-                        if (relationshipModel) {
-                            relationshipModel.updateRelationship(
-                                targetId, 
-                                model.type, 
-                                model.description, 
-                                newStrength
-                            )
-                        }
-                    }
-                }
-                
-                // Empty state
-                Rectangle {
-                    anchors.centerIn: parent
-                    width: 200
-                    height: 120
-                    color: "transparent"
-                    visible: relationshipsList.count === 0
-                    
-                    ColumnLayout {
-                        anchors.centerIn: parent
-                        spacing: 8
-                        
-                        Text {
-                            text: "🤝"
-                            font.pixelSize: 48
-                            color: "#e0e0e0"
-                            Layout.alignment: Qt.AlignHCenter
-                        }
-                        
-                        Text {
-                            text: "No relationships yet.\nClick 'Add Relationship' to start building your character's social network."
-                            font.pixelSize: 12
-                            color: "#757575"
-                            horizontalAlignment: Text.AlignHCenter
-                            Layout.alignment: Qt.AlignHCenter
-                        }
-                    }
+            Layout.fillHeight: true
+
+            Layout.leftMargin: AppTheme.margin.small
+            Layout.rightMargin: AppTheme.margin.small
+            Layout.bottomMargin: AppTheme.margin.small
+
+            relationshipModel: relationshipsTab.relationshipModel
+
+            onRelationshipEditRequested: function(relationshipId) { editRelationship(relationshipId) }
+            onRelationshipDeleteRequested: function(relationshipId) {
+                confirmDeleteDialog.targetId = relationshipId
+                confirmDeleteDialog.targetName = model.targetName
+                confirmDeleteDialog.open()
+            }
+            onRelationshipStrengthChangeRequested: function(relationshipId, newStrength) {
+                if (relationshipModel) {
+                    relationshipModel.updateRelationship(
+                        relationshipId, 
+                        model.type, 
+                        model.description, 
+                        newStrength
+                    )
                 }
             }
         }
+
+        // Rectangle {
+        //     Layout.fillWidth: true
+        //     Layout.minimumHeight: 300
+        //     color: "#ffffff"
+        //     border.color: "#e0e0e0"
+        //     border.width: 1
+        //     radius: 8
+            
+        //     ListView {
+        //         id: relationshipsList
+        //         anchors.fill: parent
+        //         anchors.margins: 16
+                
+        //         model: relationshipModel
+        //         spacing: 12
+        //         clip: true
+                
+        //         delegate: RelationshipWidget {
+        //             width: relationshipsList.width
+                    
+        //             onEditRequested: function(targetId) {
+        //                 editRelationship(targetId)
+        //             }
+                    
+        //             onDeleteRequested: function(targetId) {
+        //                 confirmDeleteDialog.targetId = targetId
+        //                 confirmDeleteDialog.targetName = model.targetName
+        //                 confirmDeleteDialog.open()
+        //             }
+                    
+        //             onStrengthChangeRequested: function(targetId, newStrength) {
+        //                 if (relationshipModel) {
+        //                     relationshipModel.updateRelationship(
+        //                         targetId, 
+        //                         model.type, 
+        //                         model.description, 
+        //                         newStrength
+        //                     )
+        //                 }
+        //             }
+        //         }
+                
+        //         // Empty state
+        //         Rectangle {
+        //             anchors.centerIn: parent
+        //             width: 200
+        //             height: 120
+        //             color: "transparent"
+        //             visible: relationshipsList.count === 0
+                    
+        //             ColumnLayout {
+        //                 anchors.centerIn: parent
+        //                 spacing: 8
+                        
+        //                 Text {
+        //                     text: "🤝"
+        //                     font.pixelSize: 48
+        //                     color: "#e0e0e0"
+        //                     Layout.alignment: Qt.AlignHCenter
+        //                 }
+                        
+        //                 Text {
+        //                     text: "No relationships yet.\nClick 'Add Relationship' to start building your character's social network."
+        //                     font.pixelSize: 12
+        //                     color: "#757575"
+        //                     horizontalAlignment: Text.AlignHCenter
+        //                     Layout.alignment: Qt.AlignHCenter
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
     }
     
     // Add relationship dialog

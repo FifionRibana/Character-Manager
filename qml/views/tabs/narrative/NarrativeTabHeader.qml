@@ -6,62 +6,46 @@ import App.Styles
 
 import "../../../components"
 
-Card {
+TabHeaderCard {
     id: iCard
 
-    implicitHeight: headerContent.implicitHeight + AppTheme.spacing.huge
+    title: qsTr("Character Timeline")
 
-    property alias eventCount: iEventsIndicator.value
-    property alias majorEventCount: iMajorIndicator.value
-    property alias uniqueEventCount: iTagIndicator.value
+    property int eventCount: 0
+    property int majorEventCount: 0
+    property int uniqueEventCount: 0
 
     signal addEventRequested
 
-    contentItem: ColumnLayout {
-        id: headerContent
-        anchors.fill: parent
-        anchors.margins: AppTheme.margin.medium
+    buttons: RowLayout {
+        spacing: AppTheme.spacing.small
+        Button {
+            text: qsTr("Add Event")
+            font.family: AppTheme.fontFamily
+            font.pixelSize: AppTheme.fontSize.small
+            onClicked: iCard.addEventRequested()
+            
+            background: Rectangle {
+                color: parent.pressed ? "#388E3C" : 
+                        parent.hovered ? "#45A049" : "#4CAF50"
+                radius: AppTheme.radius.small
+            }
+            
+            contentItem: Text {
+                text: parent.text
+                font: parent.font
+                color: "#ffffff"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+        }
+    }
+        
+    content: ColumnLayout {
         spacing: AppTheme.spacing.small
         
-        RowLayout {
-            Layout.fillWidth: true
-            
-            Text {
-                text: qsTr("Character Timeline")
-                font.pixelSize: AppTheme.fontSize.large
-                font.bold: true
-                color: AppTheme.colors.text
-                Layout.fillWidth: true
-            }
-            
-            Button {
-                text: "Add Event"
-                onClicked: iCard.addEventRequested()
-                
-                background: Rectangle {
-                    color: parent.pressed ? "#388E3C" : 
-                            parent.hovered ? "#45A049" : "#4CAF50"
-                    radius: AppTheme.radius.small
-                }
-                
-                contentItem: Text {
-                    text: parent.text
-                    color: "#ffffff"
-                    font.pixelSize: AppTheme.fontSize.small
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                }
-            }
-        }
-        
-        Rectangle {
-            Layout.fillWidth: true
-            height: AppTheme.border.thin
-            color: AppTheme.card.border
-        }
-        
         Text {
-            text: "Chronicle important events, milestones, and story moments in your character's life."
+            text: qsTr("Chronicle important events, milestones, and story moments in your character's life.")
             font.pixelSize: AppTheme.fontSize.small
             color: AppTheme.colors.textSecondary
             wrapMode: Text.WordWrap

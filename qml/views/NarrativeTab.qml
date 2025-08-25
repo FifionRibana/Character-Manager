@@ -16,8 +16,7 @@ Item {
     
     ColumnLayout {
         anchors.fill: parent
-        // width: iNarrativeScrollView.availableWidth
-        spacing: AppTheme.spacing.large
+        spacing: AppTheme.spacing.small
         
         // Header section
         NarrativeTabHeader {
@@ -64,6 +63,13 @@ Item {
 
             narrativeModel: narrativeTab.narrativeModel
             timelineView: iNarrativeTabFilter.timelineMode
+
+            onEventEditRequested: function(eventId) { editEvent(eventId) }
+            onEventDeleteRequested: function(eventId) {
+                confirmDeleteEventDialog.eventId = eventId
+                confirmDeleteEventDialog.eventTitle = model.title
+                confirmDeleteEventDialog.open()
+            }
         }
     }
     

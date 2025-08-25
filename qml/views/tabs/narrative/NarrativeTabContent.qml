@@ -12,6 +12,9 @@ Card {
     property bool timelineView: false
     property var narrativeModel
 
+    signal eventEditRequested(int eventId)
+    signal eventDeleteRequested(int eventId)
+
     // Timeline background line
     Rectangle {
         id: timelineBackgroundLine
@@ -51,16 +54,8 @@ Card {
                 eventColor: model ? model.color : "#607D8B"
                 eventIcon: model ? model.icon : "📅"
                 
-                
-                onEditRequested: function(eventId) {
-                    editEvent(eventId)
-                }
-                
-                onDeleteRequested: function(eventId) {
-                    confirmDeleteEventDialog.eventId = eventId
-                    confirmDeleteEventDialog.eventTitle = model.title
-                    confirmDeleteEventDialog.open()
-                }
+                onEditRequested: iCard.eventEditRequested(eventId)
+                onDeleteRequested: iCard.eventDeleteRequested(eventId)
             }
             
             // Empty state

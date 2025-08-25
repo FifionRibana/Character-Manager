@@ -8,8 +8,10 @@ import "../../../components"
 
 Card {
     id: iCard
+    backgroundColor: AppTheme.colors.backgroundVariant
 
-    implicitHeight: controlsContent.implicitHeight + AppTheme.spacing.huge
+    implicitHeight: controlsContent.implicitHeight + AppTheme.spacing.medium
+    padding: AppTheme.padding.small
 
     property var availableTags: []
     property bool timelineMode: timelineViewBtn.checked
@@ -20,13 +22,11 @@ Card {
 
     contentItem: RowLayout {
         id: controlsContent
-        anchors.fill: parent
-        anchors.margins: 8
-        spacing: 12
+        spacing: AppTheme.spacing.medium
         
         Text {
-            text: "View:"
-            font.pixelSize: 11
+            text: qsTr("View:")
+            font.pixelSize: AppTheme.fontSize.tiny
             color: "#495057"
         }
         
@@ -48,13 +48,13 @@ Card {
                         (parent.pressed ? "#e9ecef" : 
                         parent.hovered ? "#f8f9fa" : "transparent")
                 border.color: "#007bff"
-                border.width: 1
-                radius: 4
+                border.width: AppTheme.border.thin
+                radius: AppTheme.radius.small
             }
             
             contentItem: Text {
                 text: parent.text
-                font.pixelSize: 10
+                font.pixelSize: AppTheme.fontSize.tiny
                 color: parent.checked ? "#ffffff" : "#007bff"
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
@@ -77,13 +77,13 @@ Card {
                         (parent.pressed ? "#e9ecef" : 
                         parent.hovered ? "#f8f9fa" : "transparent")
                 border.color: "#007bff"
-                border.width: 1
-                radius: 4
+                border.width: AppTheme.border.thin
+                radius: AppTheme.radius.small
             }
             
             contentItem: Text {
                 text: parent.text
-                font.pixelSize: 10
+                font.pixelSize: AppTheme.fontSize.tiny
                 color: parent.checked ? "#ffffff" : "#007bff"
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
@@ -106,13 +106,13 @@ Card {
                         (parent.pressed ? "#e9ecef" : 
                         parent.hovered ? "#f8f9fa" : "transparent")
                 border.color: "#007bff"
-                border.width: 1
-                radius: 4
+                border.width: AppTheme.border.thin
+                radius: AppTheme.radius.small
             }
             
             contentItem: Text {
                 text: parent.text
-                font.pixelSize: 10
+                font.pixelSize: AppTheme.fontSize.tiny
                 color: parent.checked ? "#ffffff" : "#007bff"
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
@@ -123,15 +123,11 @@ Card {
             }
         }
         
-        Rectangle {
-            width: 1
-            height: 20
-            color: "#dee2e6"
-        }
+        VerticalSeparator { height: 20 }
         
         Text {
-            text: "Filter:"
-            font.pixelSize: 11
+            text: qsTr("Filter:")
+            font.pixelSize: AppTheme.fontSize.tiny
             color: "#495057"
         }
         
@@ -151,41 +147,38 @@ Card {
             
             contentItem: Text {
                 text: parent.displayText
-                font.pixelSize: 11
-                color: "#212529"
+                font.pixelSize: AppTheme.fontSize.tiny
+                color: AppTheme.colors.text
                 verticalAlignment: Text.AlignVCenter
                 leftPadding: 8
             }
             
-            onCurrentTextChanged: {
-                iCard.filterEventsByTagRequested(tagFilter.currentText)
-            }
+            onCurrentTextChanged: iCard.filterEventsByTagRequested(tagFilter.currentText)
         }
         
         Item { Layout.fillWidth: true }
         
         Button {
-            text: "Export Timeline"
+            text: qsTr("Export Timeline")
             implicitHeight: 28
             
             background: Rectangle {
-                color: parent.pressed ? "#28a745" : 
-                        parent.hovered ? "#34ce57" : "#28a745"
-                border.width: 0
-                radius: 4
+                color: parent.pressed ? "#e9ecef" : 
+                        parent.hovered ? "#f8f9fa" : "transparent"
+                border.color: "#6c757d"
+                border.width: AppTheme.border.thin
+                radius: AppTheme.radius.small
             }
             
             contentItem: Text {
                 text: parent.text
-                font.pixelSize: 10
-                color: "#ffffff"
+                font.pixelSize: AppTheme.fontSize.tiny
+                color: "#6c757d"
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }
             
-            onClicked: {
-                exportTimelineRequested()
-            }
+            onClicked: exportTimelineRequested()
         }
     }
 }

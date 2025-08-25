@@ -4,10 +4,10 @@ import QtQuick.Layouts
 
 import "../../../components"
 
-Card {
+TabHeaderCard {
     id: iCard
 
-    implicitHeight: headerContent.implicitHeight + AppTheme.spacing.huge
+    title: qsTr("Ability Scores")
 
     property int totalPoints
     property color totalPointsColor
@@ -15,215 +15,115 @@ Card {
     property int pointBuyCost
     property int totalModifiers
 
-    signal reset()
-    signal rollStatsRequested()
+    signal reset
+    signal rollStatsRequested
 
-    contentItem: ColumnLayout {
-        id: headerContent
-        spacing: AppTheme.spacing.medium
-        anchors.fill: parent
-        anchors.margins: AppTheme.margin.medium
-
-        RowLayout {
-            Layout.fillWidth: true
-                    
-            Text {
-                text: qsTr("Ability Scores")
-                font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSize.large
-                font.bold: true
-                color: AppTheme.colors.text
-                Layout.fillWidth: true
-            }
+    buttons: RowLayout {
+        spacing: AppTheme.spacing.small
         
-
-            Item { Layout.fillWidth: true }
+        Button {
+            text: qsTr("4d6 Roll")
+            font.family: AppTheme.fontFamily
+            font.pixelSize: AppTheme.fontSize.small
+            onClicked: rollStatsRequested()
             
-            // Quick action buttons
-            RowLayout {
-                spacing: AppTheme.spacing.medium
+            background: Rectangle {
+                color: parent.hovered ? Qt.lighter("#2ecc71", 1.1) : "#2ecc71"
+                radius: AppTheme.radius.small
                 
-                Button {
-                    text: qsTr("4d6 Roll")
-                    font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSize.medium
-                    
-                    background: Rectangle {
-                        color: parent.hovered ? Qt.lighter("#2ecc71", 1.1) : "#2ecc71"
-                        radius: 6
-                        
-                        Behavior on color {
-                            ColorAnimation { duration: 150 }
-                        }
-                    }
-                    
-                    contentItem: Text {
-                        text: parent.text
-                        font: parent.font
-                        color: "white"
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                    
-
-
-
-
-
-
-
-
-
-
-                    
-                    onClicked: rollStatsRequested()
-                    
-                    ToolTip {
-                        text: qsTr("Roll 4d6 drop lowest for each stat")
-                        visible: parent.hovered
-                        delay: 500
-                    }
-                }
-                
-                Button {
-                    text: qsTr("Reset to 10")
-        
-                    font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSize.medium
-                    
-                    background: Rectangle {
-                        color: parent.hovered ? Qt.lighter("#95a5a6", 1.1) : "#95a5a6"
-                        radius: 6
-                        
-                        Behavior on color {
-                            ColorAnimation { duration: 150 }
-                        }
-                    }
-                    
-                    contentItem: Text {
-                        text: parent.text
-                        font: parent.font
-                        color: "white"
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                    
-                    onClicked: reset()
-                    
-                    ToolTip {
-                        text: qsTr("Reset all stats to 10 (standard baseline)")
-                        visible: parent.hovered
-                        delay: 500
-                    }
+                Behavior on color {
+                    ColorAnimation { duration: 150 }
                 }
             }
+            
+            contentItem: Text {
+            text: parent.text
+            font: parent.font
+            color: "#ffffff"
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            }
+            
+            // ToolTip {
+            //     text: qsTr("Roll 4d6 drop lowest for each stat")
+            //     visible: parent.hovered
+            //     delay: 500
+            // }
         }
         
-        Rectangle {
-            Layout.fillWidth: true
-            height: AppTheme.border.thin
-            color: AppTheme.card.border
+        Button {
+            text: qsTr("Reset to 10")
+            font.family: AppTheme.fontFamily
+            font.pixelSize: AppTheme.fontSize.small
+            onClicked: reset()
+            
+            background: Rectangle {
+                color: parent.hovered ? Qt.lighter("#95a5a6", 1.1) : "#95a5a6"
+                radius: AppTheme.radius.small
+                
+                Behavior on color {
+                    ColorAnimation { duration: 150 }
+                }
+            }
+            
+            contentItem: Text {
+                text: parent.text
+                font: parent.font
+                color: "#ffffff"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+            
+            // ToolTip {
+            //     text: qsTr("Reset all stats to 10 (standard baseline)")
+            //     visible: parent.hovered
+            //     delay: 500
+            // }
+        }
+    }
+        
+    // Stats summary
+    content: RowLayout {
+        id: summaryContent
+        Layout.fillWidth: true
+        spacing: AppTheme.spacing.large
+        
+        // Total points
+        StatisticsIndicator {
+            Layout.preferredWidth: 72
+            color: iCard.totalPointsColor
+            label: qsTr("Total Points")
+            value: iCard.totalPoints
+        }
+
+        VerticalSeparator { height: 40 }
+        
+        // Average stat
+        StatisticsIndicator {
+            Layout.preferredWidth: 72
+            color: AppTheme.colors.text
+            label: qsTr("Average")
+            value: iCard.averageScore
         }
         
-        // Stats summary
-        RowLayout {
-            id: summaryContent
-            Layout.fillWidth: true
-            spacing: AppTheme.spacing.large
-            
-            // Total points
-            ColumnLayout {
-                spacing: AppTheme.spacing.small
-                
-                Text {
-                    text: qsTr("Total Points")
-                    font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSize.small
-                    color: AppTheme.colors.textSecondary
-                }
-                
-                Text {
-                    text: totalPoints.toString()
-                    font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSize.large
-                    font.bold: true
-                    color: totalPointsColor
-                }
-            }
-            
-            Rectangle {
-                width: AppTheme.border.thin
-                Layout.fillHeight: true
-                color: AppTheme.colors.border
-            }
-            
-            // Average stat
-            ColumnLayout {
-                spacing: AppTheme.spacing.small
-                
-                Text {
-                    text: qsTr("Average")
-                    font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSize.small
-                    color: AppTheme.colors.textSecondary
-                }
-                
-                Text {
-                    text: averageScore.toFixed(1)
-                    font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSize.large
-                    font.bold: true
-                    color: AppTheme.colors.text
-                }
-            }
-            
-            Rectangle {
-                width: AppTheme.border.thin
-                Layout.fillHeight: true
-                color: AppTheme.colors.border
-            }
-            
-            // Point buy cost (if applicable)
-            ColumnLayout {
-                spacing: AppTheme.spacing.small
-                
-                Text {
-                    text: qsTr("Point Buy Cost")
-                    font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSize.small
-                    color: AppTheme.colors.textSecondary
-                }
-                
-                Text {
-                    text: pointBuyCost.toString() + "/27"
-                    font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSize.large
-                    font.bold: true
-                    color: pointBuyCost <= 27 ? "#2ecc71" : "#e74c3c"
-                }
-            }
-            
-            Item { Layout.fillWidth: true }
-            
-            // Modifier bonus indicator
-            ColumnLayout {
-                spacing: AppTheme.spacing.small
-                
-                Text {
-                    text: qsTr("Modifier Bonus")
-                    font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSize.small
-                    color: AppTheme.colors.textSecondary
-                }
-                
-                Text {
-                    text: totalModifiers >= 0 ? "+" + totalModifiers : totalModifiers.toString()
-                    font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSize.large
-                    font.bold: true
-                    color: totalModifiers >= 0 ? "#2ecc71" : "#e74c3c"
-                }
-            }
+        VerticalSeparator { height: 40 }
+        
+        // Point buy cost (if applicable)
+        StatisticsIndicator {
+            Layout.preferredWidth: 72
+            color: iCard.pointBuyCost <= 27 ? "#2ecc71" : "#e74c3c"
+            label: qsTr("Point Buy Cost")
+            value: iCard.pointBuyCost.toString() + "/27"
+        }
+        
+        Item { Layout.fillWidth: true }
+        
+        // Modifier bonus indicator
+        StatisticsIndicator {
+            Layout.preferredWidth: 72
+            color: iCard.totalModifiers >= 0 ? "#2ecc71" : "#e74c3c"
+            label: qsTr("Modifier Bonus")
+            value: iCard.totalModifiers >= 0 ? "+" + iCard.totalModifiers : iCard.totalModifiers.toString()
         }
     }
 }

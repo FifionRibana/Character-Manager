@@ -8,19 +8,19 @@ import "../../../components"
 
 Card {
     id: iCard
-    backgroundColor: AppTheme.colors.borderLight
+    backgroundColor: AppTheme.colors.backgroundVariant
 
-    implicitHeight: controlsContent.implicitHeight + AppTheme.spacing.huge
+    implicitHeight: filterContent.implicitHeight + AppTheme.spacing.medium
+    padding: AppTheme.padding.small
 
     property alias relationshipTypes: relationshipTypeFilter.model
     
+
 
     signal filterRelationshipsRequested()
 
     contentItem: RowLayout {
         id: filterContent
-        anchors.fill: parent
-        anchors.margins: AppTheme.margin.small
         spacing: AppTheme.spacing.medium
         
         Text {

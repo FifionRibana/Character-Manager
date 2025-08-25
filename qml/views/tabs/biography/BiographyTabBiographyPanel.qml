@@ -10,6 +10,8 @@ Card {
     id: iCard
 
     implicitHeight: biographyContent.implicitHeight + AppTheme.spacing.huge
+    verticalPadding: AppTheme.padding.small
+    horizontalPadding: AppTheme.padding.medium
 
     property string biography: ""
 
@@ -17,13 +19,12 @@ Card {
 
     contentItem: ColumnLayout {
         id: biographyContent
-        anchors.fill: parent
-        anchors.margins: AppTheme.spacing.large
-        spacing: AppTheme.spacing.medium
+        spacing: AppTheme.spacing.small
         
         // Biography header
         RowLayout {
             Layout.fillWidth: true
+            Layout.minimumHeight: AppTheme.spacing.huge
             
             Text {
                 text: qsTr("Character Biography")
