@@ -20,7 +20,7 @@ ScrollView {
     
     ColumnLayout {
         width: statsTab.availableWidth
-        spacing: AppTheme.spacing.large
+        spacing: AppTheme.spacing.small
 
         // Header section
         StatsTabHeader {

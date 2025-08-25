@@ -76,7 +76,7 @@ ScrollView {
 
     ColumnLayout {
         width: enneagramTab.availableWidth
-        spacing: AppTheme.spacing.large
+        spacing: AppTheme.spacing.small
 
         // Main content
         RowLayout {

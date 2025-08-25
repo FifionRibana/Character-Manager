@@ -16,7 +16,7 @@ ScrollView {
     
     ColumnLayout {
         width: characterEditTab.availableWidth
-        spacing: AppTheme.spacing.large
+        spacing: AppTheme.spacing.small
         
         // Character Notes section
         CharacterEditTabNotes {

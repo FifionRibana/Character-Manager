@@ -57,6 +57,9 @@ Rectangle {
                 characterLevel: model.level || 1
                 characterId: model.id || ""
                 hasImage: model.hasImage || false
+                imageData: model.imageData || ""
+                // initials: 
+                enneagramType: model.enneagramType
 
                 onClicked: {
                     characterList.currentIndex = index;

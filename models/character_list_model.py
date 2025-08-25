@@ -26,6 +26,8 @@ class CharacterRoleConstant:
     LevelRole = Qt.ItemDataRole.UserRole + 2
     IdRole = Qt.ItemDataRole.UserRole + 3
     HasImageRole = Qt.ItemDataRole.UserRole + 4
+    ImageRole = Qt.ItemDataRole.UserRole + 5
+    EnneagramTypeRole = Qt.ItemDataRole.UserRole + 6
 
 
 @dataclass
@@ -70,6 +72,11 @@ class CharacterListModel(QAbstractListModel):
             elif hasattr(character, "image_data"):
                 return bool(character.image_data)
             return False
+        elif role == CharacterRoleConstant.ImageRole:
+            return character.imageData if hasattr(character, "imageData") else ""
+        elif role == CharacterRoleConstant.EnneagramTypeRole:
+            print("Enneagram type:", character.enneagramType)
+            return character.enneagramType if hasattr(character, "enneagramType") else 1
         elif role == Qt.ItemDataRole.DisplayRole:
             return character.name if hasattr(character, "name") else "Unknown"
 
@@ -82,6 +89,8 @@ class CharacterListModel(QAbstractListModel):
             CharacterRoleConstant.LevelRole: b"level",
             CharacterRoleConstant.IdRole: b"characterId",
             CharacterRoleConstant.HasImageRole: b"hasImage",
+            CharacterRoleConstant.ImageRole: b"imageData",
+            CharacterRoleConstant.EnneagramTypeRole: b"enneagramType",
         }
 
     def add_character(self, character):

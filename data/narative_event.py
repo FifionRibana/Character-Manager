@@ -21,7 +21,6 @@ class NarrativeEvent:
 
     def __post_init__(self) -> None:
         """Validate event data."""
-        print(self.importance, ValidationLimits.MIN_EVENT_IMPORTANCE, ValidationLimits.MAX_EVENT_IMPORTANCE)
         if (
             not ValidationLimits.MIN_EVENT_IMPORTANCE.value
             <= self.importance

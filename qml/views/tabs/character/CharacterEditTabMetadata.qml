@@ -7,29 +7,13 @@ import App.Styles
 import "../../../components"
 
 
-Card {
+TabHeaderCard {
     id: iCard
 
-    implicitHeight: metadataContent.implicitHeight + AppTheme.spacing.huge
+    title: qsTr("Character Metadata")
 
-    contentItem: ColumnLayout {
-        id: metadataContent
-        spacing: AppTheme.spacing.medium
-        anchors.fill: parent
-        anchors.margins: AppTheme.margin.medium
-        
-        Text {
-            text: qsTr("Character Metadata")
-            font.pixelSize: AppTheme.fontSize.large
-            font.bold: true
-            color: AppTheme.colors.text
-        }
-        
-        Rectangle {
-            Layout.fillWidth: true
-            height: AppTheme.border.thin
-            color: AppTheme.card.border
-        }
+    content: ColumnLayout {
+        spacing: AppTheme.spacing.small
         
         GridLayout {
             Layout.fillWidth: true

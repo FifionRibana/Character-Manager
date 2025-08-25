@@ -96,9 +96,6 @@ class CharacterModel(QObject):
         # Initialize sub-models with current data
         self._sync_sub_models()
 
-    def __post_init__(self):
-        QObject.__init__(self)
-
     def _setup_sub_model_connections(self) -> None:
         """Connect sub-model signals to update the main character."""
         # Relationship model connections

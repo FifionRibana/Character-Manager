@@ -7,7 +7,6 @@ import App.Styles
 Card {
     id: iCard
 
-    implicitHeight: headerContent.implicitHeight + AppTheme.spacing.huge
     verticalPadding: AppTheme.padding.small
     horizontalPadding: AppTheme.padding.medium
 
@@ -15,13 +14,28 @@ Card {
     property alias buttons: iButtonRow.sourceComponent
     property alias content: iContent.sourceComponent
 
+    // Rectangle {
+    //     color: "red"
+    //     opacity: 0.3
+    //     anchors.fill: parent
+    // }
+    // Rectangle {
+    //     color: "green"
+    //     opacity: 0.3
+    //     width: iRow.width
+    //     height: iRow.height
+    //     x: iRow.x + parent.leftPadding
+    //     y: iRow.y + parent.topPadding
+    // }
+
     contentItem: ColumnLayout {
         id: headerContent
         spacing: AppTheme.spacing.small
         
         RowLayout {
+            id: iRow
             Layout.fillWidth: true
-            Layout.minimumHeight: AppTheme.spacing.huge
+            Layout.preferredHeight: AppTheme.spacing.huge
             
             Text {
                 id: iTitle
@@ -31,6 +45,7 @@ Card {
                 font.bold: true
                 color: AppTheme.colors.text
                 Layout.fillWidth: true
+                Layout.alignment: Qt.AlignVCenter
             }
 
             Item { Layout.fillWidth: true }

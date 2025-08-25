@@ -48,6 +48,7 @@ class MainController(QObject):
     _edit_mode: bool = field(init=False, default=False)
 
     def __post_init__(self):
+        print("MainController::__post_init__")
         QObject.__init__(self)
 
         # Set QML ownership to prevent garbage collection

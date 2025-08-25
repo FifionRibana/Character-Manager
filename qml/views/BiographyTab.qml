@@ -23,11 +23,12 @@ ScrollView {
     
     ColumnLayout {
         width: biographyTab.availableWidth
-        spacing: AppTheme.spacing.large
+        spacing: AppTheme.spacing.small
         
         // Biography section
         BiographyTabBiographyPanel {
             Layout.fillWidth: true
+            Layout.fillHeight: true
 
             Layout.leftMargin: AppTheme.margin.small
             Layout.rightMargin: AppTheme.margin.small
@@ -45,12 +46,15 @@ ScrollView {
         // Affiliations section
         BiographyTabAffiliationPanel {
             Layout.fillWidth: true
+            Layout.fillHeight: true
 
             Layout.leftMargin: AppTheme.margin.small
             Layout.rightMargin: AppTheme.margin.small
             Layout.bottomMargin: AppTheme.margin.small
 
             affiliations: characterModel && characterModel.affiliations ? characterModel.affiliations : []
+
+            onAddAffiliationRequested: addAffiliationDialog.open()
         }
     }
     

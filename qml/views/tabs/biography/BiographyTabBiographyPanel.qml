@@ -6,50 +6,27 @@ import App.Styles
 
 import "../../../components"
 
-Card {
+TabHeaderCard {
     id: iCard
 
-    implicitHeight: biographyContent.implicitHeight + AppTheme.spacing.huge
-    verticalPadding: AppTheme.padding.small
-    horizontalPadding: AppTheme.padding.medium
+    title: qsTr("Character Biography")
 
     property string biography: ""
+    property int biographyLength: 0
 
     signal biographyChangeRequested(string biographyText)
 
-    contentItem: ColumnLayout {
-        id: biographyContent
+    buttons: Text {
+        id: characterCount
+        text: iCard.biographyLength + "/10000"
+        font.family: AppTheme.fontFamily
+        font.pixelSize: AppTheme.fontSize.small
+        color: getCharacterCountColor()
+        verticalAlignment: Text.AlignVCenter
+    }
+
+    content: ColumnLayout {
         spacing: AppTheme.spacing.small
-        
-        // Biography header
-        RowLayout {
-            Layout.fillWidth: true
-            Layout.minimumHeight: AppTheme.spacing.huge
-            
-            Text {
-                text: qsTr("Character Biography")
-                font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSize.large
-                font.bold: true
-                color: AppTheme.colors.text
-            }
-            
-            Item { Layout.fillWidth: true }
-            
-            Text {
-                id: characterCount
-                text: biographyTextArea.text.length + "/10000"
-                font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSize.small
-                color: getCharacterCountColor()
-            }
-        }
-        
-        Rectangle {
-            Layout.fillWidth: true
-            height: 1
-            color: AppTheme.colors.border
-        }
         
         // Biography text editor
         ScrollView {
@@ -94,6 +71,7 @@ Card {
                 
                 onTextChanged: {
                     if (text !== iCard.biography) {
+                        iCard.biographyLength = biographyTextArea.text.length
                         // Throttle updates to avoid excessive property changes
                         saveTimer.restart()
                     }

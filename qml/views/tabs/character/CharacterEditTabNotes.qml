@@ -6,31 +6,14 @@ import App.Styles
 
 import "../../../components"
 
-Card {
+TabHeaderCard {
     id: iCard
 
-    implicitHeight: notesContent.implicitHeight + AppTheme.spacing.huge
+    title: qsTr("Quick Notes")
 
-    contentItem: ColumnLayout {
-        id: notesContent
-        spacing: AppTheme.spacing.medium
-        anchors.fill: parent
-        anchors.margins: AppTheme.margin.medium
-        
-        Text {
-            text: qsTr("Quick Notes")
-            font.family: AppTheme.fontFamily
-            font.pixelSize: AppTheme.fontSize.large
-            font.bold: true
-            color: AppTheme.colors.text
-        }
-        
-        Rectangle {
-            Layout.fillWidth: true
-            height: AppTheme.border.thin
-            color: AppTheme.card.border
-        }
-        
+    content: ColumnLayout {
+        spacing: AppTheme.spacing.small
+                
         Text {
             text: qsTr("Quick notes, reminders, or character concepts that don't fit elsewhere.")
             font.pixelSize: AppTheme.fontSize.small

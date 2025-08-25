@@ -6,66 +6,45 @@ import App.Styles
 
 import "../../../components"
 
-Card {
+TabHeaderCard {
     id: iCard
 
-    implicitHeight: affiliationsContent.implicitHeight + AppTheme.spacing.huge
+    title: qsTr("Affiliations & Organizations")
 
     property var affiliations
 
-    contentItem: ColumnLayout {
-        id: affiliationsContent
-        anchors.fill: parent
-        anchors.margins: AppTheme.spacing.large
-        spacing: AppTheme.spacing.medium
+    signal addAffiliationRequested
+
+    buttons: Button {
+        text: qsTr("Add Affiliation")
+        font.family: AppTheme.fontFamily
+        font.pixelSize: AppTheme.fontSize.medium
+        onClicked: iCard.addAffiliationRequested()
         
-        // Affiliations header
-        RowLayout {
-            Layout.fillWidth: true
-            
-            Text {
-                text: qsTr("Affiliations & Organizations")
-                font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSize.large
-                font.bold: true
-                color: AppTheme.colors.text
-            }
-            
-            Item { Layout.fillWidth: true }
-            
-            Button {
-                text: qsTr("Add Affiliation")
-                font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSize.medium
-                
-                background: Rectangle {
-                    color: parent.hovered ? Qt.lighter(AppTheme.colors.accent, 1.1) : AppTheme.colors.accent
-                    radius: 6
-                    
-                    Behavior on color {
-                        ColorAnimation { duration: 150 }
-                    }
-                }
-                
-                contentItem: Text {
-                    text: parent.text
-                    font: parent.font
-                    color: "white"
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                }
-                
-                onClicked: addAffiliationDialog.open()
+        background: Rectangle {
+            color: parent.pressed ? "#388E3C" : 
+                    parent.hovered ? "#45A049" : "#4CAF50"
+            radius: AppTheme.radius.small
+
+            Behavior on color {
+                ColorAnimation { duration: 150 }
             }
         }
         
-        Rectangle {
-            Layout.fillWidth: true
-            height: 1
-            color: AppTheme.colors.border
+        contentItem: Text {
+            text: parent.text
+            font: parent.font
+            color: "#ffffff"
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
         }
         
-        // Affiliations list
+    }
+
+    // Affiliations list
+    content: ColumnLayout {
+        spacing: AppTheme.spacing.small
+        
         ColumnLayout {
             Layout.fillWidth: true
             spacing: AppTheme.spacing.small

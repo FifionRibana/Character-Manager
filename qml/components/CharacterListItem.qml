@@ -1,6 +1,6 @@
-import QtQuick 6.9
-import QtQuick.Controls 6.9
-import QtQuick.Layouts 6.9
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 import "../styles"
 
 // import App.Styles
@@ -16,6 +16,9 @@ Rectangle {
     property int characterLevel: 1
     property string characterId: ""
     property bool hasImage: false
+    property string imageData: ""
+    property string initials: "?"
+    property int enneagramType: 1
 
     // Signals
     signal clicked
@@ -46,21 +49,42 @@ Rectangle {
             width: 40
             height: 40
             radius: 20
-            color: hasImage ? "transparent" : AppTheme.enneagramColors[1]
-                border.color: AppTheme.colors.border
-            border.width: 1
+            color: hasImage ? "transparent" : AppTheme.enneagramColors[listItem.enneagramType - 1]
+            border.color:  hasImage ? Qt.darker(AppTheme.enneagramColors[listItem.enneagramType - 1], 1.2) : AppTheme.colors.border
+            border.width: hasImage ? AppTheme.border.medium : AppTheme.border.thin
+            layer.enabled: true
+            layer.smooth: true
+
+            clip: true
 
             Text {
                 anchors.centerIn: parent
-                text: hasImage ? "" : (characterName.length > 0 ? characterName.charAt(0).toUpperCase() : "?")
+                text: hasImage ? "" : listItem.initials
                 font.family: AppTheme.fontFamily
                 font.pixelSize: AppTheme.fontSize.large
                 font.bold: true
                 color: AppTheme.colors.text
                 visible: !hasImage
             }
+            Loader {
+                active: hasImage
+                anchors.fill: parent
+                sourceComponent: Canvas {
+                    id: canvas
 
-            // TODO: Add Image component for character portrait when hasImage is true
+                    property string imageData: hasImage ? "data:image/png;base64," + listItem.imageData : ""
+                    onImageDataChanged: loadImage(imageData)
+                    onImageLoaded: requestPaint()
+                    onPaint: {
+                        var ctx = getContext("2d")
+                        ctx.clearRect(0, 0, width, height)
+                        ctx.beginPath()
+                        ctx.arc(width/2, height/2, width/2 - 2, 0, 2 * Math.PI)
+                        ctx.clip()
+                        ctx.drawImage(imageData, 0, 0, width, height)
+                    }
+                }
+            }
         }
 
         // Character info

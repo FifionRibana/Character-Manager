@@ -24,6 +24,7 @@ from controllers.storage_controller import StorageController
 from controllers.theme_controller import ThemeController
 from data.narative_event import NarrativeEvent
 from models.character_model import CharacterModel
+from models.narrative_model import NarrativeModel
 
 
 def qml_message_handler(msg_type, context, msg):
@@ -47,6 +48,9 @@ def register_qml_types() -> bool:
     try:
         qmlRegisterType(CharacterModel, "App.Types", 1, 0, "CharacterModel")
         print(f"✓ CharacterModel type registered")
+        
+        qmlRegisterType(NarrativeModel, "App.Types", 1, 0, "NarrativeModel")
+        print(f"✓ NarrativeModel type registered")
         
         return True
     except Exception as e:
@@ -267,6 +271,7 @@ def main() -> int:
 
     if not register_app_controller_singleton():
         print("WARNING: App.Controller singletons registration failed")
+
 
     # Setup engine context (properties must be set BEFORE loading QML)
     # setup_engine_context(engine, args)

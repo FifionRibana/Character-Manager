@@ -50,9 +50,9 @@ class NarrativeModel(QAbstractListModel):
     """Model for managing character narrative events in QML."""
 
     # Signals for QML
-    eventAdded: ClassVar[pyqtSignal] = pyqtSignal(str, arguments=["eventId"])
-    eventRemoved: ClassVar[pyqtSignal] = pyqtSignal(str, arguments=["eventId"])
-    eventUpdated: ClassVar[pyqtSignal] = pyqtSignal(str, arguments=["eventId"])
+    eventAdded: ClassVar[pyqtSignal] = pyqtSignal(str)
+    eventRemoved: ClassVar[pyqtSignal] = pyqtSignal(str)
+    eventUpdated: ClassVar[pyqtSignal] = pyqtSignal(str)
     countChanged: ClassVar[pyqtSignal] = pyqtSignal()
 
     _events: List[NarrativeEvent] = field(init=False, default_factory=list)
@@ -160,6 +160,7 @@ class NarrativeModel(QAbstractListModel):
         self.endInsertRows()
 
         self.countChanged.emit()
+
         self.eventAdded.emit(event.id)
 
         return event.id
