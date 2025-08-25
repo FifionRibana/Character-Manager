@@ -11,11 +11,11 @@ Card {
 
     implicitHeight: headerContent.implicitHeight + AppTheme.spacing.huge
 
-    property alias eventCount: iEventsIndicator.value
-    property alias majorEventCount: iMajorIndicator.value
-    property alias uniqueEventCount: iTagIndicator.value
+    property alias relationshipCount: iRelationshipIndicator.value
+    property alias positiveRelationshipCount: iPositiveIndicator.value
+    property alias negativeRelationshipCount: iNegativeIndicator.value
 
-    signal addEventRequested
+    signal addRelationshipRequested
 
     contentItem: ColumnLayout {
         id: headerContent
@@ -27,7 +27,7 @@ Card {
             Layout.fillWidth: true
             
             Text {
-                text: qsTr("Character Timeline")
+                text: qsTr("Character Relationships")
                 font.pixelSize: AppTheme.fontSize.large
                 font.bold: true
                 color: AppTheme.colors.text
@@ -35,8 +35,8 @@ Card {
             }
             
             Button {
-                text: "Add Event"
-                onClicked: iCard.addEventRequested()
+                text: qsTr("Add Relationship")
+                onClicked: iCard.addRelationshipRequested()
                 
                 background: Rectangle {
                     color: parent.pressed ? "#388E3C" : 
@@ -61,7 +61,7 @@ Card {
         }
         
         Text {
-            text: "Chronicle important events, milestones, and story moments in your character's life."
+            text: "Manage connections between characters. Each relationship includes type, description, and strength."
             font.pixelSize: AppTheme.fontSize.small
             color: AppTheme.colors.textSecondary
             wrapMode: Text.WordWrap
@@ -74,28 +74,28 @@ Card {
             spacing: AppTheme.spacing.large
             
             StatisticsIndicator {
-                id: iEventsIndicator
+                id: iRelationshipIndicator
                 Layout.preferredWidth: 72
-                color: "#FF9800"
-                label: qsTr("Total Events")
+                color: AppTheme.colors.success
+                label: qsTr("Total Relations")
             }
 
             VerticalSeparator { height: 40 }
 
             StatisticsIndicator {
-                id: iMajorIndicator
+                id: iPositiveIndicator
                 Layout.preferredWidth: 72
-                color: "#3F51B5"
-                label: qsTr("Major Events")
+                color: "#2196F3"
+                label: qsTr("Positive")
             }
 
             VerticalSeparator { height: 40 }
 
             StatisticsIndicator {
-                id: iTagIndicator
+                id: iNegativeIndicator
                 Layout.preferredWidth: 72
-                color: "#9C27B0"
-                label: qsTr("Tags Used")
+                color: "#F44336"
+                label: qsTr("Negative")
             }
             
             Item { Layout.fillWidth: true }

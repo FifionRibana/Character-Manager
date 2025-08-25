@@ -2,161 +2,44 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-import "../components"
 
-ScrollView {
+import "../components"
+import "./tabs/relationships"
+
+Item {
     id: relationshipsTab
     
     property var characterModel
     property var relationshipModel: characterModel ? characterModel.relationshipModel : null
     
-    contentWidth: availableWidth
+    // contentWidth: availableWidth
     
     ColumnLayout {
-        width: relationshipsTab.availableWidth
-        spacing: 24
+        anchors.fill: parent
+        // width: relationshipsTab.availableWidth
+        spacing: AppTheme.spacing.large
         
         // Header section
-        Rectangle {
+        RelationshipsTabHeader {
             Layout.fillWidth: true
-            color: "#ffffff"
-            border.color: "#e0e0e0"
-            border.width: 1
-            radius: 8
-            
-            implicitHeight: headerContent.implicitHeight + 32
-            
-            ColumnLayout {
-                id: headerContent
-                anchors.fill: parent
-                anchors.margins: 16
-                spacing: 16
-                
-                RowLayout {
-                    Layout.fillWidth: true
-                    
-                    Text {
-                        text: "Character Relationships"
-                        font.pixelSize: 20
-                        font.bold: true
-                        color: "#212121"
-                        Layout.fillWidth: true
-                    }
-                    
-                    Button {
-                        text: "Add Relationship"
-                        onClicked: addRelationshipDialog.open()
-                        
-                        background: Rectangle {
-                            color: parent.pressed ? "#388E3C" : 
-                                   parent.hovered ? "#45A049" : "#4CAF50"
-                            radius: 4
-                        }
-                        
-                        contentItem: Text {
-                            text: parent.text
-                            color: "#ffffff"
-                            font.pixelSize: 12
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                    }
-                }
-                
-                Rectangle {
-                    Layout.fillWidth: true
-                    height: 1
-                    color: "#e0e0e0"
-                }
-                
-                Text {
-                    text: "Manage connections between characters. Each relationship includes type, description, and strength."
-                    font.pixelSize: 12
-                    color: "#757575"
-                    wrapMode: Text.WordWrap
-                    Layout.fillWidth: true
-                }
-                
-                // Statistics row
-                RowLayout {
-                    Layout.fillWidth: true
-                    spacing: 24
-                    
-                    ColumnLayout {
-                        spacing: 4
-                        
-                        Text {
-                            text: relationshipModel ? relationshipModel.count : 0
-                            font.pixelSize: 24
-                            font.bold: true
-                            color: "#4CAF50"
-                            Layout.alignment: Qt.AlignHCenter
-                        }
-                        
-                        Text {
-                            text: "Total Relations"
-                            font.pixelSize: 10
-                            color: "#757575"
-                            Layout.alignment: Qt.AlignHCenter
-                        }
-                    }
-                    
-                    Rectangle {
-                        width: 1
-                        height: 40
-                        color: "#e0e0e0"
-                    }
-                    
-                    ColumnLayout {
-                        spacing: 4
-                        
-                        Text {
-                            text: getPositiveRelationshipCount()
-                            font.pixelSize: 24
-                            font.bold: true
-                            color: "#2196F3"
-                            Layout.alignment: Qt.AlignHCenter
-                        }
-                        
-                        Text {
-                            text: "Positive"
-                            font.pixelSize: 10
-                            color: "#757575"
-                            Layout.alignment: Qt.AlignHCenter
-                        }
-                    }
-                    
-                    Rectangle {
-                        width: 1
-                        height: 40
-                        color: "#e0e0e0"
-                    }
-                    
-                    ColumnLayout {
-                        spacing: 4
-                        
-                        Text {
-                            text: getNegativeRelationshipCount()
-                            font.pixelSize: 24
-                            font.bold: true
-                            color: "#F44336"
-                            Layout.alignment: Qt.AlignHCenter
-                        }
-                        
-                        Text {
-                            text: "Negative"
-                            font.pixelSize: 10
-                            color: "#757575"
-                            Layout.alignment: Qt.AlignHCenter
-                        }
-                    }
-                    
-                    Item { Layout.fillWidth: true }
-                }
-            }
+
+            Layout.leftMargin: AppTheme.margin.small
+            Layout.rightMargin: AppTheme.margin.small
+            Layout.topMargin: AppTheme.margin.small
+
+            relationshipCount: relationshipModel ? relationshipModel.count : 0
+
+            positiveRelationshipCount: getPositiveRelationshipCount()
+            negativeRelationshipCount: getNegativeRelationshipCount()
+
+            onAddRelationshipRequested: addRelationshipDialog.open()
         }
         
         // Filter section
+        RelationshipsTabFilter {
+            relationshipTypes: getAllRelationshipTypes()
+            
+        }
         Rectangle {
             Layout.fillWidth: true
             color: "#f8f9fa"

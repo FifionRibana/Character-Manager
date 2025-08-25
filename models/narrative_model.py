@@ -121,7 +121,7 @@ class NarrativeModel(QAbstractListModel):
     def addEvent(
         self,
         title: str,
-        event_type: EventType = EventType.GENERAL,
+        # event_type: EventType = EventType.GENERAL,
         description: str = "",
         date: str = "",
         importance: int = DEFAULT_EVENT_IMPORTANCE,
@@ -146,7 +146,7 @@ class NarrativeModel(QAbstractListModel):
         event = NarrativeEvent(
             title=title,
             description=description,
-            event_type=event_type,
+            # event_type=event_type,
             date=date,
             importance=importance,
             tags=tags,
@@ -190,7 +190,7 @@ class NarrativeModel(QAbstractListModel):
         self,
         event_id: str,
         title: str,
-        event_type: EventType,
+        # event_type: EventType,
         description: str,
         date: str,
         importance: int,
@@ -213,7 +213,7 @@ class NarrativeModel(QAbstractListModel):
                 updated_event = NarrativeEvent(
                     id=event_id,
                     title=title,
-                    event_type=event_type,
+                    # event_type=event_type,
                     description=description,
                     date=date,
                     importance=importance,

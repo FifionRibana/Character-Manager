@@ -6,17 +6,18 @@ import QtQuick.Dialogs
 import "../components"
 import "./tabs/narrative"
 
-ScrollView {
+Item {
     id: narrativeTab
     
     property var characterModel
     property var narrativeModel: characterModel ? characterModel.narrativeModel : null
     
-    contentWidth: availableWidth
+    // contentWidth: availableWidth
     
     ColumnLayout {
-        width: narrativeTab.availableWidth
-        spacing: 24
+        anchors.fill: parent
+        // width: iNarrativeScrollView.availableWidth
+        spacing: AppTheme.spacing.large
         
         // Header section
         NarrativeTabHeader {
@@ -50,10 +51,12 @@ ScrollView {
             onExportTimelineRequested: exportTimeline()
         }
         
+
         // Timeline section
         NarrativeTabContent {
             Layout.fillWidth: true
-            Layout.minimumHeight: 400
+            Layout.fillHeight: true
+            // Layout.minimumHeight: 400
 
             Layout.leftMargin: AppTheme.margin.small
             Layout.rightMargin: AppTheme.margin.small
@@ -375,7 +378,9 @@ ScrollView {
     
     // Helper functions
     function addNewEvent() {
+        print("Add new event")
         if (narrativeModel) {
+            print("add event (narrative model is here)")
             const tags = eventTagsField.text
                 .split(',')
                 .map(tag => tag.trim())

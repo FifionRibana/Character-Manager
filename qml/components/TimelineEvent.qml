@@ -2,20 +2,23 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+import App.Styles
+import App.Types
+
 Rectangle {
     id: timelineEvent
     
     // Properties from model
-    property string eventId: model ? model.id : ""
-    property string title: model ? model.title : ""
-    property string description: model ? model.description : ""
-    property string date: model ? model.date : ""
-    property int importance: model ? model.importance : 5
-    property var tags: model ? model.tags : []
-    property string chapter: model ? model.chapter : ""
-    property string eventType: model ? model.eventType : ""
-    property string eventColor: model ? model.color : "#607D8B"
-    property string eventIcon: model ? model.icon : "📅"
+    property string eventId: ""
+    property string title: ""
+    property string description: ""
+    property string date: ""
+    property int importance: 5
+    property var tags: []
+    property string chapter: ""
+    property string eventType: ""
+    property string eventColor: "#607D8B"
+    property string eventIcon:"📅"
     
     // Signals
     signal editRequested(string eventId)
@@ -24,11 +27,11 @@ Rectangle {
     
     // Visual properties
     width: parent.width
-    height: Math.max(minHeight, contentColumn.implicitHeight + 24)
-    color: "#ffffff"
+    height: Math.max(minHeight, contentColumn.implicitHeight + AppTheme.spacing.large)
+    color: AppTheme.colors.background
     border.color: eventColor
-    border.width: 2
-    radius: 8
+    border.width: AppTheme.border.medium
+    radius: AppTheme.radius.medium
     
     readonly property int minHeight: 100
     property bool hovered: false
@@ -301,73 +304,6 @@ Rectangle {
                         font.bold: true
                     }
                 }
-            }
-        }
-        
-        // Importance slider (visible on hover for high-importance events)
-        RowLayout {
-            Layout.fillWidth: true
-            spacing: 8
-            opacity: (hovered && isHighImportance) ? 1.0 : 0.0
-            visible: opacity > 0
-            
-            Behavior on opacity {
-                NumberAnimation { duration: 200 }
-            }
-            
-            Text {
-                text: "Importance:"
-                font.pixelSize: 10
-                color: "#757575"
-            }
-            
-            Slider {
-                id: importanceSlider
-                Layout.fillWidth: true
-                from: 1
-                to: 10
-                stepSize: 1
-                value: importance
-                
-                background: Rectangle {
-                    x: importanceSlider.leftPadding
-                    y: importanceSlider.topPadding + importanceSlider.availableHeight / 2 - height / 2
-                    implicitWidth: 100
-                    implicitHeight: 3
-                    width: importanceSlider.availableWidth
-                    height: implicitHeight
-                    radius: 2
-                    color: "#e0e0e0"
-                    
-                    Rectangle {
-                        width: importanceSlider.visualPosition * parent.width
-                        height: parent.height
-                        color: eventColor
-                        radius: 2
-                    }
-                }
-                
-                handle: Rectangle {
-                    x: importanceSlider.leftPadding + importanceSlider.visualPosition * (importanceSlider.availableWidth - width)
-                    y: importanceSlider.topPadding + importanceSlider.availableHeight / 2 - height / 2
-                    implicitWidth: 12
-                    implicitHeight: 12
-                    radius: 6
-                    color: importanceSlider.pressed ? "#bdbdbd" : "#f1f1f1"
-                    border.color: eventColor
-                    border.width: 2
-                }
-                
-                onValueChanged: {
-                    timelineEvent.importanceChangeRequested(eventId, Math.round(value))
-                }
-            }
-            
-            Text {
-                text: Math.round(importanceSlider.value)
-                font.pixelSize: 10
-                color: "#757575"
-                Layout.preferredWidth: 15
             }
         }
     }

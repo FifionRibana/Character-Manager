@@ -22,6 +22,7 @@ from controllers.image_controller import ImageController
 from controllers.main_controller import MainController
 from controllers.storage_controller import StorageController
 from controllers.theme_controller import ThemeController
+from data.narative_event import NarrativeEvent
 from models.character_model import CharacterModel
 
 
@@ -45,7 +46,8 @@ def register_qml_types() -> bool:
     """Register all Python types for QML access"""
     try:
         qmlRegisterType(CharacterModel, "App.Types", 1, 0, "CharacterModel")
-        print(f"✓ CharacterModel singleton registered")
+        print(f"✓ CharacterModel type registered")
+        
         return True
     except Exception as e:
         print(f"ERROR: Failed to register App types: {e}")

@@ -17,15 +17,15 @@ Card {
         id: timelineBackgroundLine
         x: 16
         y: 20
-        width: 2
+        width: AppTheme.border.medium
         height: parent.height - 40
-        color: "#e0e0e0"
+        color: AppTheme.colors.surfaceVariant
         visible: iCard.timelineView
     }
 
     contentItem: ScrollView {
         anchors.fill: parent
-        anchors.margins: 16
+        anchors.margins: AppTheme.margin.medium
         anchors.leftMargin: 48  // Space for timeline line
         contentWidth: availableWidth
         
@@ -34,11 +34,23 @@ Card {
             width: parent.width
             
             model: narrativeModel
-            spacing: 16
+            spacing: AppTheme.spacing.medium
             clip: true
             
             delegate: TimelineEvent {
                 width: eventsList.width
+                
+                eventId: model ? model.id : ""
+                title: model ? model.title : ""
+                description: model ? model.description : ""
+                date: model ? model.date : ""
+                importance: model ? model.importance : 5
+                tags: model ? model.tags : []
+                chapter: model ? model.chapter : ""
+                eventType: model ? model.eventType : ""
+                eventColor: model ? model.color : "#607D8B"
+                eventIcon: model ? model.icon : "📅"
+                
                 
                 onEditRequested: function(eventId) {
                     editEvent(eventId)
@@ -48,22 +60,6 @@ Card {
                     confirmDeleteEventDialog.eventId = eventId
                     confirmDeleteEventDialog.eventTitle = model.title
                     confirmDeleteEventDialog.open()
-                }
-                
-                onImportanceChangeRequested: function(eventId, newImportance) {
-                    if (narrativeModel) {
-                        const event = narrativeModel.getEvent(eventId)
-                        if (event) {
-                            narrativeModel.updateEvent(
-                                eventId,
-                                event.title,
-                                event.description,
-                                event.date,
-                                newImportance,
-                                event.tags || []
-                            )
-                        }
-                    }
                 }
             }
             
@@ -77,27 +73,27 @@ Card {
                 
                 ColumnLayout {
                     anchors.centerIn: parent
-                    spacing: 12
+                    spacing: AppTheme.spacing.small
                     
                     Text {
                         text: "📅"
-                        font.pixelSize: 48
-                        color: "#e0e0e0"
+                        font.pixelSize: AppTheme.iconSize.huge
+                        color: AppTheme.colors.backgroundVariant
                         Layout.alignment: Qt.AlignHCenter
                     }
                     
                     Text {
                         text: "No events yet."
-                        font.pixelSize: 16
+                        font.pixelSize: AppTheme.fontSize.medium
                         font.bold: true
-                        color: "#bdbdbd"
+                        color: AppTheme.colors.border
                         Layout.alignment: Qt.AlignHCenter
                     }
                     
                     Text {
                         text: "Click 'Add Event' to start building your character's timeline.\nRecord births, meetings, adventures, tragedies, and victories."
-                        font.pixelSize: 12
-                        color: "#757575"
+                        font.pixelSize: AppTheme.fontSize.small
+                        color: AppTheme.colors.textSecondary
                         horizontalAlignment: Text.AlignHCenter
                         wrapMode: Text.WordWrap
                         Layout.alignment: Qt.AlignHCenter

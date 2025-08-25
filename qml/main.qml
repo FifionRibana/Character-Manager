@@ -313,13 +313,13 @@ ApplicationWindow {
                 RelationshipsTab {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    // characterModel: MainController.currentCharacter
+                    characterModel: MainController.currentCharacter
                 }
                 
                 NarrativeTab {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    // characterModel: MainController.currentCharacter
+                    characterModel: MainController.currentCharacter
                 }
             }
         }
