@@ -150,26 +150,26 @@ Rectangle {
             }
 
             // Level badge
-            Rectangle {
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.margins: -8
-                width: 40
-                height: 24
-                radius: 12
-                color: AppTheme.colors.accent
-                border.color: "white"
-                border.width: 2
+            // Rectangle {
+            //     anchors.right: parent.right
+            //     anchors.top: parent.top
+            //     anchors.margins: -8
+            //     width: 40
+            //     height: 24
+            //     radius: 12
+            //     color: AppTheme.colors.accent
+            //     border.color: "white"
+            //     border.width: 2
 
-                Text {
-                    anchors.centerIn: parent
-                    text: characterModel ? characterModel.level.toString() : "1"
-                    font.family: AppTheme.fontFamily
-                    font.pixelSize: AppTheme.fontSize.small
-                    font.bold: true
-                    color: "white"
-                }
-            }
+            //     Text {
+            //         anchors.centerIn: parent
+            //         text: characterModel ? characterModel.level.toString() : "1"
+            //         font.family: AppTheme.fontFamily
+            //         font.pixelSize: AppTheme.fontSize.small
+            //         font.bold: true
+            //         color: "white"
+            //     }
+            // }
         }
 
         // Character information section
@@ -325,6 +325,7 @@ Rectangle {
 
                         onValueChanged: {
                             if (characterModel && value !== characterModel.level) {
+                                characterModel.level = value
                                 levelChanged(value);
                             }
                         }

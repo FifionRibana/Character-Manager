@@ -73,15 +73,70 @@ Rectangle {
                     id: canvas
 
                     property string imageData: hasImage ? "data:image/png;base64," + listItem.imageData : ""
-                    onImageDataChanged: loadImage(imageData)
-                    onImageLoaded: requestPaint()
+                    property var loadedImage: null
+                    
+                    onImageDataChanged: {
+                        loadedImage = null
+                        loadImage(imageData)
+                    }
+                    
+                    onImageLoaded: {
+                        // Stocker la référence de l'image chargée
+                        loadedImage = imageData
+                        requestPaint()
+                    }
+                    
                     onPaint: {
                         var ctx = getContext("2d")
                         ctx.clearRect(0, 0, width, height)
+                        
+                        if (!loadedImage) return
+                        
+                        // Créer le masque circulaire
+                        ctx.save()
                         ctx.beginPath()
                         ctx.arc(width/2, height/2, width/2 - 2, 0, 2 * Math.PI)
                         ctx.clip()
-                        ctx.drawImage(imageData, 0, 0, width, height)
+                        
+                        // Calculer les dimensions pour préserver le ratio
+                        var img = ctx.createImageData(imageData)
+                        var imgWidth = img.width
+                        var imgHeight = img.height
+                        
+                        // Si les dimensions ne sont pas disponibles, utiliser une méthode alternative
+                        if (!imgWidth || !imgHeight) {
+                            // Méthode alternative : dessiner l'image temporairement pour obtenir ses dimensions
+                            var tempCanvas = ctx.canvas
+                            ctx.drawImage(loadedImage, 0, 0, 1, 1)
+                            imgWidth = tempCanvas.width
+                            imgHeight = tempCanvas.height
+                        }
+                        
+                        // Calculer le ratio d'aspect
+                        var imgRatio = imgWidth / imgHeight
+                        var canvasRatio = width / height
+                        
+                        var drawWidth, drawHeight, drawX, drawY
+                        
+                        // Mode PreserveAspectFit : l'image entière doit être visible
+                        if (imgRatio > canvasRatio) {
+                            // L'image est plus large que le canvas
+                            drawWidth = width
+                            drawHeight = width / imgRatio
+                            drawX = 0
+                            drawY = (height - drawHeight) / 2
+                        } else {
+                            // L'image est plus haute que le canvas
+                            drawHeight = height
+                            drawWidth = height * imgRatio
+                            drawX = (width - drawWidth) / 2
+                            drawY = 0
+                        }
+                        
+                        // Dessiner l'image avec les dimensions calculées
+                        ctx.drawImage(loadedImage, drawX, drawY, drawWidth, drawHeight)
+                        
+                        ctx.restore()
                     }
                 }
             }
@@ -106,23 +161,6 @@ Rectangle {
                 text: qsTr("Level") + " " + characterLevel
                 font.family: AppTheme.fontFamily
                 font.pixelSize: AppTheme.fontSize.small
-                color: AppTheme.colors.textSecondary
-            }
-        }
-
-        // Level indicator
-        Rectangle {
-            width: 24
-            height: 24
-            radius: 12
-            color: AppTheme.colors.primary
-
-            Text {
-                anchors.centerIn: parent
-                text: characterLevel.toString()
-                font.family: AppTheme.fontFamily
-                font.pixelSize: AppTheme.fontSize.small
-                font.bold: true
                 color: AppTheme.colors.textSecondary
             }
         }
