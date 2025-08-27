@@ -4,6 +4,7 @@ Main controller with properly initialized properties
 """
 
 from dataclasses import dataclass, field
+from pathlib import Path
 import traceback
 from typing import Any, ClassVar, Dict
 from PyQt6.QtCore import QObject, pyqtSignal, pyqtProperty, pyqtSlot
@@ -183,6 +184,12 @@ class MainController(QObject):
         import json
 
         return json.dumps(data, indent=2, default=str)
+    
+    def _json_string_to_dict(self, string: str) -> Dict[str, Any]:
+        """Convert JSON string to dictionary"""
+        import json
+
+        return json.loads(string)
 
     def _make_safe_filename(self, name: str) -> str:
         """Create a safe filename from character name."""
@@ -192,8 +199,27 @@ class MainController(QObject):
     def load_character_from_file(self, file_path):
         """Load a character from a file"""
         try:
-            # TODO: Implement file loading
-            self.errorOccurred.emit("Load error", "File loading not yet implemented")
+            safe_file_path = Path(file_path.removeprefix(r"file:///"))
+            if not safe_file_path.exists():
+                self.errorOccurred("Load error", f"File {safe_file_path} does not exists.")
+                return
+            
+            character_json = StorageController().load_character(str(safe_file_path))
+            character_dict = self._json_string_to_dict(character_json)
+
+            character = CharacterModel(_character=Character.from_dict(character_dict))
+            if character:
+                # Add to list
+                self._character_list_model.add_character(character)
+                self._character_list_model.selectCharacterById(character.id)
+
+                # Set as current
+                self.currentCharacter = character
+
+                self.characterCreated.emit()
+
+                print(f"Character loaded: {character.name}")
+
         except Exception as e:
             self.errorOccurred.emit("Load error", f"Failed to load character: {str(e)}")
 
@@ -206,10 +232,6 @@ class MainController(QObject):
             pass  # TODO: Implement filtering
         except Exception as e:
             self.errorOccurred.emit("Filter error", f"Failed to filter characters: {str(e)}")
-
-    def load_character_file(self, file_path):
-        """Python method to load a character file (called from main.py)"""
-        self.load_character_from_file(file_path)
 
     @pyqtSlot()
     def toggleEditMode(self):

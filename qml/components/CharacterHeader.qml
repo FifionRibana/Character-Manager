@@ -385,11 +385,6 @@ Rectangle {
         nameFilters: ["Image files (*.png *.jpg *.jpeg *.gif *.bmp)", "All files (*)"]
 
         onAccepted: {
-            // TODO: Handle image file selection
-            // This would typically involve:
-            // 1. Loading the image file
-            // 2. Converting to base64
-            // 3. Updating the character model
             characterModel.imageData = ImageController.load_image_to_base64(imageDialog.selectedFile)
             imageChangeRequested(imageDialog.selectedFile);
         }

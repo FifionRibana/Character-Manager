@@ -66,6 +66,7 @@ ApplicationWindow {
             Action {
                 text: qsTr("&Open...")
                 shortcut: "Ctrl+O"
+                onTriggered: characterLoadDialog.open()
             }
 
             MenuSeparator {}
@@ -421,5 +422,17 @@ ApplicationWindow {
 
     ErrorDialog {
         id: errorDialog
+    }
+
+    
+    // File dialog for image selection
+    FileDialog {
+        id: characterLoadDialog
+        title: qsTr("Select Character")
+        nameFilters: ["Character file (*.json)", "All files (*)"]
+
+        onAccepted: {
+            MainController.load_character_from_file(characterLoadDialog.selectedFile)
+        }
     }
 }

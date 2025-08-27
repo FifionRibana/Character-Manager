@@ -9,6 +9,7 @@ import json
 import shutil
 import os
 from pathlib import Path
+import traceback
 from typing import ClassVar, Dict, List, Optional, Any, Tuple
 from datetime import datetime
 from dataclasses import dataclass, field
@@ -388,6 +389,7 @@ class StorageController(QObject):
         except Exception as e:
             error_msg = f"Unexpected error: {e}"
             print(f"Load error: {error_msg}")
+            traceback.print_exc()
             try:
                 self.loadError.emit(error_msg, file_path)
             except:

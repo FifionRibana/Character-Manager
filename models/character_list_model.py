@@ -75,7 +75,6 @@ class CharacterListModel(QAbstractListModel):
         elif role == CharacterRoleConstant.ImageRole:
             return character.imageData if hasattr(character, "imageData") else ""
         elif role == CharacterRoleConstant.EnneagramTypeRole:
-            print("Enneagram type:", character.enneagramType)
             return character.enneagramType if hasattr(character, "enneagramType") else 1
         elif role == Qt.ItemDataRole.DisplayRole:
             return character.name if hasattr(character, "name") else "Unknown"
