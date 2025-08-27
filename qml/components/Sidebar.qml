@@ -15,7 +15,7 @@ Rectangle {
     property alias characterListModel: characterList.model
 
     // Signals
-    signal characterSelected(string characterId)
+    signal characterSelectionRequested(string characterId)
     signal newCharacterRequested()
     signal deleteCharacterRequested(string characterId)
 
@@ -49,6 +49,13 @@ Rectangle {
 
             clip: true
             spacing: AppTheme.spacing.small
+            onCurrentIndexChanged: {
+                const characterId = model[currentIndex]
+                console.log("Character id:", characterId)
+                sidebar.characterSelectionRequested(characterId || "");
+
+            }
+
 
             delegate: CharacterListItem {
                 width: characterList.width
@@ -63,7 +70,7 @@ Rectangle {
 
                 onClicked: {
                     characterList.currentIndex = index;
-                    sidebar.characterSelected(model.characterId || "");
+                    // sidebar.characterSelectionRequested(model.characterId || "");
                 }
 
                 onDeleteRequested: function (charId) {

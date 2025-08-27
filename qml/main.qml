@@ -197,7 +197,9 @@ ApplicationWindow {
 
             characterListModel: MainController.characterListModel
             
-
+            onNewCharacterRequested: MainController.create_new_character()
+            onDeleteCharacterRequested: function(characterId) { MainController.delete_character(characterId) }
+            onCharacterSelectionRequested: function(characterId) { MainController.select_character(characterId) }
         }
 
         // Divider
