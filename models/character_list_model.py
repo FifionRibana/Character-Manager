@@ -99,6 +99,7 @@ class CharacterListModel(QAbstractListModel):
             QModelIndex(), len(self._characters), len(self._characters)
         )
         self._characters.append(character)
+        self._selected_index = len(self._characters) - 1
         self.endInsertRows()
         self.countChanged.emit()
 
@@ -120,9 +121,9 @@ class CharacterListModel(QAbstractListModel):
                 self.countChanged.emit()
 
                 # Adjust selected index if needed
-                if self._selected_index == i:
+                if len(self._characters) == 0:
                     self._selected_index = -1
-                elif self._selected_index > i:
+                elif self._selected_index > i or self._selected_index == i and i == len(self._characters):
                     self._selected_index -= 1
 
                 return True

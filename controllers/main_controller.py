@@ -105,6 +105,7 @@ class MainController(QObject):
 
             # Add to list
             self._character_list_model.add_character(new_character)
+            self._character_list_model.selectCharacterById(new_character.id)
 
             # Set as current
             self.currentCharacter = new_character
@@ -124,6 +125,7 @@ class MainController(QObject):
             character = self._character_list_model.get_character(character_id)
             if character:
                 self.currentCharacter = character
+                self._character_list_model.selectCharacterById(character.id)
             else:
                 self.errorOccurred.emit("Selection error", f"Character not found: {character_id}")
         except Exception as e:
@@ -139,6 +141,10 @@ class MainController(QObject):
 
             # Remove from list
             self._character_list_model.remove_character(character_id)
+            selected_character_id = self._character_list_model.getSelectedCharacterId()
+
+            if selected_character_id != "":
+                self.currentCharacter = self._character_list_model.get_character(selected_character_id)
 
             self.characterDeleted.emit()
 

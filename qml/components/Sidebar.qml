@@ -49,11 +49,12 @@ Rectangle {
 
             clip: true
             spacing: AppTheme.spacing.small
-            onCurrentIndexChanged: {
-                const characterId = model[currentIndex]
-                console.log("Character id:", characterId)
-                sidebar.characterSelectionRequested(characterId || "");
 
+            Connections {
+                target: characterListModel
+                function onCharacterSelected(characterId) {
+                    characterList.currentIndex = characterListModel.getSelectedIndex()
+                }
             }
 
 
@@ -62,15 +63,14 @@ Rectangle {
 
                 characterName: model.name || ""
                 characterLevel: model.level || 1
-                characterId: model.id || ""
+                characterId: model.characterId || ""
                 hasImage: model.hasImage || false
                 imageData: model.imageData || ""
                 // initials: 
                 enneagramType: model.enneagramType
 
                 onClicked: {
-                    characterList.currentIndex = index;
-                    // sidebar.characterSelectionRequested(model.characterId || "");
+                    sidebar.characterSelectionRequested(characterId || "");
                 }
 
                 onDeleteRequested: function (charId) {
