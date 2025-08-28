@@ -46,7 +46,7 @@ class NarrativeEvent:
         return cls(
             id=data.get(StorageKeys.CHARACTER_ID.value, str(uuid.uuid4())),
             title=data.get(StorageKeys.EVENT_TITLE.value, ""),
-            type=data.get(StorageKeys.EVENT_TYPE.value, EventType.GENERAL),
+            event_type=EventType(data.get(StorageKeys.EVENT_TYPE.value, EventType.GENERAL)),
             description=data.get(StorageKeys.EVENT_DESCRIPTION.value, ""),
             date=data.get(StorageKeys.EVENT_DATE.value, ""),
             importance=data.get(

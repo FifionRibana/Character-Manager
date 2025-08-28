@@ -16,6 +16,7 @@ from data.enums import (
     DEFAULT_DEVELOPMENT_LEVEL,
     DEFAULT_ENNEAGRAM_TYPE,
     DEFAULT_STAT_VALUE,
+    EnneagramType,
     InstinctualVariant,
     StorageKeys,
     UIConstants,
@@ -420,15 +421,17 @@ class CharacterModel(QObject):
                 pass  # Invalid value
 
     @pyqtProperty(int, notify=wingChanged)
-    def wing(self) -> int:
+    def enneagramWing(self) -> int:
         """Get Enneagram wing."""
-        return self._character.enneagram.wing if self._character else 0
+        print("WIIIING:", self._character.enneagram.wing, self._character.name)
+        return self._character.enneagram.wing if self._character and self._character.enneagram.wing != None else 0
 
-    @wing.setter
-    def wing(self, value: int) -> None:
+    @enneagramWing.setter
+    def enneagramWing(self, value: int) -> None:
         """Set Enneagram wing."""
+        print("Setting wing:", value, self._character.name)
         if self._character and self._character.enneagram.wing != value:
-            self._character.enneagram.wing = value
+            self._character.enneagram.wing = EnneagramType(value) if value != 0 else None
             self._character.touch()
             self.wingChanged.emit()
             self.enneagramChanged.emit()

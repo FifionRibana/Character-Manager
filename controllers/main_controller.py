@@ -221,6 +221,7 @@ class MainController(QObject):
                 print(f"Character loaded: {character.name}")
 
         except Exception as e:
+            traceback.print_exc()
             self.errorOccurred.emit("Load error", f"Failed to load character: {str(e)}")
 
     @pyqtSlot(str)

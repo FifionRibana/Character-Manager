@@ -226,6 +226,12 @@ def register_app_controller_singleton() -> bool:
         print(f"ERROR: Failed to register App controller singletons: {e}")
         return False
 
+def load_characters() -> None:
+    StorageController()._load_recent_files()
+    for file_path in StorageController().get_recent_files():
+        MainController().load_character_from_file(file_path=file_path)
+    
+    # MainController().select_character()
 
 def main() -> int:
     """Main application entry point"""
@@ -272,6 +278,7 @@ def main() -> int:
     if not register_app_controller_singleton():
         print("WARNING: App.Controller singletons registration failed")
 
+    load_characters()
 
     # Setup engine context (properties must be set BEFORE loading QML)
     # setup_engine_context(engine, args)

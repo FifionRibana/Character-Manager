@@ -27,8 +27,9 @@ ColumnLayout {
     property int wing: 9
     property int instinctualVariantIndex: 0
     property int developmentLevel: 5
-    onDevelopmentLevelChanged: console.log("Forom internale", developmentLevel)
+    // onDevelopmentLevelChanged: console.log("Forom internale", developmentLevel)
 
+    property var wingToIndex: {}
     // Signals
     signal wingChangeRequested(int newWing)
     signal instinctualVariantChangeRequested(string newInstinctualVariant)
@@ -106,7 +107,12 @@ ColumnLayout {
                 textRole: "text"
                 valueRole: "value"
 
-                currentIndex: iControlPanel.wing
+                currentIndex: {
+                    print(Object.entries(iControlPanel.wingToIndex))
+                    print(iControlPanel.wing, iControlPanel.wingToIndex[iControlPanel.wing])
+                    if (iControlPanel.wing in iControlPanel.wingToIndex) { return iControlPanel.wingToIndex[iControlPanel.wing] }
+                    return -1
+                }
 
                 background: Rectangle {
                     color: AppTheme.input.background

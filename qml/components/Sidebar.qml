@@ -50,6 +50,8 @@ Rectangle {
             clip: true
             spacing: AppTheme.spacing.small
 
+            currentIndex: characterListModel.getSelectedIndex()
+
             Connections {
                 target: characterListModel
                 function onCharacterSelected(characterId) {

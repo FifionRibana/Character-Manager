@@ -349,6 +349,7 @@ class EnneagramProfile:
         Returns:
             Dictionary representation using enum values
         """
+        print("WING:", self.wing)
         return {
             StorageKeys.MAIN_TYPE.value: self.main_type.value,
             StorageKeys.WING.value: self.wing.value if self.wing else None,
@@ -405,6 +406,7 @@ class EnneagramProfile:
             except ValueError:
                 wing = None
 
+        print("Loaded wing", wing)
         # Parse instinctual variant
         instinctual_variant = DEFAULT_INSTINCTUAL_VARIANT
         try:

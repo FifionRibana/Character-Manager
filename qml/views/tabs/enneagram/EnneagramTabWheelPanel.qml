@@ -39,7 +39,14 @@ Card {
             Layout.minimumWidth: 400
             Layout.minimumHeight: 400
 
-            selectedType: iCard.selectedType
+            Connections {
+                target: iCard
+                function onSelectedTypeChanged() {
+                    enneagramWheel.selectType(iCard.selectedType)
+                }
+            }
+
+            // selectedType: iCard.selectedType
 
             onTypeSelected: function(type) { iCard.typeSelected(type) }
             onTypeHovered: function(type) { iCard.typeHovered(type) }
@@ -66,5 +73,9 @@ Card {
                 verticalAlignment: Text.AlignVCenter
             }
         }
+    }
+
+    function selectType(type) {
+        enneagramWheel.selectType(type)
     }
 }

@@ -62,16 +62,16 @@ Item {
                 confirmDeleteDialog.targetName = model.targetName
                 confirmDeleteDialog.open()
             }
-            onRelationshipStrengthChangeRequested: function(relationshipId, newStrength) {
-                if (relationshipModel) {
-                    relationshipModel.updateRelationship(
-                        relationshipId, 
-                        model.type, 
-                        model.description, 
-                        newStrength
-                    )
-                }
-            }
+            // onRelationshipStrengthChangeRequested: function(relationshipId, newStrength) {
+            //     if (relationshipModel) {
+            //         relationshipModel.updateRelationship(
+            //             relationshipId, 
+            //             model.type,
+            //             model.description, 
+            //             newStrength
+            //         )
+            //     }
+            // }
         }
 
         // Rectangle {

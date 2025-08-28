@@ -22,6 +22,8 @@ ScrollView {
     property int instinctualVariantIndex: characterModel && characterModel.instinct !== undefined ? getInstinctualVariantIndex(characterModel.instinct) : 0
     property int developmentLevel: characterModel && characterModel.developmentLevel !== undefined ? characterModel.developmentLevel : 5
 
+    property var wingToIndex: {}
+
     contentWidth: availableWidth
     clip: true
 
@@ -100,7 +102,8 @@ ScrollView {
                 onTypeSelected: function (type) {
                     if (characterModel) {
                         characterModel.enneagramType = type;
-                        updateWingOptions();
+                        console.log("Type selected", type, characterModel.name)
+                        updateWingOptions(type);
                     }
                 }
 
@@ -119,7 +122,8 @@ ScrollView {
                 Layout.alignment: Qt.AlignTop
 
                 selectedType: enneagramTab.selectedType
-                wing: enneagramTab.wing
+                wing: enneagramTab.wing !== undefined ? enneagramTab.wing : 0
+                
                 instinctualVariantIndex: enneagramTab.instinctualVariantIndex
                 developmentLevel: enneagramTab.developmentLevel
 
@@ -132,9 +136,12 @@ ScrollView {
 
                 wingModel: iWingModel
                 instinctualModel: enneagramTab.instinctualModel
+
+                wingToIndex: enneagramTab.wingToIndex
                 
                 onWingChangeRequested: function(newWing) {
                     if (characterModel && newWing !== undefined) {
+                        console.log("Enneagram wing:", newWing)
                         characterModel.enneagramWing = newWing;
                     }
                 }
@@ -205,16 +212,23 @@ ScrollView {
     }
 
     // Functions
-    function updateWingOptions() {
+    function updateWingOptions(aType) {
+        print("Update wing called")
         iWingModel.clear();
         iWingModel.append({
             text: qsTr("No Wing"),
             value: 0
         });
 
-        var type = enneagramTab.selectedType;
+        var type = aType !== undefined ? aType : enneagramTab.selectedType;
         var leftWing = type === 1 ? 9 : type - 1;
         var rightWing = type === 9 ? 1 : type + 1;
+
+        wingToIndex = {
+            0: 0,
+            [leftWing]: 1,
+            [rightWing]: 2
+        }
 
         iWingModel.append({
             text: qsTr("Wing") + " " + leftWing,
@@ -224,6 +238,9 @@ ScrollView {
             text: qsTr("Wing") + " " + rightWing,
             value: rightWing
         });
+
+        enneagramTab.loaded = true
+        
     }
 
     function getInstinctualVariantIndex(value) {
@@ -332,13 +349,20 @@ ScrollView {
 
     // Initialize when character changes
     onCharacterModelChanged: {
+        // TODO: PB HERE CAUSE OF WING MODEL CHANGE
+        // enneagram.loaded = false
         if (characterModel) {
             enneagramWheelPanel.selectedType = characterModel.enneagramType || 9;
-            updateWingOptions();
+            console.log("Loading ", characterModel.name, characterModel.enneagramType, characterModel.enneagramWing)
+            console.log("CharacterModelChanged")
+            updateWingOptions(characterModel.enneagramType);
         }
     }
 
     Component.onCompleted: {
-        updateWingOptions();
+        // enneagramTab.loaded = true
+        console.log("Completed", enneagramTab.wing, enneagramTab.selectedType, characterModel.enneagramWing)
+        enneagramWheelPanel.selectType(enneagramTab.selectedType)
+        // updateWingOptions(enneagramTab.selectedType);
     }
 }
