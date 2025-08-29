@@ -36,6 +36,7 @@ class CharacterModel(QObject):
     nameChanged: ClassVar[pyqtSignal] = pyqtSignal()
     levelChanged: ClassVar[pyqtSignal] = pyqtSignal()
     ageChanged: ClassVar[pyqtSignal] = pyqtSignal()
+    quickNotesChanged: ClassVar[pyqtSignal] = pyqtSignal()
     occupationChanged: ClassVar[pyqtSignal] = pyqtSignal()
     locationChanged: ClassVar[pyqtSignal] = pyqtSignal()
     imageDataChanged: ClassVar[pyqtSignal] = pyqtSignal()
@@ -184,6 +185,21 @@ class CharacterModel(QObject):
             self._character.age = value
             self._character.touch()
             self.ageChanged.emit()
+            self.characterChanged.emit()
+            self._schedule_auto_save()
+
+    @pyqtProperty(str, notify=quickNotesChanged)
+    def quickNotes(self) -> str:
+        """Get character quick notes."""
+        return self._character.quickNotes if self._character else ""
+
+    @quickNotes.setter
+    def quickNotes(self, value: str) -> None:
+        """Set character quick notes."""
+        if self._character and self._character.quickNotes != value:
+            self._character.quickNotes = value
+            self._character.touch()
+            self.quickNotesChanged.emit()
             self.characterChanged.emit()
             self._schedule_auto_save()
 
@@ -423,13 +439,11 @@ class CharacterModel(QObject):
     @pyqtProperty(int, notify=wingChanged)
     def enneagramWing(self) -> int:
         """Get Enneagram wing."""
-        print("WIIIING:", self._character.enneagram.wing, self._character.name)
         return self._character.enneagram.wing if self._character and self._character.enneagram.wing != None else 0
 
     @enneagramWing.setter
     def enneagramWing(self, value: int) -> None:
         """Set Enneagram wing."""
-        print("Setting wing:", value, self._character.name)
         if self._character and self._character.enneagram.wing != value:
             self._character.enneagram.wing = EnneagramType(value) if value != 0 else None
             self._character.touch()
@@ -518,6 +532,7 @@ class CharacterModel(QObject):
         self.characterChanged.emit()
         self.nameChanged.emit()
         self.ageChanged.emit()
+        self.quickNotesChanged.emit()
         self.occupationChanged.emit()
         self.locationChanged.emit()
         self.biographyChanged.emit()

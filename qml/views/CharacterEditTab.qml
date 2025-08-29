@@ -25,6 +25,14 @@ ScrollView {
             Layout.leftMargin: AppTheme.margin.small
             Layout.rightMargin: AppTheme.margin.small
             Layout.topMargin: AppTheme.margin.small
+
+            quickNotes: characterModel && characterModel.quickNotes ? characterModel.quickNotes : ""
+
+            onQuickNotesChangeRequested: function(quickNotesText) {
+                if (characterModel) {
+                    characterModel.quickNotes = quickNotesText
+                }
+            }
         }
         
         // Character Metadata section

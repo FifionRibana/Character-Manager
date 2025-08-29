@@ -20,20 +20,34 @@ ColumnLayout {
     property int disintegrationPoint
 
     // Models
-    property var wingModel
+    // property var wingModel
     property var instinctualModel
 
     // Character's data
     property int wing: 9
     property int instinctualVariantIndex: 0
     property int developmentLevel: 5
-    // onDevelopmentLevelChanged: console.log("Forom internale", developmentLevel)
 
     property var wingToIndex: {}
     // Signals
     signal wingChangeRequested(int newWing)
     signal instinctualVariantChangeRequested(string newInstinctualVariant)
     signal developmentLevelChangeRequested(int newDevelopmentLevel)
+
+    onSelectedTypeChanged: {
+        updateWingOptions(iControlPanel.selectedType)
+    }
+    
+    // Wing model for ComboBox
+    ListModel {
+        id: iWingModel
+
+        ListElement {
+            text: "No Wing"
+            value: 0
+        }
+        // Will be populated based on selected type
+    }
 
     // Core Type Information
     Card {
@@ -103,13 +117,11 @@ ColumnLayout {
                 id: wingComboBox
                 Layout.fillWidth: true
 
-                model: iControlPanel.wingModel
+                model: iWingModel
                 textRole: "text"
                 valueRole: "value"
 
                 currentIndex: {
-                    print(Object.entries(iControlPanel.wingToIndex))
-                    print(iControlPanel.wing, iControlPanel.wingToIndex[iControlPanel.wing])
                     if (iControlPanel.wing in iControlPanel.wingToIndex) { return iControlPanel.wingToIndex[iControlPanel.wing] }
                     return -1
                 }
@@ -121,7 +133,7 @@ ColumnLayout {
                     radius: AppTheme.radius.small
                 }
 
-                onCurrentValueChanged: iControlPanel.wingChangeRequested(currentValue)
+                onActivated: iControlPanel.wingChangeRequested(currentValue)
             }
 
             Text {
@@ -369,5 +381,33 @@ ColumnLayout {
         if (level <= 6)
             return "#f39c12";     // Average - Orange
         return "#e74c3c";                     // Unhealthy - Red
+    }
+    
+    
+    function updateWingOptions(aType) {
+        iWingModel.clear();
+        iWingModel.append({
+            text: qsTr("No Wing"),
+            value: 0
+        });
+
+        var type = aType !== undefined ? aType : iCard.selectedType;
+        var leftWing = type === 1 ? 9 : type - 1;
+        var rightWing = type === 9 ? 1 : type + 1;
+
+        iControlPanel.wingToIndex = {
+            0: 0,
+            [leftWing]: 1,
+            [rightWing]: 2
+        }
+
+        iWingModel.append({
+            text: qsTr("Wing") + " " + leftWing,
+            value: leftWing
+        });
+        iWingModel.append({
+            text: qsTr("Wing") + " " + rightWing,
+            value: rightWing
+        });
     }
 }

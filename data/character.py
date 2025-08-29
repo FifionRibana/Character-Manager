@@ -41,6 +41,7 @@ class Character:
     name: str = "Unnamed Character"
     level: int = DEFAULT_CHARACTER_LEVEL
     age: int = DEFAULT_CHARACTER_AGE
+    quickNotes: str = ""
     occupation: str = "Adventurer"
     location: str = "Kingdom"
 
@@ -299,6 +300,7 @@ class Character:
             StorageKeys.NAME.value: self.name,
             StorageKeys.LEVEL.value: self.level,
             StorageKeys.AGE.value: self.age,
+            StorageKeys.QUICK_NOTES.value: self.quickNotes,
             StorageKeys.IMAGE_DATA.value: self.image_data,
             StorageKeys.ENNEAGRAM.value: self.enneagram.to_dict(),
             StorageKeys.STATS.value: self.stats.to_dict(),
@@ -362,6 +364,7 @@ class Character:
             name=data.get(StorageKeys.NAME.value, "Unnamed Character"),
             level=data.get(StorageKeys.LEVEL.value, DEFAULT_CHARACTER_LEVEL),
             age=data.get(StorageKeys.AGE.value, DEFAULT_CHARACTER_AGE),
+            quickNotes=data.get(StorageKeys.QUICK_NOTES.value, ""),
             image_data=data.get(StorageKeys.IMAGE_DATA.value, ""),
             enneagram=enneagram,
             stats=stats,

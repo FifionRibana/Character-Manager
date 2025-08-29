@@ -42,40 +42,6 @@ ScrollView {
         }
     ]
 
-    // Quick help button
-    // Button {
-    //     text: "?"
-    //     anchors.right: parent.right
-    //     anchors.top: parent.top
-    //     implicitWidth: 32
-    //     implicitHeight: 32
-    //     font.bold: true
-
-    //     z: 1
-
-    //     background: Rectangle {
-    //         radius: 16
-    //         color: AppTheme.colors.accent
-    //         opacity: parent.hovered ? 0.8 : 0.6
-
-    //         Behavior on opacity {
-    //             NumberAnimation {
-    //                 duration: 150
-    //             }
-    //         }
-    //     }
-
-    //     contentItem: Text {
-    //         text: parent.text
-    //         font: parent.font
-    //         color: "white"
-    //         horizontalAlignment: Text.AlignHCenter
-    //         verticalAlignment: Text.AlignVCenter
-    //     }
-
-    //     onClicked: helpPopup.open()
-    // }
-
     ColumnLayout {
         width: enneagramTab.availableWidth
         spacing: AppTheme.spacing.small
@@ -102,8 +68,6 @@ ScrollView {
                 onTypeSelected: function (type) {
                     if (characterModel) {
                         characterModel.enneagramType = type;
-                        console.log("Type selected", type, characterModel.name)
-                        updateWingOptions(type);
                     }
                 }
 
@@ -134,14 +98,10 @@ ScrollView {
                 integrationPoint: getIntegrationPoint(selectedType)
                 disintegrationPoint: getDisintegrationPoint(selectedType)
 
-                wingModel: iWingModel
                 instinctualModel: enneagramTab.instinctualModel
 
-                wingToIndex: enneagramTab.wingToIndex
-                
                 onWingChangeRequested: function(newWing) {
                     if (characterModel && newWing !== undefined) {
-                        console.log("Enneagram wing:", newWing)
                         characterModel.enneagramWing = newWing;
                     }
                 }
@@ -167,17 +127,6 @@ ScrollView {
             Layout.rightMargin: AppTheme.margin.small
             Layout.bottomMargin: AppTheme.margin.small
         }
-    }
-
-    // Wing model for ComboBox
-    ListModel {
-        id: iWingModel
-
-        ListElement {
-            text: "No Wing"
-            value: 0
-        }
-        // Will be populated based on selected type
     }
 
     // Help popup
@@ -212,37 +161,6 @@ ScrollView {
     }
 
     // Functions
-    function updateWingOptions(aType) {
-        print("Update wing called")
-        iWingModel.clear();
-        iWingModel.append({
-            text: qsTr("No Wing"),
-            value: 0
-        });
-
-        var type = aType !== undefined ? aType : enneagramTab.selectedType;
-        var leftWing = type === 1 ? 9 : type - 1;
-        var rightWing = type === 9 ? 1 : type + 1;
-
-        wingToIndex = {
-            0: 0,
-            [leftWing]: 1,
-            [rightWing]: 2
-        }
-
-        iWingModel.append({
-            text: qsTr("Wing") + " " + leftWing,
-            value: leftWing
-        });
-        iWingModel.append({
-            text: qsTr("Wing") + " " + rightWing,
-            value: rightWing
-        });
-
-        enneagramTab.loaded = true
-        
-    }
-
     function getInstinctualVariantIndex(value) {
         var instinctualVariant = {
             "sp": 0,
@@ -349,20 +267,12 @@ ScrollView {
 
     // Initialize when character changes
     onCharacterModelChanged: {
-        // TODO: PB HERE CAUSE OF WING MODEL CHANGE
-        // enneagram.loaded = false
         if (characterModel) {
             enneagramWheelPanel.selectedType = characterModel.enneagramType || 9;
-            console.log("Loading ", characterModel.name, characterModel.enneagramType, characterModel.enneagramWing)
-            console.log("CharacterModelChanged")
-            updateWingOptions(characterModel.enneagramType);
         }
     }
 
     Component.onCompleted: {
-        // enneagramTab.loaded = true
-        console.log("Completed", enneagramTab.wing, enneagramTab.selectedType, characterModel.enneagramWing)
         enneagramWheelPanel.selectType(enneagramTab.selectedType)
-        // updateWingOptions(enneagramTab.selectedType);
     }
 }

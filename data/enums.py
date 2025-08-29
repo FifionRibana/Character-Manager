@@ -340,6 +340,7 @@ class StorageKeys(StrEnum):
     NAME = "name"
     LEVEL = "level"
     AGE = "age"
+    QUICK_NOTES = "quick_notes"
     ENNEAGRAM_TYPE = "enneagram_type"
     DEVELOPMENT_LEVEL = "development_level"
     BIOGRAPHY = "biography"

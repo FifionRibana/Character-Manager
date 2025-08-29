@@ -11,6 +11,10 @@ TabHeaderCard {
 
     title: qsTr("Quick Notes")
 
+    property string quickNotes: ""
+
+    signal quickNotesChangeRequested(string aText)
+
     content: ColumnLayout {
         spacing: AppTheme.spacing.small
                 
@@ -29,6 +33,7 @@ TabHeaderCard {
             
             TextArea {
                 id: notesText
+                text: iCard.quickNotes
                 placeholderText: qsTr("Quick notes about the character...")
                 wrapMode: TextArea.WordWrap
                 selectByMouse: true
@@ -41,6 +46,19 @@ TabHeaderCard {
                 }
                 
                 // TODO: Connect to character model notes property
+                onTextChanged: {
+                    if (text !== iCard.biography) {
+                        // Throttle updates to avoid excessive property changes
+                        saveTimer.restart()
+                    }
+                }
+                
+                // Auto-save timer
+                Timer {
+                    id: saveTimer
+                    interval: 500
+                    onTriggered: iCard.quickNotesChangeRequested(notesText.text)
+                }
             }
         }
     }
